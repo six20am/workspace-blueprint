@@ -33,7 +33,7 @@ Before doing anything, verify tools exist:
 
 ```bash
 command -v ffmpeg >/dev/null || echo "MISSING: ffmpeg"
-[ -x "$WHISPER_HOME/bin/Release/whisper-cli.exe" ] || echo "MISSING: whisper.cpp: see SETUP.md"
+command -v whisper-cli >/dev/null || [ -x "$WHISPER_HOME/bin/Release/whisper-cli.exe" ] || echo "MISSING: whisper.cpp: see SETUP.md"
 [ -f "$WHISPER_MODEL" ] || echo "MISSING: model: see SETUP.md"
 command -v yt-dlp >/dev/null || echo "NOTE: yt-dlp absent: URLs won't work, local files still will"
 ```

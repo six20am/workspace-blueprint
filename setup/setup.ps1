@@ -26,6 +26,7 @@ Write-Host ''
 Write-Host 'This sets up your workspace. It installs the tools Claude uses, then opens Claude.'
 Write-Host 'It takes 15 to 30 minutes. It downloads about 500 MB. It signs in to nothing.'
 Write-Host 'If a tool fails, it is written down and setup keeps going. Claude will help with it after.'
+Write-Host 'Windows may ask "Do you want to allow this app to make changes?" a few times. Click Yes. Stay nearby for the first ten minutes.'
 Write-Host ''
 
 $stop = Test-Preflight
@@ -53,7 +54,11 @@ $failed = @($results | Where-Object { $_.Status -eq 'failed' }).Count
 Write-Host "`nDone. $failed failed. Report: $reportPath"
 
 Update-SessionPath
-if ($NoLaunch -or -not (Test-Command claude)) {
+if (-not (Test-Command claude)) {
+    Write-Host 'Claude Code did not install. Run setup again. If it still fails, install Claude Code from claude.com/code, then run setup again.' -ForegroundColor Yellow
+    exit 2
+}
+if ($NoLaunch) {
     Write-Host 'Open this folder in Claude Code and type: set this up'
     if ($failed -gt 0) { exit 2 } else { exit 0 }
 }

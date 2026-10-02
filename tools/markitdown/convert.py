@@ -25,11 +25,34 @@ def die(msg, code=2):
     sys.exit(code)
 
 
+class _CliMarkItDown:
+    """Fallback when the module is not importable but the `markitdown` command is on PATH
+    (a `uv tool install` or `pipx` install lives in its own environment)."""
+
+    class _Result:
+        def __init__(self, text):
+            self.text_content = text
+
+    def __init__(self, exe):
+        self.exe = exe
+
+    def convert(self, path):
+        import subprocess
+        out = subprocess.run([self.exe, path], capture_output=True, text=True, encoding="utf-8", errors="replace")
+        if out.returncode != 0:
+            raise RuntimeError((out.stderr or "").strip() or "markitdown exited %d" % out.returncode)
+        return self._Result(out.stdout)
+
+
 def load_markitdown():
     try:
         from markitdown import MarkItDown  # noqa: WPS433
     except ImportError:
-        die('markitdown is not installed. Run: pip install "markitdown[all]"', 2)
+        import shutil
+        exe = shutil.which("markitdown")
+        if exe:
+            return _CliMarkItDown(exe), "cli"
+        die('markitdown is not installed. Run: pip install "markitdown[all]"  (or on a Mac: uv tool install "markitdown[all]")', 2)
     try:
         import markitdown
         version = getattr(markitdown, "__version__", "unknown")

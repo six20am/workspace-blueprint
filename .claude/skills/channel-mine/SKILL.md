@@ -20,7 +20,7 @@ transcript layer rather than restating them.
 
 ```bash
 command -v yt-dlp >/dev/null && echo "yt-dlp OK" || echo "MISSING: yt-dlp"
-command -v python >/dev/null && echo "python OK" || echo "MISSING: python"
+PY=$(command -v python3 || command -v python); [ -n "$PY" ] && echo "python OK" || echo "MISSING: python"   # python3 on a Mac, python on Windows
 ```
 
 Captions are free and instant. Whisper is the fallback for a source with none, and at channel
@@ -76,7 +76,7 @@ saves.
 Then convert:
 
 ```bash
-python scripts/vtt_to_text.py "$WORK"
+"$PY" scripts/vtt_to_text.py "$WORK"
 ```
 
 **Why the converter is not optional.** YouTube auto-captions are rolling: every cue repeats the
@@ -93,7 +93,7 @@ failures out of hundreds does not change a conclusion.
 ## 4. Coverage pass before deep reads
 
 ```bash
-python scripts/mine.py "$WORK"
+"$PY" scripts/mine.py "$WORK"
 ```
 
 Runs over **every** transcript and pulls:
@@ -162,7 +162,7 @@ passes silently on files full of them. Build the characters with `chr()` rather 
 or the checker itself trips the check:
 
 ```bash
-python -c "t=open(r'<path>',encoding='utf-8').read(); print('em:',t.count(chr(0x2014)),'en:',t.count(chr(0x2013)))"
+"$PY" -c "t=open(r'<path>',encoding='utf-8').read(); print('em:',t.count(chr(0x2014)),'en:',t.count(chr(0x2013)))"
 ```
 
 ## 8. Hard rules

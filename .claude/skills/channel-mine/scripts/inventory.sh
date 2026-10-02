@@ -29,7 +29,7 @@ if [ ! -s "$WORK/videos.txt" ]; then
   exit 1
 fi
 
-python - "$WORK" <<'PY'
+"$(command -v python3 || command -v python)" - "$WORK" <<'PY'
 import sys, os
 work = sys.argv[1]
 raw = open(os.path.join(work, "videos.txt"), "rb").read()

@@ -499,10 +499,10 @@ function buildReview(manifest, logos, enriched) {
   lines.push("");
 
   lines.push(`## License caveats`);
-  lines.push(`Some images may be licensed stock from the previous build. The previous developer's stock license does NOT transfer to the new build. Verify rights with the client before reusing any non-founder, non-proof, non-facility image.\n`);
+  lines.push(`Some images may be licensed stock from whoever built this site. That licence does not transfer to you. Check the rights before reusing any image that is not clearly the site owner's own photo.`);
 
   lines.push(`## Next step`);
-  lines.push(`Phase 07b reads \`manifest.json\` and decides per-slot whether to reuse a scraped original (founder / proof / facility / place) or generate fresh (hero / parallax / process). Real photos of the founder, real customer testimonials, and real facility shots cannot be AI-generated and should be reused from this inventory wherever possible.`);
+  lines.push(`When you plan images for a new page, read manifest.json first: reuse real photos of people, places and proof where you have them, and fill only the gaps with stock or generated images.`);
   return lines.join("\n") + "\n";
 }
 

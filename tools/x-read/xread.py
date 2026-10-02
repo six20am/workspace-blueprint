@@ -5,7 +5,7 @@ import json, re, sys, urllib.request
 def fetch(url):
     m = re.search(r"(?:x|twitter)\.com/([^/]+)/status/(\d+)", url)
     user, sid = m.group(1), m.group(2)
-    req = urllib.request.Request(f"https://api.fxtwitter.com/{user}/status/{sid}", headers={"User-Agent": "tool-shed-research/1.0"})
+    req = urllib.request.Request(f"https://api.fxtwitter.com/{user}/status/{sid}", headers={"User-Agent": "workspace-blueprint-x-research/1.0"})
     return json.load(urllib.request.urlopen(req, timeout=30))["tweet"]
 
 def show(t, indent=""):

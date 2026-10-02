@@ -84,6 +84,15 @@ class RunToolsTest(unittest.TestCase):
         self.assertEqual(self.m.ran, [])
 
 
+class SelectTest(unittest.TestCase):
+    def test_only_pulls_the_tool_and_its_needs_in_order(self):
+        tools = [tool("claude"), tool("plugin", needs=["claude"]), tool("node"), tool("mcp", needs=["node", "claude"])]
+        self.assertEqual([t["id"] for t in mac_runner.select_tools(tools, "mcp")], ["node", "claude", "mcp"])
+        self.assertEqual([t["id"] for t in mac_runner.select_tools(tools, None)], ["claude", "plugin", "node", "mcp"])
+        with self.assertRaises(SystemExit):
+            mac_runner.select_tools(tools, "nope")
+
+
 class ReportTest(unittest.TestCase):
     def test_sections_match_the_windows_report(self):
         results = [

@@ -23,6 +23,9 @@ EXEC = (".command", ".sh")
 SECRET_RE = re.compile(r"(^|/)(\.env(\.[^/]*)?|accounts\.json|instances\.json|[^/]*secret[^/]*\.(json|env)|[^/]*\.pem|[^/]*\.key)$", re.I)
 SECRET_ALLOW = re.compile(r"\.example(\.json)?$", re.I)
 FIXED = ["\u2014", "mtesi", "C:\\Users\\", "/c/Users/", "shared-core", "shared-systems", "work-log"]
+# the maintainer's own names, caught even when no parent-workspace names list exists (a public clone)
+FIXED_CI = ["six20am", "motus", "machado", "michael"]
+HARD_RULE = re.compile(r"Hard Rule \d", re.I)     # a numbered rule from the parent workspace; a "Hard rules" heading is fine
 HEX_ID = re.compile(r"\b[0-9a-f]{32}\b")
 ALLOWED = {"README.md", "docs/design.md"}
 # vendor code shipped as-is; scanned by eye, not by string (same exemption as tests/test_shipped.py)
@@ -44,9 +47,11 @@ def scan_text(text, names):
     for s in FIXED:
         if s in text:
             problems.append(repr(s))
-    for n in names:
+    for n in FIXED_CI + list(names):
         if n and n.lower() in low:
             problems.append(n)
+    if HARD_RULE.search(text):
+        problems.append("Hard Rule N")
     if HEX_ID.search(text):
         problems.append("32-char hex id")
     return problems

@@ -29,6 +29,29 @@ def shell_quote(s):
     return shlex.quote(s)
 
 
+def select_tools(tools, only):
+    """Every tool in file order, or one tool and its needs (needs first). Mirrors setup/lib/planner.ps1."""
+    by_id = {t["id"]: t for t in tools}
+    if only is not None and only not in by_id:
+        print("no tool with id '%s'" % only)
+        raise SystemExit(1)
+    roots = [by_id[only]] if only else list(tools)
+    ordered, seen = [], set()
+
+    def add(t):
+        if t["id"] in seen:
+            return
+        seen.add(t["id"])
+        for n in t.get("needs", []):
+            if n in by_id:
+                add(by_id[n])
+        ordered.append(t)
+
+    for t in roots:
+        add(t)
+    return ordered
+
+
 def default_check(expr):
     if not expr:
         return False
@@ -111,6 +134,7 @@ def online():
 def main(argv):
     dry = "--dry-run" in argv
     no_launch = "--no-launch" in argv
+    only = argv[argv.index("--only") + 1] if "--only" in argv and argv.index("--only") + 1 < len(argv) else None
     setup_dir = os.path.dirname(os.path.abspath(__file__))
     root = os.path.dirname(setup_dir)
     os.chdir(root)
@@ -120,13 +144,17 @@ def main(argv):
     if not online():
         print("No internet connection. Connect to the internet, then run setup again.")
         return 4
-    tools = load_tools(os.path.join(setup_dir, "tools.json"))
+    tools = select_tools(load_tools(os.path.join(setup_dir, "tools.json")), only)
     results = run_tools(tools, default_run, default_check, dry_run=dry)
     report = os.path.join(setup_dir, "setup-report.md")
     write_report(results, report, platform.node(), dry_run=dry)
     failed = sum(1 for r in results if r["status"] == "failed")
     print("\nDone. %d failed. Report: %s" % (failed, report))
-    if dry or no_launch or subprocess.call("command -v claude", shell=True, stdout=subprocess.DEVNULL) != 0:
+    have_claude = subprocess.call("command -v claude", shell=True, stdout=subprocess.DEVNULL) == 0
+    if not have_claude:
+        print("Claude Code did not install. Run setup again. If it still fails, install Claude Code from claude.com/code, then run setup again.")
+        return 2
+    if dry or no_launch:
         print("Open this folder in Claude Code and type: set this up")
         return 2 if failed else 0
     print("Opening Claude. Sign in if your browser asks, then answer its questions.")

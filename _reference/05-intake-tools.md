@@ -43,7 +43,7 @@ Tools that read many sources and answer questions across all of them.
 |------|---------------|---------------------|
 | `WebSearch` / `WebFetch` | Open web pages. | Built into Claude Code. Nothing to install. |
 | `scrapling` | Public pages that `WebFetch` refuses: 403 errors, pages that need JavaScript, empty renders. | Open source Python library named Scrapling, run as a local MCP server. |
-| `site-cloner` | A whole site: structure, markup and assets. | Custom script on Playwright and cheerio. `npx playwright install chromium` |
+| `site-cloner` (not in this kit; see `web-read` and `client-asset-harvester`) | A whole site: structure, markup and assets. | Custom script on Playwright and cheerio. `npx playwright install chromium` |
 | `client-asset-harvester` | Every image on a site, with lazy-loaded and CSS background images included. | Custom skill on Playwright. |
 | Claude in Chrome | Anything behind a login, using your own signed-in browser. | Anthropic's Chrome extension. |
 | `chrome-devtools` | The parts the extension cannot reach, such as cross-origin iframes. | npm package `chrome-devtools-mcp`. Pin the version. |
@@ -132,7 +132,7 @@ Most tools below need one or more of these.
 | Node.js 20 or newer | chrome-devtools, Playwright tools, `npx skills` | nodejs.org, or `winget install OpenJS.NodeJS.LTS` |
 | ffmpeg | video-watcher | `winget install Gyan.FFmpeg` on Windows, `brew install ffmpeg` on Mac |
 | yt-dlp | video-watcher, channel-mine, agent-reach | `pip install yt-dlp` |
-| Playwright Chromium | site-cloner, client-asset-harvester | `npx playwright install chromium` |
+| Playwright Chromium | client-asset-harvester | `npx playwright install chromium` |
 
 ### Step 1: NotebookLM
 

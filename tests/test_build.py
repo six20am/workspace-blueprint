@@ -79,6 +79,17 @@ class BuildTest(unittest.TestCase):
             self.assertIn("setup/SETUP.md", str(cm.exception).replace("\\", "/"))
             self.assertFalse(os.path.exists(os.path.join(d, "x.zip")))
 
+    def test_refuses_agency_name_with_empty_names_list(self):
+        # a public clone has no parent workspace names list; the gate must still know the agency's own name
+        for word in ("Six20AM", "motus", "Machado", "ask Michael", "Hard Rule 10"):
+            with tempfile.TemporaryDirectory() as d:
+                repo = os.path.join(d, "repo"); make_repo(repo, {"setup/SETUP.md": "see %s here\n" % word})
+                with self.assertRaises(build.LeakError, msg=word):
+                    build.build(repo, os.path.join(d, "x.zip"), names=[], top="T")
+
+    def test_hard_rules_heading_is_fine(self):
+        self.assertEqual(build.scan_text("## 8. Hard rules\n- never guess", []), [])
+
     def test_refuses_secret_file(self):
         with tempfile.TemporaryDirectory() as d:
             repo = os.path.join(d, "repo"); make_repo(repo, {"tools/a/accounts.json": "{}"})

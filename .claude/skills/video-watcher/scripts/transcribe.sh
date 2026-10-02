@@ -9,7 +9,7 @@ OUTDIR="${2:?missing outdir}"
 mkdir -p "$OUTDIR"
 
 WHISPER_HOME="${WHISPER_HOME:-$HOME/tools/whisper}"
-CLI="$WHISPER_HOME/bin/Release/whisper-cli.exe"
+CLI="$(command -v whisper-cli 2>/dev/null || echo "$WHISPER_HOME/bin/Release/whisper-cli.exe")"   # Homebrew puts it on PATH; the Windows build lives under WHISPER_HOME
 MODEL="${WHISPER_MODEL:-$WHISPER_HOME/models/ggml-base.en.bin}"
 
 [[ -x "$CLI" ]]   || { echo "ERROR: whisper-cli not found at $CLI (see SETUP.md)" >&2; exit 1; }

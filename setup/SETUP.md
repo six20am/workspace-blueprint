@@ -42,7 +42,12 @@ Do this without asking more questions. Tell them you are building and that it ta
 
 ## 3. Fix
 
-If they said "now" in step 0, work through the failed tools one at a time. For each: say what it is for in one line, run the install command from `setup/tools.json` (the `install` column on Windows, `install_mac` on Mac), and say whether it worked. If it fails twice, write it down in the report under "Needs attention" with what you tried and move on.
+If they said "now" in step 0, work through the failed tools one at a time. For each: say what it is for in one line, then re-run the installer for just that tool. Its `id` is in `setup/tools.json`:
+
+- Windows: `powershell -ExecutionPolicy Bypass -File setup/setup.ps1 -Only <id> -Yes -NoLaunch`
+- Mac: `bash setup/setup.sh --only <id> --no-launch`
+
+Do not run the install commands from `tools.json` by hand; they use helpers that exist only inside the installer. Each run rewrites `setup/setup-report.md`, so read it again afterwards rather than editing it. Say whether it worked. If it fails twice, tell the person what you tried in one line and move on.
 
 For anything under "Sign in yourself", tell them the one thing to do, in their words, and stop. You never sign in for them.
 

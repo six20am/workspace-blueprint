@@ -3,7 +3,7 @@
 ## Cloudflare bot challenge
 - Symptom: page title is "Just a moment..." or content is a JavaScript challenge page.
 - Behavior: the crawler detects this, logs the URL under `blocked_pages` in manifest, and continues with the next page.
-- Workaround: operator can re-run with `--respect-robots false` if appropriate, or manually save the few blocked pages and drop images into `unsorted/` by hand.
+- Workaround: you can re-run with `--respect-robots false` if appropriate, or manually save the few blocked pages and drop images into `unsorted/` by hand.
 
 ## Lazy-loaded images
 - The crawler scrolls to the bottom in 4 chunks with 600ms delays between scrolls to trigger most lazy-load libraries (Intersection Observer, scroll listeners).
@@ -16,7 +16,7 @@
 
 ## SVG sprites
 - A single SVG file containing `<symbol>` definitions used via `<use href="...#id">` is saved once. The manifest records each `#id` it's referenced as.
-- Inline SVGs (`<svg>` directly in HTML, no external file) are NOT extracted: there's no source URL to fetch. If the client's logo is an inline SVG, hand-extract it from the page source.
+- Inline SVGs (`<svg>` directly in HTML, no external file) are NOT extracted: there's no source URL to fetch. If the site's logo is an inline SVG, hand-extract it from the page source.
 
 ## srcset variants
 - Modern responsive images expose multiple URLs via `srcset` (e.g., `image-400.jpg 400w, image-800.jpg 800w`). The crawler downloads the largest variant only: keeps the manifest clean.
@@ -24,23 +24,23 @@
 
 ## Perceptual hash dedup
 - Different file formats of the same image (e.g., `hero.jpg` and `hero.webp` served by a CDN) collapse to one entry under the larger / higher-quality file.
-- False positives possible for very simple images (a solid-color block, a plain icon). Operator should still skim `unsorted/` if a critical asset seems missing.
+- False positives possible for very simple images (a solid-color block, a plain icon). Still skim `unsorted/` if a critical asset seems missing.
 
 ## robots.txt
 - Default behavior: respect robots.txt. If the root path is disallowed, the crawler halts.
-- Operator override: `--respect-robots false`. Only use with the client's written authorization to scrape their site.
+- Override: `--respect-robots false`. Only for a site the person owns or has written permission to crawl.
 
 ## Sites behind login
 - The crawler does not authenticate. Login-gated pages return their public placeholder (often the marketing site, sometimes a redirect to a login page).
-- For client portals or member areas, operator must export assets manually.
+- For portals or member areas behind a login, export assets by hand.
 
 ## License caveats
 - Scraped images may be licensed stock (Shutterstock, Adobe Stock, iStock) from the previous build. The previous developer's license does NOT transfer to the new build.
-- REVIEW.md prints a blanket caveat. Operator must verify rights with the client before reusing any non-founder, non-proof, non-facility image on the new build.
+- REVIEW.md prints a blanket caveat. Verify rights before reusing any image that is not clearly the site owner's own photo on the new build.
 
 ## Founder / proof / facility: never AI per `feedback_two_layer_image_production`
-- Real photos of the founder, real customer testimonials, and real facility photos are gold. These are the slots phase 07b cannot AI-generate.
-- The `founder_hint` flag in manifest.json is a starting point: operator confirms which is the actual founder.
+- Real photos of the founder, real customer testimonials, and real facility photos are gold. These cannot be generated; they can only be reused.
+- The `founder_hint` flag in manifest.json is a starting point: the person confirms which is the actual owner.
 
 ## File names and paths
 - Output filenames in `unsorted/` use a slugified version of the page URL + index (e.g., `about-us-3.jpg`). Multiple images from the same page get sequential indexes.

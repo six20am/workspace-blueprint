@@ -2,17 +2,17 @@
 
 This folder becomes your workspace: a place where an AI can find your files, follow your rules, and do real work for you. Setting it up takes three steps.
 
-## 1. Put this folder somewhere you will keep it
+## 1. Unzip it, then put the folder somewhere you will keep it
 
-Documents is a good spot. Do not leave it in Downloads.
+Right-click the zip file and choose **Extract All** (Windows) or double-click it (Mac). You get a folder with the same name as the zip. Move that folder to Documents. Do not leave it in Downloads, and do not run anything from inside the zip.
 
 ## 2. Run setup
 
-**Windows:** double-click `setup.cmd`.
+**Windows:** open the folder and double-click `setup.cmd`.
 
-If Windows shows a blue box that says "Windows protected your PC", click **More info**, then **Run anyway**.
+If Windows shows a blue box that says "Windows protected your PC", click **More info**, then **Run anyway**. During setup, Windows may ask "Do you want to allow this app to make changes?" a few times. Click **Yes** each time, so stay nearby for the first ten minutes.
 
-**Mac:** right-click `setup.command` and choose **Open**. A box will say it is from an unknown developer. Click **Open** again.
+**Mac:** double-click `setup.command`. Your Mac will refuse it the first time. Open **System Settings**, go to **Privacy and Security**, scroll down, and click **Open Anyway** next to the setup.command message. Then click **Open** to confirm. (On a Mac older than 2024, right-click the file and choose **Open** instead.)
 
 The Mac version is new. If it stops, send us the file `setup/setup-report.md`.
 

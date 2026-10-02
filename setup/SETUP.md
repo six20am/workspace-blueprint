@@ -34,11 +34,11 @@ Three choices: plain and direct, warm, formal. Or they can paste something they 
 Do this without asking more questions. Tell them you are building and that it takes a minute.
 
 1. **Folders.** Create the tree for the chosen style with their workspaces from Q2. Use the sample in `setup/filing-styles.md` as the pattern. Lowercase, hyphens, no spaces in folder names unless the style itself uses them (Numbered index does).
-2. **`CLAUDE.md`.** Overwrite the template version. It becomes the map: what this workspace is (one line from Q1), the folder tree, a quick navigation table (task from Q2, folder to go to), file naming rules (`[topic]-[status].md`, statuses `draft`, `review`, `final`), and where files land. Keep it under 150 lines. The shape is `setup/anatomy.md` § 1; the content is theirs. Delete the "not set up yet" block.
-3. **`CONTEXT.md`** at the top level. The router: a table with one row per workspace: the task, the folder, what else to load. Under 50 lines. Shape: `setup/anatomy.md` § 2.
-4. **One `CONTEXT.md` per workspace.** Follow `setup/anatomy.md` § 3 exactly: what this workspace is, a what-to-load table with a skip-these column, the folder layout, the process, where tools plug in, what not to do. Name the skills from `.claude/skills/` that fit this workspace in the "where tools plug in" section with a trigger, not just a mention.
+2. **`CLAUDE.md`.** Overwrite the template version. It becomes the map: what this workspace is (one line from Q1), the folder tree, a quick navigation table (task from Q2, folder to go to), file naming rules (`[topic]-[status].md`, statuses `draft`, `review`, `final`), and where files land. Keep it under 150 lines. The shape is `_reference/example-workspace/CLAUDE.md`; the content is theirs. Delete the "not set up yet" block.
+3. **`CONTEXT.md`** at the top level. The router: a table with one row per workspace: the task, the folder, what else to load. Under 50 lines. Shape: `_reference/example-workspace/CONTEXT.md`.
+4. **One `CONTEXT.md` per workspace.** Follow `_reference/03-context-md-anatomy.md` exactly: what this workspace is, a what-to-load table with a skip-these column, the folder layout, the process, where tools plug in, what not to do. Name the skills from `.claude/skills/` that fit this workspace in the "where tools plug in" section with a trigger, not just a mention.
 5. **`voice.md`** in the reference folder of the chosen style (or `reference/` if the style has none). From Q4: three or four rules, a short sample paragraph in that voice, and three things never to do. If they pasted a sample, pull the rules from it.
-6. **Keep `setup/`, `.claude/` and `tools/` where they are.** Do not move or delete them.
+6. **Keep `setup/`, `.claude/`, `tools/` and `_reference/` where they are.** Do not move or delete them.
 
 ## 3. Fix
 

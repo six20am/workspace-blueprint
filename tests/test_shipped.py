@@ -46,10 +46,6 @@ class ShippedTest(unittest.TestCase):
                     continue  # written by the installer at run time, gitignored on purpose
                 self.assertTrue(os.path.exists(os.path.join(ROOT, path)), "%s names %s" % (rel, path))
 
-    def test_no_reference_kit_ships(self):
-        self.assertFalse(os.path.isdir(os.path.join(ROOT, "_reference")), "the original kit is not redistributed")
-        self.assertTrue(os.path.exists(os.path.join(ROOT, "setup", "anatomy.md")))
-
     def test_claude_md_routes_setup(self):
         with open(os.path.join(ROOT, "CLAUDE.md"), encoding="utf-8") as fh:
             text = fh.read()

@@ -26,7 +26,7 @@ Anyone. The setup does not assume a trade. The four questions decide what gets b
 | Base install | Always the full base: 19 intake tools, the gap-finder skill, three plugins, Claude Code. No per-trade subset. | Install only what the trade needs |
 | Gap handling | A baseline skill that asks before building, every time | Build silently; never build |
 | Source of truth | The public repo, checked out as a submodule at `products/workspace-blueprint/`, with a build script that writes the zip. The zip is never hand-edited. A copy of this spec lives in the repo as `docs/design.md`. | Edit the zip directly; keep the source private |
-| The original blueprint's content | Dropped (decision 2026-10-02). The routing method is described fresh in `setup/anatomy.md`; nothing from the kit is redistributed. | Keep it in `_reference/` |
+| The original blueprint's content | Kept, moved to `_reference/` | Deleted |
 | `claude-office-skills-ref/` | Dropped. The `document-skills` plugin does the job and installs as part of the base. | Keep |
 
 ## The zip
@@ -190,4 +190,4 @@ Same discipline as `tools/workspace-export/` and `tools/roster/`: the output is 
 - **Mac is untested here.** Shipped beta. The first Mac user's `setup-report.md` is the test.
 - **Gatekeeper and SmartScreen.** A downloaded script gets a warning on both platforms. The instructions name the exact clicks.
 - **The cleaned skills may still carry a Six20AM assumption.** The build script's names list catches strings; it does not catch a rule that only makes sense for an agency. Each cleaned skill gets one read for that before it ships.
-- **The original kit came from someone else.** Resolved 2026-10-02: nothing from it ships; `setup/anatomy.md` is written fresh.
+- **The original kit came from someone else.** Its teaching files are redistributed in a public repo under the Six20AM name. Confirm the licence or the author's permission before `_reference/` is pushed.

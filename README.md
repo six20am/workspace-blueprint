@@ -20,9 +20,9 @@ No file editing. Fifteen to thirty minutes, most of it installs. Windows first; 
 2. Windows: double-click `setup.cmd`. Mac: right-click `setup.command` and choose Open.
 3. Wait for Claude to open, sign in when the browser asks, and answer four questions.
 
-## Built from
+## Built on
 
-The three-layer routing method (map, router, workspace) from the original workspace-blueprint teaching kit, kept in `_reference/`.
+A three-layer routing method: a map (`CLAUDE.md`), a router (`CONTEXT.md`), and one `CONTEXT.md` per workspace. The shape is in `setup/anatomy.md`.
 
 ## Maintained by
 

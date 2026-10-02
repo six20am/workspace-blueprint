@@ -1,0 +1,6 @@
+node_modules/
+__pycache__/
+*.pyc
+setup/setup-report.md
+tools/site-cloner/node_modules/
+.env

@@ -14,8 +14,9 @@ import zipfile
 
 TOP = "Six20AM Workspace Blueprint"
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", ".superpowers"}
-SKIP_ROOT_DIRS = {"tests"}          # the repo's own test suite; setup/tests ships
+SKIP_ROOT_DIRS = {"tests", "docs"}  # the repo's own test suite and design doc; setup/tests ships
 SKIP_FILES = {"build.py", "setup-report.md"}
+SKIP_ROOT_FILES = {"README.md"}     # the GitHub readme; START-HERE.md is the product's front page
 TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml")
 LF = (".sh", ".command", ".py", ".md", ".json", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml")
 EXEC = (".command", ".sh")
@@ -70,7 +71,7 @@ def files(repo):
         at_root = os.path.abspath(dirpath) == os.path.abspath(repo)
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS and not (at_root and d in SKIP_ROOT_DIRS)]
         for f in sorted(fs):
-            if f in SKIP_FILES:
+            if f in SKIP_FILES or (at_root and f in SKIP_ROOT_FILES):
                 continue
             p = os.path.join(dirpath, f)
             yield os.path.relpath(p, repo).replace("\\", "/"), p

@@ -15,6 +15,11 @@ def make_repo(d, extra=None):
     open(os.path.join(d, "tests", "test_me.py"), "w", encoding="utf-8").write("# root test\n")
     open(os.path.join(d, ".git", "HEAD"), "w").write("ref\n")
     open(os.path.join(d, "build.py"), "w").write("# me\n")
+    open(os.path.join(d, "README.md"), "w", encoding="utf-8").write("# repo readme, names the maintainer\n")
+    os.makedirs(os.path.join(d, "docs"))
+    open(os.path.join(d, "docs", "design.md"), "w", encoding="utf-8").write("# design spec\n")
+    os.makedirs(os.path.join(d, "tools", "x"))
+    open(os.path.join(d, "tools", "x", "README.md"), "w", encoding="utf-8").write("# a tool readme, ships\n")
     for name, text in (extra or {}).items():
         p = os.path.join(d, name)
         os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -54,6 +59,9 @@ class BuildTest(unittest.TestCase):
                 self.assertNotIn("Top Folder/tests/test_me.py", names)
                 self.assertNotIn("Top Folder/setup/setup-report.md", names)
                 self.assertNotIn("Top Folder/build.py", names)
+                self.assertNotIn("Top Folder/README.md", names, "the repo readme is not part of the product")
+                self.assertNotIn("Top Folder/docs/design.md", names, "the design spec is not part of the product")
+                self.assertIn("Top Folder/tools/x/README.md", names, "tool readmes do ship")
                 self.assertFalse(any(".git/" in n for n in names))
                 mode = z.getinfo("Top Folder/setup.command").external_attr >> 16
                 self.assertEqual(mode & 0o111, 0o111)

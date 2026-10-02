@@ -52,6 +52,16 @@ class ShippedTest(unittest.TestCase):
         self.assertIn("set this up", text)
         self.assertIn("setup/SETUP.md", text)
 
+    def test_gap_finder_present_and_twenty_skills(self):
+        skills = os.path.join(ROOT, ".claude", "skills")
+        names = sorted(d for d in os.listdir(skills) if os.path.isfile(os.path.join(skills, d, "SKILL.md")))
+        self.assertIn("gap-finder", names)
+        self.assertEqual(len(names), 20, names)
+        with open(os.path.join(skills, "gap-finder", "SKILL.md"), encoding="utf-8") as fh:
+            text = fh.read()
+        for word in ("build", "find", "by hand", "gap-log.md", "three times", "tool-vetting"):
+            self.assertIn(word, text)
+
     def test_filing_styles_has_six(self):
         with open(os.path.join(ROOT, "setup/filing-styles.md"), encoding="utf-8") as fh:
             text = fh.read()

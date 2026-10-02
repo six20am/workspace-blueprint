@@ -13,6 +13,7 @@ $executor = {
     $script:ran.Add("$cmd@$r")
     if ($cmd -eq 'boom') { throw 'exit code 1' }
     if ($cmd -like 'mark:*') { $script:installed['check:' + $cmd.Substring(5)] = $true }
+    if ($cmd -like 'markboom:*') { $script:installed['check:' + $cmd.Substring(9)] = $true; throw 'exit code -1' }
 }
 
 $tools = @(
@@ -21,7 +22,8 @@ $tools = @(
     (New-RunTool 'python' @() @('boom')),
     (New-RunTool 'markitdown' @('python') @('mark:markitdown')),
     (New-RunTool 'claude' @() @() 'Install Claude Code first'),
-    (New-RunTool 'half' @() @('ok'))
+    (New-RunTool 'half' @() @('ok')),
+    (New-RunTool 'noisy' @() @('markboom:noisy'))
 )
 $res = @(Invoke-ToolRun -Tools $tools -Root $root -Executor $executor -Checker $checker 6>$null)
 $status = @{}; foreach ($r in $res) { $status[$r.Id] = $r }
@@ -36,6 +38,8 @@ Assert-Equal $status['claude'].Status 'manual' 'no install steps means manual'
 Assert-Equal $status['claude'].Login 'Install Claude Code first' 'manual keeps its note'
 Assert-Equal $status['half'].Status 'failed' 'install ran but check still fails'
 Assert-True ($status['half'].Detail -match 'check still fails') 'post-check failure explained'
+Assert-Equal $status['noisy'].Status 'installed' 'a noisy installer exit code loses to a passing check'
+Assert-True ($status['noisy'].Detail -match 'exit code -1') 'the noisy exit code is still recorded'
 Assert-True ($script:ran -contains "mark:node@$root") 'commands run from the root, spaces intact'
 Assert-True (-not ($script:ran -like 'git*')) 'present tools run nothing'
 

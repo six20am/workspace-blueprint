@@ -100,7 +100,9 @@ function Invoke-ToolRun([object[]]$Tools, [string]$Root, [switch]$DryRun, [scrip
                 if (& $Checker $t.check $Root) { $r.Status = 'installed' }
                 else { $r.Status = 'failed'; $r.Detail = 'install ran but the check still fails' }
             } catch {
-                $r.Status = 'failed'; $r.Detail = $_.Exception.Message
+                # pip and winget sometimes exit non-zero after a successful install; a passing check is the better witness
+                if (& $Checker $t.check $Root) { $r.Status = 'installed'; $r.Detail = "installer reported $($_.Exception.Message), but the check passes" }
+                else { $r.Status = 'failed'; $r.Detail = $_.Exception.Message }
             }
         }
         $done[$r.Id] = $r.Status

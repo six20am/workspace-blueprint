@@ -65,7 +65,11 @@ def run_tools(tools, run, check, dry_run=False):
                 if r["status"] == "failed":
                     r["detail"] = "install ran but the check still fails"
             except Exception as e:  # one failed tool never stops the run
-                r["status"], r["detail"] = "failed", str(e)
+                if check(t.get("check_mac")):
+                    # brew and pip sometimes exit non-zero after a successful install; a passing check is the better witness
+                    r["status"], r["detail"] = "installed", "installer reported %s, but the check passes" % e
+                else:
+                    r["status"], r["detail"] = "failed", str(e)
         done[r["id"]] = r["status"]
         results.append(r)
     return results

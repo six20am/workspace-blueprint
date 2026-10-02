@@ -22,6 +22,9 @@ class FakeMachine:
             return 1
         if cmd.startswith("mark:"):
             self.installed["check:" + cmd[5:]] = True
+        if cmd.startswith("markboom:"):
+            self.installed["check:" + cmd[9:]] = True
+            return 255
         return 0
 
 
@@ -58,6 +61,11 @@ class RunToolsTest(unittest.TestCase):
         s = self.status([t])
         self.assertEqual(s["whisper"]["status"], "manual")
 
+    def test_noisy_exit_code_loses_to_passing_check(self):
+        s = self.status([tool("noisy", install=["markboom:noisy"])])
+        self.assertEqual(s["noisy"]["status"], "installed")
+        self.assertIn("exit code 255", s["noisy"]["detail"])
+
     def test_install_ran_but_check_fails(self):
         s = self.status([tool("half", install=["ok"])])
         self.assertEqual(s["half"]["status"], "failed")
@@ -92,7 +100,7 @@ class ReportTest(unittest.TestCase):
             self.assertIn(heading, text)
         self.assertIn("- **C** (failed): exit code 1", text)
         self.assertIn("- **D**: sign in", text)
-        self.assertNotIn("—", text)
+        self.assertNotIn("\u2014", text)
 
     def test_report_overwrites(self):
         with tempfile.TemporaryDirectory() as d:

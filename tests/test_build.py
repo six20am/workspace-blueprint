@@ -23,7 +23,7 @@ def make_repo(d, extra=None):
 
 class ScanTest(unittest.TestCase):
     def test_em_dash_is_a_problem(self):
-        self.assertTrue(build.scan_text("a — b", ["zed"]))
+        self.assertTrue(build.scan_text("a \u2014 b", ["zed"]))
 
     def test_name_is_a_problem_case_insensitive(self):
         self.assertTrue(build.scan_text("Hello ZED here", ["zed"]))

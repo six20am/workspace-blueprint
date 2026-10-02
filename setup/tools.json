@@ -69,9 +69,6 @@
   "install_mac": ["mkdir -p \"$HOME/tools/whisper/models\"",
                   "curl -fsSL -o \"$HOME/tools/whisper/models/ggml-base.en.bin.part\" https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin",
                   "mv -f \"$HOME/tools/whisper/models/ggml-base.en.bin.part\" \"$HOME/tools/whisper/models/ggml-base.en.bin\""]},
- {"id": "site-cloner-deps", "name": "Site cloner libraries", "area": "tools", "needs": ["node", "playwright"],
-  "check": "Test-Path 'tools\\site-cloner\\node_modules'", "install": ["Install-NpmDeps tools\\site-cloner"],
-  "check_mac": "test -d tools/site-cloner/node_modules", "install_mac": ["npm install --prefix tools/site-cloner --no-audit --no-fund"]},
 
  {"id": "mcp-scrapling", "name": "Connect Scrapling to Claude", "area": "mcp", "needs": ["claude", "scrapling"],
   "check": "(& claude mcp list 2>&1) -match 'scrapling'", "install": ["claude mcp add scrapling -- scrapling mcp"],

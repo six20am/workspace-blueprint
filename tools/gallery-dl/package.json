@@ -1,0 +1,10 @@
+{
+  "name": "gallery-dl-harvest-browser",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Disposable Playwright browser for social-harvest cookie auth",
+  "dependencies": {
+    "playwright": "^1.60.0"
+  }
+}

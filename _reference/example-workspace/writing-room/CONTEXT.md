@@ -2,7 +2,7 @@
 
 <!--
 =======================================================================
-TEACHING NOTE: This is LAYER 3 — A WORKSPACE CONTEXT.
+TEACHING NOTE: This is LAYER 3, A WORKSPACE CONTEXT.
 
 This is where the real instructions live. Every workspace CONTEXT.md
 needs these sections:
@@ -30,7 +30,7 @@ Where ideas become polished drafts. Someone brings a topic. The agent helps rese
 <!--
 TEACHING NOTE: This is the most important table in any CONTEXT.md.
 It's the token budget. It tells the agent exactly what to read
-for each task — and implicitly, what to SKIP.
+for each task, and implicitly, what to SKIP.
 
 Without this, agents either load everything (wasting tokens) or
 guess wrong about what matters (producing off-voice content).
@@ -39,9 +39,9 @@ guess wrong about what matters (producing off-voice content).
 | Task | Load These | Skip These |
 |------|-----------|------------|
 | Write a blog post | `docs/voice.md`, `docs/style-guide.md` | `docs/audience.md` (unless targeting a specific segment) |
-| Write a tutorial | `docs/voice.md`, `docs/audience.md`, `docs/style-guide.md` | — |
+| Write a tutorial | `docs/voice.md`, `docs/audience.md`, `docs/style-guide.md` |, |
 | Edit/review a draft | `docs/voice.md`, the draft itself | `docs/audience.md`, `docs/style-guide.md` |
-| Research only | Nothing from docs/ | Everything — just use Web Search MCP |
+| Research only | Nothing from docs/ | Everything, just use Web Search MCP |
 
 ---
 
@@ -64,10 +64,10 @@ writing-room/
 
 No rigid steps. The work flows like a conversation:
 
-1. **Understand the topic** — what's the idea and why does it matter?
-2. **Find the angle** — what's the specific take, not the generic explainer?
-3. **Write it** — in the brand voice, at the right depth for the audience
-4. **Catch problems** — voice drift, AI-isms, structural issues, weak opens/closes
+1. **Understand the topic**, what's the idea and why does it matter?
+2. **Find the angle**, what's the specific take, not the generic explainer?
+3. **Write it**, in the brand voice, at the right depth for the audience
+4. **Catch problems**, voice drift, AI-isms, structural issues, weak opens/closes
 
 A draft becomes `review` when it's structurally complete. It becomes `final` when voice and quality pass.
 
@@ -84,7 +84,7 @@ within this workspace's workflow. This is the difference between
 draft to final/ status."
 
 You can have up to 15 skills per workspace. They aren't all markdown
-files sitting in a folder — they're capabilities that activate at
+files sitting in a folder, they're capabilities that activate at
 specific points in your workflow. Some are:
 
   - STAGE TRIGGERS: "At review stage, run this skill"
@@ -92,7 +92,7 @@ specific points in your workflow. Some are:
   - ON-DEMAND: "Use this when the writer asks for it"
 
 The CONTEXT.md is what makes a skill useful by telling the agent
-when and why to invoke it — not just that it's available.
+when and why to invoke it, not just that it's available.
 -->
 
 | Skill / Tool | When to Use | How |
@@ -109,11 +109,11 @@ are EXTENSIBLE. You don't need all 15 filled on day one.
 These are suggestions for what you might add as your workflow matures.
 -->
 
-- **SEO optimization skill** — could run at review stage to check keyword density, meta descriptions, heading structure
-- **Plagiarism/originality check** — could validate before final
-- **Translation skill** — if you produce content in multiple languages
-- **Tone analysis skill** — quantitative voice consistency checking
-- **Citation formatter** — for technical content with references
+- **SEO optimization skill**, could run at review stage to check keyword density, meta descriptions, heading structure
+- **Plagiarism/originality check**, could validate before final
+- **Translation skill**, if you produce content in multiple languages
+- **Tone analysis skill**, quantitative voice consistency checking
+- **Citation formatter**, for technical content with references
 
 ---
 
@@ -121,14 +121,14 @@ These are suggestions for what you might add as your workflow matures.
 
 A `final` draft is ready for one of two destinations:
 
-1. **Publishing** — goes to CMS, blog platform, docs site
-2. **Production pipeline** — copy to `../production/workflows/01-briefs/` to become a video, demo, or other deliverable
+1. **Publishing**, goes to CMS, blog platform, docs site
+2. **Production pipeline**, copy to `../production/workflows/01-briefs/` to become a video, demo, or other deliverable
 
 ---
 
 ## What NOT to Do
 
-- **Don't skip voice.md** — it's the difference between on-brand and generic
-- **Don't over-research** — a blog post doesn't need 20 sources. Find the angle, write it.
-- **Don't load production docs** — you don't need the component library to write a blog post
-- **Don't create files outside this workspace** — the handoff to production is a deliberate copy, not a direct write
+- **Don't skip voice.md**, it's the difference between on-brand and generic
+- **Don't over-research**, a blog post doesn't need 20 sources. Find the angle, write it.
+- **Don't load production docs**, you don't need the component library to write a blog post
+- **Don't create files outside this workspace**, the handoff to production is a deliberate copy, not a direct write

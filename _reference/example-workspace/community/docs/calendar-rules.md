@@ -11,7 +11,7 @@ This doc prevents the "post everything at once" trap.
 |--------|-----------|-----|
 | Newsletter | Weekly | Tuesday morning |
 | Blog post | 1-2 per week | Monday or Thursday |
-| Twitter/X | Daily | — |
+| Twitter/X | Daily |, |
 | LinkedIn | 2-3 per week | Tues/Wed/Thurs |
 
 ## Content Mix

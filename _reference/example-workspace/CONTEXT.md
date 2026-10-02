@@ -1,8 +1,8 @@
-# Acme DevRel — Task Router
+# Acme DevRel, Task Router
 
 <!--
 =======================================================================
-TEACHING NOTE: This is LAYER 2 — THE ROUTER.
+TEACHING NOTE: This is LAYER 2, THE ROUTER.
 
 This file does ONE job: route agents to the right workspace.
 It should be SHORT. 30-50 lines of actual content.
@@ -32,14 +32,14 @@ Acme's developer relations workspace. Three siloed workspaces, each handling one
 |-----------|---------|-----------------|
 | **Write a blog post** | `writing-room/CONTEXT.md` | Load `docs/voice.md` + `docs/style-guide.md` |
 | **Write a tutorial** | `writing-room/CONTEXT.md` | Load `docs/voice.md` + `docs/audience.md` |
-| **Understand the voice** | `writing-room/docs/voice.md` | — |
+| **Understand the voice** | `writing-room/docs/voice.md` |, |
 | **Build a demo app** | `production/CONTEXT.md` | `production/docs/` for standards |
 | **Create a video** | `production/CONTEXT.md` | `production/docs/` for design system |
 | **Generate a build spec** | `production/workflows/CONTEXT.md` | Brief from `01-briefs/` |
-| **Look up components** | `production/docs/component-library.md` | — |
+| **Look up components** | `production/docs/component-library.md` |, |
 | **Write a newsletter** | `community/CONTEXT.md` | `writing-room/docs/voice.md` for tone |
 | **Create social posts** | `community/CONTEXT.md` | `community/docs/platforms.md` for specs |
-| **Plan an event** | `community/CONTEXT.md` | — |
+| **Plan an event** | `community/CONTEXT.md` |, |
 
 ---
 
@@ -67,7 +67,7 @@ community (repurposes into newsletters, social, events)
 
 <!--
 TEACHING NOTE: This diagram appears in both CLAUDE.md and CONTEXT.md.
-That's intentional — CLAUDE.md shows it as part of the permanent map,
+That's intentional, CLAUDE.md shows it as part of the permanent map,
 CONTEXT.md shows it as part of routing context. The duplication is
 small (4 lines) and serves different readers (the always-loaded map
 vs. the task-specific router).

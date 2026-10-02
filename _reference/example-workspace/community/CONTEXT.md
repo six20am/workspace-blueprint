@@ -3,7 +3,7 @@
 <!--
 =======================================================================
 TEACHING NOTE: This workspace demonstrates a DIFFERENT pattern than
-production. No sequential pipeline — instead, it's a MULTI-FORMAT HUB.
+production. No sequential pipeline, instead, it's a MULTI-FORMAT HUB.
 
 Same input (content from writing-room + deliverables from production)
 gets repurposed into multiple output formats: newsletters, social posts,
@@ -30,7 +30,7 @@ The distribution hub. Content from writing-room and deliverables from production
 |------|-----------|---------------|
 | Write a newsletter | `docs/calendar-rules.md` | `../writing-room/docs/voice.md` (for tone) |
 | Create social posts | `docs/platforms.md` | Source content from `../writing-room/final/` |
-| Plan an event | `docs/calendar-rules.md` | — |
+| Plan an event | `docs/calendar-rules.md` |, |
 | Create a template | `docs/platforms.md` | Existing templates in `content/templates/` |
 
 ---
@@ -63,7 +63,7 @@ This is the second major pattern for skill integration:
   1. Stage-specific (production): skill activates at pipeline step X
   2. Format-specific (community): skill activates when creating format Y
 
-Both patterns wire into CONTEXT.md the same way — a table that says
+Both patterns wire into CONTEXT.md the same way, a table that says
 "when doing X, use this skill." The difference is what triggers it.
 -->
 
@@ -71,7 +71,7 @@ Both patterns wire into CONTEXT.md the same way — a table that says
 |-------------|--------|---------|
 | `/humanizer` | All written content | Run before publishing anything. Non-negotiable for community-facing content. |
 | `/pptx` | Event decks | Generate PowerPoint presentations for conferences, workshops, meetups |
-| `/frontend-slides` | Event decks (web) | Alternative to pptx — animated HTML slide decks |
+| `/frontend-slides` | Event decks (web) | Alternative to pptx, animated HTML slide decks |
 | Web Search MCP | Social posts | Check trending topics, verify timeliness of content |
 
 ### Format-Specific Skills You Might Add
@@ -84,11 +84,11 @@ queue posts across platforms. The workspace CONTEXT.md is
 where you'd wire those in.
 -->
 
-- **Social scheduling MCP** — auto-queue posts to Buffer/Hootsuite/native schedulers
-- **Email sending MCP** — deliver newsletters via SendGrid/Mailchimp
-- **Image generation skill** — create social media graphics (OG images, quote cards)
-- **Analytics MCP** — pull engagement data to inform content calendar
-- **Community management MCP** — post to Discord/Slack/Skool from this workspace
+- **Social scheduling MCP**, auto-queue posts to Buffer/Hootsuite/native schedulers
+- **Email sending MCP**, deliver newsletters via SendGrid/Mailchimp
+- **Image generation skill**, create social media graphics (OG images, quote cards)
+- **Analytics MCP**, pull engagement data to inform content calendar
+- **Community management MCP**, post to Discord/Slack/Skool from this workspace
 
 ---
 
@@ -118,6 +118,6 @@ production/workflows/04-output/[slug] →  Reference as demo link or asset
 
 ## What NOT to Do
 
-- **Don't write original long-form here** — that's writing-room's job. Community repurposes and adapts.
-- **Don't skip platform specs** — a LinkedIn post and a Twitter thread have completely different constraints. Load `docs/platforms.md`.
-- **Don't post without `/humanizer`** — community content is the most public-facing. AI-isms here damage credibility.
+- **Don't write original long-form here**, that's writing-room's job. Community repurposes and adapts.
+- **Don't skip platform specs**, a LinkedIn post and a Twitter thread have completely different constraints. Load `docs/platforms.md`.
+- **Don't post without `/humanizer`**, community content is the most public-facing. AI-isms here damage credibility.

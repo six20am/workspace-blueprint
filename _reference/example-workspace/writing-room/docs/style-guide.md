@@ -20,4 +20,4 @@ Style guide = formatting rules. An agent can load one without the other.
 
 ## Length
 
-Let the idea dictate length. A 400-word post that nails one insight beats a 2000-word post that meanders. But don't artificially compress — if the topic needs depth, give it depth.
+Let the idea dictate length. A 400-word post that nails one insight beats a 2000-word post that meanders. But don't artificially compress, if the topic needs depth, give it depth.

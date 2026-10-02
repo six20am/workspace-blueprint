@@ -14,7 +14,7 @@ Loaded when creating content for a specific platform.
 
 ## LinkedIn
 
-- **Max length:** 3,000 chars (but front-load value — most won't expand)
+- **Max length:** 3,000 chars (but front-load value, most won't expand)
 - **Tone:** Professional but not corporate. Still our voice, just slightly more formal.
 - **Format:** Hook in first line. Whitespace between paragraphs. Use line breaks aggressively.
 - **Media:** Carousels perform well. PDF slide decks as carousels.

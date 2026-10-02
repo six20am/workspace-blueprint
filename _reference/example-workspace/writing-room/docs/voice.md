@@ -1,7 +1,7 @@
 # Voice Guide
 
 <!--
-TEACHING NOTE: This is a REFERENCE DOC — loaded on demand, not always.
+TEACHING NOTE: This is a REFERENCE DOC, loaded on demand, not always.
 
 Replace everything below with your actual brand voice. This placeholder
 shows the STRUCTURE a good voice doc needs:
@@ -30,9 +30,9 @@ Acme's DevRel team writes like experienced developers talking to peers. Not lect
 ## Hard Constraints
 
 - Never use "leverage" when you mean "use"
-- Never use "utilize" — always "use"
+- Never use "utilize", always "use"
 - Never start with "In today's..." or "In the ever-evolving..."
-- Never write "It's worth noting that" — just note it
+- Never write "It's worth noting that", just note it
 - Never hedge with "It should be noted" or "One might argue"
 - No emoji in technical content
 - No exclamation marks except in genuinely exciting announcements

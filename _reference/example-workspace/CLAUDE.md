@@ -1,8 +1,8 @@
-# Acme DevRel — Workspace Map
+# Acme DevRel, Workspace Map
 
 <!--
 =======================================================================
-TEACHING NOTE: This is LAYER 1 — THE MAP.
+TEACHING NOTE: This is LAYER 1, THE MAP.
 
 CLAUDE.md is auto-loaded into every conversation. It's always in context.
 That makes it prime real estate. Use it for:
@@ -23,7 +23,7 @@ Keep it under 200 lines. Every line here costs tokens in EVERY conversation.
 
 ## What This Is
 
-A workspace system for Acme's developer relations team. Writing, production, and community — each in its own silo. An agent drops into a workspace, reads its CONTEXT.md, does its work, and exits.
+A workspace system for Acme's developer relations team. Writing, production, and community, each in its own silo. An agent drops into a workspace, reads its CONTEXT.md, does its work, and exits.
 
 **CONTEXT.md** (top-level) routes you to the right workspace. This file is the map.
 
@@ -183,7 +183,7 @@ stages reference specific tools in their own CONTEXT.md files.
 Think of this as the "installed tools" list. The workspace CONTEXT
 files are the "when to use them" instructions.
 
-You can wire up to 15 skills per workspace. They don't all live here —
+You can wire up to 15 skills per workspace. They don't all live here , 
 workspace CONTEXT.md files reference them at the point of use.
 -->
 
@@ -195,7 +195,7 @@ workspace CONTEXT.md files reference them at the point of use.
 | `/pdf` | Skill | production (Stage 04: output) |
 | `/pptx` | Skill | community (event decks) |
 | `/webapp-testing` | Skill | production (Stage 03: builds) |
-| Context7 | MCP | production (Stage 02: specs — fetch library docs) |
+| Context7 | MCP | production (Stage 02: specs, fetch library docs) |
 | Web Search | MCP | writing-room (research), community (trend checking) |
 
 See each workspace's CONTEXT.md for when and how these tools get invoked.

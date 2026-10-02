@@ -8,7 +8,7 @@ Replace with your actual standards. This shows the structure.
 ## Code Quality
 
 - All code must have error handling for external calls (APIs, file I/O)
-- No hardcoded secrets or API keys — use environment variables
+- No hardcoded secrets or API keys, use environment variables
 - Include a README with setup instructions for any demo project
 - Prefer standard library solutions over third-party packages when equivalent
 

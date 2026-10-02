@@ -110,9 +110,9 @@ MCPs extend agent capabilities. Wire them the same way as skills:
 
 Don't write all your docs/ files on day one. Start with:
 
-1. **Voice doc** — how your brand/project sounds (if you create content)
-2. **Standards doc** — minimum quality bar (if you build things)
-3. **Component/resource doc** — what's already available to reuse
+1. **Voice doc**, how your brand/project sounds (if you create content)
+2. **Standards doc**, minimum quality bar (if you build things)
+3. **Component/resource doc**, what's already available to reuse
 
 Add more docs as you notice agents repeatedly making the same mistakes. Each mistake is a signal: "this knowledge should be in a doc."
 

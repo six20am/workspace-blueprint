@@ -2,7 +2,7 @@
 
 <!--
 TEACHING NOTE: Loaded by BUILD agents, not spec agents.
-This is your "what's available" reference — reusable components,
+This is your "what's available" reference, reusable components,
 packages, templates. The agent checks here before building from scratch.
 
 A good component library doc has:

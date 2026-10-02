@@ -1,4 +1,4 @@
-# Workflows — The Production Pipeline
+# Workflows, The Production Pipeline
 
 <!--
 =======================================================================
@@ -38,7 +38,7 @@ It tells each agent type exactly what to read and produce.
 The "Also Load" column prevents agents from loading everything.
 A spec agent doesn't need the component library. A build agent does.
 
-The "Skills at This Stage" column is where tools become contextual —
+The "Skills at This Stage" column is where tools become contextual , 
 not "here are all our tools" but "HERE is the tool for THIS step."
 -->
 
@@ -55,22 +55,22 @@ output formatting tools. The pipeline shapes WHICH tools are relevant.
 
 This is fundamentally different from dumping all 15 skills into one
 prompt. An agent at Stage 02 never sees /frontend-design because
-it's not building yet — it's planning.
+it's not building yet, it's planning.
 -->
 
 ---
 
 ## Stage Details
 
-### 01-briefs/ — The Input
+### 01-briefs/, The Input
 
 Finalized content from writing-room, copied here as the starting point. A brief says what to build and why, in plain language. It is NOT a technical spec.
 
 **File pattern:** `[slug].md`
 
-### 02-specs/ — The Plan
+### 02-specs/, The Plan
 
-A technical plan that turns the brief into buildable requirements. The spec is a **contract** — it defines WHAT and WHEN, not HOW.
+A technical plan that turns the brief into buildable requirements. The spec is a **contract**, it defines WHAT and WHEN, not HOW.
 
 **What a spec includes:**
 - Scope and acceptance criteria
@@ -89,19 +89,19 @@ A technical plan that turns the brief into buildable requirements. The spec is a
 TEACHING NOTE: The spec-as-contract pattern is powerful because it
 lets you swap agents between stages. The spec agent might be great
 at planning. The build agent might be great at code. Neither needs
-to understand the other's full context — just the spec.
+to understand the other's full context, just the spec.
 -->
 
-### 03-builds/ — The Work
+### 03-builds/, The Work
 
 Where code gets written, demos get assembled, and things get built. The builder reads the spec and the reference docs, then has full creative freedom for implementation.
 
 **File pattern:** `[slug]/` (folder, since builds often have multiple files)
 
 **Skills activate here:**
-- `/frontend-design` — for web-based deliverables. The skill brings design intelligence (layouts, color, typography, responsive patterns).
-- `/webapp-testing` — test what you build. Playwright-based browser automation to verify the demo actually works.
-- Context7 MCP — if you need current docs for a library mid-build.
+- `/frontend-design`, for web-based deliverables. The skill brings design intelligence (layouts, color, typography, responsive patterns).
+- `/webapp-testing`, test what you build. Playwright-based browser automation to verify the demo actually works.
+- Context7 MCP, if you need current docs for a library mid-build.
 
 <!--
 TEACHING NOTE: This is where MCPs shine. An agent building a React
@@ -109,13 +109,13 @@ demo can use Context7 to pull the latest React docs mid-build,
 without you pre-loading them. The MCP extends what the agent can
 reach without bloating the initial context.
 
-Skills like /frontend-design aren't just "available" — the pipeline
+Skills like /frontend-design aren't just "available", the pipeline
 CONTEXT tells the agent "you're at Stage 03, these tools are for
 this stage." That's the difference between a skill existing and a
 skill being used effectively.
 -->
 
-### 04-output/ — The Deliverable
+### 04-output/, The Deliverable
 
 Finished, verified work. Nothing lands here without passing the spec's acceptance criteria.
 
@@ -138,7 +138,7 @@ The version number increments with each revision. `v1` is the first complete out
 ## Where Skills Wire Into the Pipeline (Summary)
 
 <!--
-TEACHING NOTE: This is the "skill map" — a visual summary of which
+TEACHING NOTE: This is the "skill map", a visual summary of which
 tools activate at which pipeline stage. It's redundant with the
 routing table above, but some people learn better from a visual layout.
 

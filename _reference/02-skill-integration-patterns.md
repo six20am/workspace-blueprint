@@ -1,4 +1,4 @@
-# Skill & MCP Integration — Deep Dive
+# Skill & MCP Integration, Deep Dive
 
 <!--
 This file exists because "skills are just .md files" is the most
@@ -63,7 +63,7 @@ A skill that activates based on WHAT you're creating, not which stage you're at.
 
 ### 4. The Always-On Reference
 
-Not a skill you "invoke" — a doc that's always loaded for a workspace.
+Not a skill you "invoke", a doc that's always loaded for a workspace.
 
 ```markdown
 <!-- In writing-room/CONTEXT.md -->
@@ -100,9 +100,9 @@ A skill referenced from multiple workspaces, wired differently in each.
 
 ---
 
-## MCP Servers — When Skills Aren't Enough
+## MCP Servers, When Skills Aren't Enough
 
-Skills give agents instructions. MCPs give agents **new capabilities** — tools they couldn't otherwise use.
+Skills give agents instructions. MCPs give agents **new capabilities**, tools they couldn't otherwise use.
 
 ### When to Use an MCP vs. a Skill
 
@@ -119,7 +119,7 @@ Skills give agents instructions. MCPs give agents **new capabilities** — tools
 
 ### Wiring MCPs Into Your Pipeline
 
-MCPs wire in exactly like skills — through the CONTEXT.md routing tables:
+MCPs wire in exactly like skills, through the CONTEXT.md routing tables:
 
 ```markdown
 <!-- In workflows/CONTEXT.md -->

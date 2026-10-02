@@ -2,7 +2,7 @@
 
 ## Mistake 1: One Giant CLAUDE.md
 
-**What happens:** You put everything — voice, process, standards, pipeline details — into CLAUDE.md because it's "always loaded."
+**What happens:** You put everything, voice, process, standards, pipeline details, into CLAUDE.md because it's "always loaded."
 
 **Why it breaks:** CLAUDE.md is loaded in EVERY conversation. If it's 500 lines, you've burned tokens on animation pipeline details when the agent is writing a blog post. You've also made it harder for the agent to find what's relevant.
 
@@ -34,7 +34,7 @@
 
 **What happens:** You create 15 reference docs and load them all for every task.
 
-**Why it breaks:** Same as Mistake 1 — too much context, not enough relevance. An agent writing a social post doesn't need the design system.
+**Why it breaks:** Same as Mistake 1, too much context, not enough relevance. An agent writing a social post doesn't need the design system.
 
 **Fix:** The "What to Load" table controls which docs get pulled. Some tasks need 1 doc. Some need 3. No task should need all of them.
 
@@ -44,7 +44,7 @@
 
 **What happens:** Your workspace CONTEXT.md grows past 150 lines because you keep adding detail.
 
-**Why it breaks:** The CONTEXT.md is for routing and process — quick-read, find-your-task, load-the-right-stuff. If it's an encyclopedia, the agent has to process all of it before starting work.
+**Why it breaks:** The CONTEXT.md is for routing and process, quick-read, find-your-task, load-the-right-stuff. If it's an encyclopedia, the agent has to process all of it before starting work.
 
 **Fix:** Move stable reference knowledge to `docs/` files. CONTEXT.md should be 25-80 lines. If a section doesn't change between tasks, it's probably a doc, not routing.
 
@@ -68,7 +68,7 @@
 
 **Why it breaks:** You're ignoring the 50+ built-in skills (like `/humanizer`, `/pdf`, `/frontend-design`, `/pptx`) and MCP capabilities (web search, documentation fetching, browser testing) that are already available.
 
-**Fix:** Audit what's already available. Built-in skills + installed MCPs are your starting toolkit. Wire them into your CONTEXT.md routing tables. You can have up to 15 per workspace — most of those will be built-in skills and MCPs, not custom markdown files.
+**Fix:** Audit what's already available. Built-in skills + installed MCPs are your starting toolkit. Wire them into your CONTEXT.md routing tables. You can have up to 15 per workspace, most of those will be built-in skills and MCPs, not custom markdown files.
 
 ---
 

@@ -5,8 +5,8 @@
 TEACHING NOTE: This workspace demonstrates the PIPELINE pattern.
 
 Production has two levels of CONTEXT.md:
-  1. This file (workspace entry point) — routes to docs or workflows
-  2. workflows/CONTEXT.md (pipeline entry point) — routes to stages
+  1. This file (workspace entry point), routes to docs or workflows
+  2. workflows/CONTEXT.md (pipeline entry point), routes to stages
 
 This is the most complex workspace in the template. It shows:
   - Sub-routing (workspace CONTEXT → pipeline CONTEXT)
@@ -18,7 +18,7 @@ This is the most complex workspace in the template. It shows:
 
 ## What This Workspace Is
 
-The build shop. Finalized drafts from writing-room become production deliverables here — demo apps, videos, sample projects, interactive tutorials. This is **downstream** from writing:
+The build shop. Finalized drafts from writing-room become production deliverables here, demo apps, videos, sample projects, interactive tutorials. This is **downstream** from writing:
 
 ```
 writing-room (writing) → production (building)
@@ -77,7 +77,7 @@ production/
 <!--
 TEACHING NOTE: Production is where tools get DENSE.
 Different pipeline stages use different tools. This is the
-workspace-level overview — workflows/CONTEXT.md has the
+workspace-level overview, workflows/CONTEXT.md has the
 stage-by-stage specifics.
 
 Notice the pattern: skills aren't listed generically.
@@ -88,23 +88,23 @@ Each one has a WHEN (which stage) and a WHY (what it does there).
 |-------------|-------|---------|
 | Context7 MCP | 02-specs | Fetch current library docs when speccing a demo. "What's the latest React Router API?" |
 | `/frontend-design` | 03-builds | When building web-based demos or interactive tutorials |
-| `/webapp-testing` | 03-builds | Verify built demos work — Playwright-based browser testing |
+| `/webapp-testing` | 03-builds | Verify built demos work, Playwright-based browser testing |
 | `/pdf` | 04-output | Generate PDF versions of tutorials or guides |
 | Web Search MCP | 02-specs | Research current best practices, check if approaches are still recommended |
 
 ### Skills You Might Add
 
-- **Code review skill** — automated quality gate before anything moves to 04-output
-- **Accessibility audit skill** — check WCAG compliance on web deliverables
-- **Performance benchmark skill** — run Lighthouse or equivalent on built demos
-- **Deployment skill** — auto-deploy demos to staging environment
-- **Screenshot skill** — capture visual output of builds for documentation
+- **Code review skill**, automated quality gate before anything moves to 04-output
+- **Accessibility audit skill**, check WCAG compliance on web deliverables
+- **Performance benchmark skill**, run Lighthouse or equivalent on built demos
+- **Deployment skill**, auto-deploy demos to staging environment
+- **Screenshot skill**, capture visual output of builds for documentation
 
 ---
 
 ## Hard Rules
 
 1. **Specs are contracts, not blueprints.** A spec says WHAT to build and the acceptance criteria. It does NOT dictate implementation details. The builder has creative freedom.
-2. **Output must be tested.** Nothing moves to `04-output/` without verification — automated or manual.
+2. **Output must be tested.** Nothing moves to `04-output/` without verification, automated or manual.
 3. **Don't build without a spec.** Even small projects get a lightweight spec. It prevents scope creep and gives reviewers something to check against.
-4. **Don't load writing-room docs here.** Voice doesn't matter in production — technical quality does.
+4. **Don't load writing-room docs here.** Voice doesn't matter in production, technical quality does.

@@ -12,7 +12,7 @@ this file gets pulled in.
 - 2-8 years experience
 - Use our product (or evaluating it)
 - Want practical solutions, not thought leadership
-- Already know the basics — don't over-explain fundamentals
+- Already know the basics, don't over-explain fundamentals
 - Read on phones during commutes, scan headers first
 
 ## Secondary: Technical Decision Makers

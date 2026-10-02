@@ -12,7 +12,7 @@ consistent header" is a requirement. "The header must be exactly
 
 ## Visual Philosophy
 
-Clean, developer-focused. Technical content should feel like a well-designed IDE — information-dense but scannable, with clear visual hierarchy.
+Clean, developer-focused. Technical content should feel like a well-designed IDE, information-dense but scannable, with clear visual hierarchy.
 
 ## Color
 

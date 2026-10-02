@@ -59,7 +59,7 @@ Every CONTEXT.md answers the same questions. Here's the template, then why each 
 
 ### "What to Load"
 **Problem it solves:** Agent loads everything or guesses wrong.
-**The "Skip" column matters more than the "Load" column.** Loading the right thing is good. NOT loading the wrong thing is critical — it saves tokens and prevents confusion.
+**The "Skip" column matters more than the "Load" column.** Loading the right thing is good. NOT loading the wrong thing is critical, it saves tokens and prevents confusion.
 
 ### "Folder Structure"
 **Problem it solves:** Agent puts files in the wrong place.

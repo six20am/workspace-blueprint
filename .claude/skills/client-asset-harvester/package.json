@@ -1,0 +1,24 @@
+{
+  "name": "client-asset-harvester",
+  "version": "0.1.0",
+  "description": "Crawl a client's website and download all images with metadata + logo detection.",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "client-asset-harvester": "./harvest.js"
+  },
+  "scripts": {
+    "start": "node harvest.js"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "p-limit": "^6.1.0",
+    "playwright": "^1.48.0",
+    "png-to-ico": "^3.0.1",
+    "sharp": "^0.33.5",
+    "sharp-phash": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

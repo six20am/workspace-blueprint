@@ -4,3 +4,4 @@ __pycache__/
 setup/setup-report.md
 tools/site-cloner/node_modules/
 .env
+.superpowers/

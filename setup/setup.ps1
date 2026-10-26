@@ -14,6 +14,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'   # the 5.1 progress bar makes big downloads crawl
+$env:PIP_DISABLE_PIP_VERSION_CHECK = '1'   # the upgrade notice reads like a failure
 $root = Split-Path -Parent $PSScriptRoot
 Get-ChildItem -Path (Join-Path $PSScriptRoot 'lib') -Filter '*.ps1' | ForEach-Object { . $_.FullName }
 
@@ -29,7 +30,7 @@ Write-Host 'If a tool fails, it is written down and setup keeps going. Claude wi
 Write-Host 'Windows may ask "Do you want to allow this app to make changes?" a few times. Click Yes. Stay nearby for the first ten minutes.'
 Write-Host ''
 
-$stop = Test-Preflight
+$stop = Test-Preflight -Root $root
 if ($stop) { Write-Host $stop -ForegroundColor Red; exit 4 }
 
 Update-SessionPath

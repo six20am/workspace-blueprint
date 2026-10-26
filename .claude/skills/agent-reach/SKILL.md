@@ -9,8 +9,8 @@ description: >
   that blocked the normal fetch.
 
   NOT for: general web pages WebFetch already handles; writing/posting/commenting
-  (read-only); platforms that have a dedicated tool in this workspace (GHL for
-  CRM/social publishing, DataForSEO for SERP/keyword data: use those first);
+  (read-only); platforms that already have a dedicated tool or connector in
+  this workspace (a CRM, an SEO data service: use those first);
   content processing (summarizing, translating): this skill only RETRIEVES.
 
   Gate: gated social platforms (X, Reddit, FB, IG, LinkedIn) need login.

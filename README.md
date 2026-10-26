@@ -27,3 +27,5 @@ The three-layer routing method (map, router, workspace) from the original worksp
 ## Maintained by
 
 Six20AM. The zip people download is a build output of this repo and is never hand-edited.
+
+On Windows, clone with `git clone -c core.longpaths=true` or Git stops on the long paths under `.claude/skills/last30days/`.

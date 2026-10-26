@@ -21,10 +21,10 @@ Ask them one at a time. Wait for the answer before the next. Each has a "not sur
 Free text. Use the answer to name things and to pick examples in the files you write. "Not sure" is not an option here; if they give one word, that is enough.
 
 **Q2. "What are the two or three kinds of work you would hand to an assistant if you had one?"**
-Free text. Each answer becomes a workspace. Two is fine, three is better, more than four means ask them to pick the top three. "Not sure": pick three from Q1 and say them back; let them correct you.
+Free text. Each answer becomes a section of their one workspace: its own folder and its own `CONTEXT.md`, so Claude loads only what that kind of work needs. Say "section" to the person, never "workspace", for these; to them the workspace is the whole folder. Two is fine, three is better, more than four means ask them to pick the top three. "Not sure": pick three from Q1 and say them back; let them correct you.
 
 **Q3. "How do you like things filed?"**
-Read `setup/filing-styles.md`. Show the six names, each with its one-line "suits" sentence. If they want to see one, show its sample tree with their own workspaces swapped in. "Not sure": by stage.
+Read `setup/filing-styles.md`. Show the six names, each with its one-line "suits" sentence. If they want to see one, show its sample tree with their own sections swapped in. If they pick two styles, combine them: the first sets the top level, the second sets the layout inside the folder where the work happens, and show the merged tree before building. "Not sure": by stage.
 
 **Q4. "When I write for you, how should it sound?"**
 Three choices: plain and direct, warm, formal. Or they can paste something they wrote. "Not sure": plain and direct.
@@ -33,10 +33,10 @@ Three choices: plain and direct, warm, formal. Or they can paste something they 
 
 Do this without asking more questions. Tell them you are building and that it takes a minute.
 
-1. **Folders.** Create the tree for the chosen style with their workspaces from Q2. Use the sample in `setup/filing-styles.md` as the pattern. Lowercase, hyphens, no spaces in folder names unless the style itself uses them (Numbered index does).
+1. **Folders.** Create the tree for the chosen style with their sections from Q2. Use the sample in `setup/filing-styles.md` as the pattern. Lowercase, hyphens, no spaces in folder names unless the style itself uses them (Numbered index does).
 2. **`CLAUDE.md`.** Overwrite the template version. It becomes the map: what this workspace is (one line from Q1), the folder tree, a quick navigation table (task from Q2, folder to go to), file naming rules (`[topic]-[status].md`, statuses `draft`, `review`, `final`), and where files land. Keep it under 150 lines. The shape is `_reference/example-workspace/CLAUDE.md`; the content is theirs. Delete the "not set up yet" block.
-3. **`CONTEXT.md`** at the top level. The router: a table with one row per workspace: the task, the folder, what else to load. Under 50 lines. Shape: `_reference/example-workspace/CONTEXT.md`.
-4. **One `CONTEXT.md` per workspace.** Follow `_reference/03-context-md-anatomy.md` exactly: what this workspace is, a what-to-load table with a skip-these column, the folder layout, the process, where tools plug in, what not to do. Name the skills from `.claude/skills/` that fit this workspace in the "where tools plug in" section with a trigger, not just a mention.
+3. **`CONTEXT.md`** at the top level. The router: a table with one row per section: the task, the folder, what else to load. Under 50 lines. Shape: `_reference/example-workspace/CONTEXT.md`.
+4. **One `CONTEXT.md` per section.** Follow `_reference/03-context-md-anatomy.md` exactly: what this section is, a what-to-load table with a skip-these column, the folder layout, the process, where tools plug in, what not to do. Name the skills from `.claude/skills/` that fit this section in the "where tools plug in" section with a trigger, not just a mention.
 5. **`voice.md`** in the reference folder of the chosen style (or `reference/` if the style has none). From Q4: three or four rules, a short sample paragraph in that voice, and three things never to do. If they pasted a sample, pull the rules from it.
 6. **Keep `setup/`, `.claude/`, `tools/` and `_reference/` where they are.** Do not move or delete them.
 
@@ -54,7 +54,7 @@ For anything under "Sign in yourself", tell them the one thing to do, in their w
 ## 4. Test
 
 Pick one real task from Q2. Say "Let me try one thing so we know it works." Do the task. Then check, yourself, that:
-- you loaded the right workspace's `CONTEXT.md` and nothing else you did not need,
+- you loaded the right section's `CONTEXT.md` and nothing else you did not need,
 - the output file landed where `CLAUDE.md` says it should.
 
 If either is wrong, fix the routing file, not the task, and say what you changed.
@@ -62,7 +62,7 @@ If either is wrong, fix the routing file, not the task, and say what you changed
 ## 5. Close
 
 Say, in this order:
-1. "Your workspace is ready." One line on what it has: the workspaces by name.
+1. "Your workspace is ready." One line on what it has: the sections by name.
 2. Three things to try right now, each one sentence, drawn from Q2.
 3. The sign-in list from the report, if any, as "Two things need you: ..."
 4. "If you ask for something I have no tool for, I will say so and offer to build one."

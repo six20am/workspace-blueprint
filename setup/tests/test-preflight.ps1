@@ -2,3 +2,5 @@ Assert-True ($null -eq (Test-Preflight -Dns { $true } -Winget { $true })) 'both 
 Assert-True ((Test-Preflight -Dns { $false } -Winget { $true }) -match 'internet') 'no dns means the internet message'
 Assert-True ((Test-Preflight -Dns { $true } -Winget { $false }) -match 'App Installer') 'no winget means the App Installer message'
 Assert-True ((Test-Preflight -Dns { $false } -Winget { $false }) -match 'internet') 'internet is checked first'
+Assert-True ((Test-Preflight -Dns { $true } -Winget { $true } -Root ('C:\' + ('x' * 130))) -match 'too many other folders') 'a deep folder gets the move-it message'
+Assert-True ($null -eq (Test-Preflight -Dns { $true } -Winget { $true } -Root 'D:\Documents\workspace')) 'a normal folder passes'

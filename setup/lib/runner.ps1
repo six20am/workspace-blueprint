@@ -8,23 +8,33 @@ function Get-WingetPath {
     return $null
 }
 
+function Get-PythonScriptsDirs {
+    # pip puts commands in Python's own Scripts folder (a per-user Python, like the python.org
+    # install manager's) or, under a machine-scope Python, in the user-scheme Scripts folder.
+    # Neither is on PATH by default.
+    if (-not (Get-Command python -ErrorAction SilentlyContinue)) { return @() }
+    $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+    try {
+        $out = & python -c "import sysconfig; print(sysconfig.get_path('scripts')); print(sysconfig.get_path('scripts', 'nt_user'))" 2>$null
+        return @(@($out) | ForEach-Object { ([string]$_).Trim() } | Where-Object { $_ -and (Test-Path -LiteralPath $_) } | Select-Object -Unique)
+    } catch { return @() } finally { $ErrorActionPreference = $prev }
+}
+
 function Update-SessionPath {
     $machine = [Environment]::GetEnvironmentVariable('Path', 'Machine')
     $user = [Environment]::GetEnvironmentVariable('Path', 'User')
     $links = Join-Path $env:LOCALAPPDATA 'Microsoft\WinGet\Links'
-    $parts = @($machine, $user, $links) | Where-Object { $_ }
-    # pip falls back to a user install under a machine-scope Python; its Scripts folder is on no PATH.
-    if (Get-Command python -ErrorAction SilentlyContinue) {
-        $prev = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
-        try {
-            $scripts = (& python -c "import sysconfig; print(sysconfig.get_path('scripts', 'nt_user'))" 2>$null | Select-Object -First 1)
-            if ($scripts) {
-                $scripts = ([string]$scripts).Trim()
-                if ($scripts -and (Test-Path -LiteralPath $scripts) -and (@($parts -split ';') -notcontains $scripts)) { $parts = @($parts) + $scripts }
-            }
-        } catch { } finally { $ErrorActionPreference = $prev }
-    }
+    $parts = @($machine, $user, $links) + @(Get-PythonScriptsDirs) | Where-Object { $_ }
     $env:Path = ((@($parts) -join ';') -split ';' | Where-Object { $_ } | Select-Object -Unique) -join ';'
+}
+
+# Puts the pip Scripts folders on the user PATH for good, so Claude and new windows find pip tools.
+function Add-PythonScriptsPath {
+    $user = [Environment]::GetEnvironmentVariable('Path', 'User')
+    $have = @(([string]$user) -split ';' | Where-Object { $_ })
+    $add = @(Get-PythonScriptsDirs | Where-Object { $have -notcontains $_ })
+    if ($add.Count -gt 0) { [Environment]::SetEnvironmentVariable('Path', (@($have) + $add) -join ';', 'User') }
+    Update-SessionPath
 }
 
 function Test-Command([string]$Name) {

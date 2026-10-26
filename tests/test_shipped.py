@@ -1,7 +1,7 @@
 import os, re, unittest
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
-FORBIDDEN = re.compile(r"six20am|motus|machado|mtesi|C:\\Users\\|/c/Users/|shared-core|shared-systems|work-log|Michael|Hard Rule \d|\b[0-9a-f]{32}\b", re.I)
+FORBIDDEN = re.compile(r"six20am|motus|machado|mtesi|C:\\Users\\|/c/Users/|shared-core|shared-systems|work-log|Michael|GHL|HighLevel|Hard Rule \d|\b[0-9a-f]{32}\b", re.I)
 ALLOWED = {"README.md", os.path.join("docs", "design.md")}
 # vendor code shipped as-is; scanned by eye, not by string (see the ledger ruling)
 VENDOR = (os.path.join(".claude", "skills", "last30days", "scripts"), os.path.join(".claude", "skills", "agent-reach", "_references"))

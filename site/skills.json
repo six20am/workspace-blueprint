@@ -200,6 +200,10 @@
   "review-replies": [
    "Writing",
    "Paste a customer review, get a reply in your voice: a thank-you, or a calm answer to a bad one. You post it; it never does."
+  ],
+  "decision-log": [
+   "Keeping the workspace honest",
+   "One dated line per decision: what, why, who said. Searchable, and the weekly brief reads back what was decided this week."
   ]
  },
  "headlines": {

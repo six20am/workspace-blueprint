@@ -5,13 +5,14 @@
     python tools/weekly-brief/brief.py --days 14 --out x.md
     python tools/weekly-brief/brief.py --today 2026-10-31   # end the week on that date
 
-Eight sections: files that came in (changed in the window), files that went out (the ones inside
+Nine sections: files that came in (changed in the window), files that went out (the ones inside
 a delivery or sent folder), dates coming up in the next 14 days (from paperwork/dates.md), renewals
 due within 30 days or past (renewals.md, read with tools/renewals/renewals.py), things
-waited on past their time (waiting-on.md, read with tools/waiting-on/waiting.py), gaps
-logged (setup/gap-log.md), jobs that keep coming back (undo-history summaries from the last 90
-days that repeat three or more times) and sign-ins still needed (setup/setup-report.md). It reads
-only file dates, those five files, the router file and the undo history's summaries. It saves weekly-brief-YYYY-MM-DD.md in the
+waited on past their time (waiting-on.md, read with tools/waiting-on/waiting.py), decisions
+logged this week (decisions.md), gaps logged (setup/gap-log.md), jobs that keep coming back
+(undo-history summaries from the last 90 days that repeat three or more times) and sign-ins still
+needed (setup/setup-report.md). It reads only file dates, those six files, the router file and the
+undo history's summaries. It saves weekly-brief-YYYY-MM-DD.md in the
 notes folder the router names, else the workspace folder, and prints the path. Standard library only.
 """
 import argparse
@@ -203,6 +204,7 @@ def collect(root, today, days):
         "dates_due": _dated_lines(os.path.join(root, "paperwork", "dates.md"), today, today + datetime.timedelta(days=DUE_DAYS)),
         "renewals": _renewals(root, today),
         "waiting": _waiting_on(root, today),
+        "decisions": _dated_lines(os.path.join(root, "decisions.md"), start, today),
         "gaps": _dated_lines(os.path.join(root, "setup", "gap-log.md"), start, today),
         "repeats": ["%d times: %s" % (n, label) for n, label in repeats(_history_summaries(root, REPEAT_DAYS))],
         "sign_ins": _sign_ins(os.path.join(root, "setup", "setup-report.md")),
@@ -229,6 +231,7 @@ def render(data):
     lines += _section("Dates coming up", data["dates_due"])
     lines += _section("Renewals coming up (30 days)", data.get("renewals", []))
     lines += _section("Waiting on, overdue", data.get("waiting", []))
+    lines += _section("Decided this week", data.get("decisions", []))
     lines += _section("Gaps logged", data["gaps"])
     lines += _section("Jobs that keep coming back (last %d days)" % REPEAT_DAYS, data.get("repeats", []))
     lines += _section("Sign-ins needed", data["sign_ins"])

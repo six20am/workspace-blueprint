@@ -148,10 +148,13 @@ def pipe_rows(text):
     return [tuple(p.strip() for p in l.split("|", 1)) for l in text.strip().splitlines() if "|" in l]
 
 
-def label(t):
+def label(t, short=False):
     """The name a reader sees. An `mcp` entry is named for the installer ("Connect image search to Claude");
-    the page shows the thing itself ("Image search")."""
+    the page shows the thing itself ("Image search"). `short` also drops a trailing parenthetical, for the
+    sign-in list ("NotebookLM (Google Notebook)" reads "NotebookLM")."""
     name = t["name"]
+    if short:
+        name = re.sub(r"\s*\([^)]*\)$", "", name)
     if t.get("area") == "mcp":
         name = re.sub(r"^Connect\s+", "", name)
         name = re.sub(r"\s+to Claude$", "", name)
@@ -162,7 +165,7 @@ def label(t):
 def tools():
     data = json.load(open(os.path.join(ROOT, "setup", "tools.json"), encoding="utf-8"))
     names = [label(t) for t in data if t.get("area") in ("base", "claude", "plugins", "tools", "mcp", "programs")]
-    logins = [label(t) for t in data if t.get("login")]
+    logins = [label(t, short=True) for t in data if t.get("login")]
     return names, logins
 
 

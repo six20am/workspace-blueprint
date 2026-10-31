@@ -7,7 +7,7 @@ cta: Download the zip
 persona: none
 swipe: swipe_empty: web-page
 set_aside: none
-revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft
+revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft; their fixes applied the same day (second commit)
 ```
 
 <!-- hero -->
@@ -20,7 +20,7 @@ One folder on your own computer. Claude reads what's in it, follows your rules, 
 <!-- hero-status -->
 Windows | Tested on one machine
 Mac | New, not tested yet
-Installs | About 500 MB of free tools
+Installs | Free tools, 300 MB and more
 Privacy | Setup sends nothing off your computer
 Undo | Delete the folder to remove what it built
 
@@ -56,7 +56,7 @@ You explain your business, paste in a file, get a decent answer, and the next da
 <!-- can-do -->
 ## What it can do on day one
 
-It arrives knowing how to do thirty-eight things. It reads web pages, videos, documents and photos, and digs into a question across many sources. It writes emails, posts and letters in your voice. It handles everyday jobs like bills, trips and spending. And it looks after the workspace itself. Each group opens to the full list.
+It arrives knowing how to do thirty-eight things. It reads web pages, videos, documents and photos, and answers a question from many sources. It writes emails, posts and letters in your voice. It handles everyday jobs like bills, trips and spending. And it looks after the workspace itself. Each group opens to the full list.
 
 <!-- generated skill list goes here -->
 
@@ -94,7 +94,7 @@ Say what you want, name the file or link, and say where the result should go. "N
 3. Ask what people have been saying about something in the last 30 days.
 4. Give it a website and ask for every photo on it.
 5. Paste three emails you wrote and ask it to learn your voice.
-6. Ask it to update.
+6. Hand it three clips and ask for one video with a fade at the end.
 7. Ask for something it has no tool for, and watch it say so and offer to build one.
 
 [Download the zip]
@@ -102,9 +102,9 @@ Say what you want, name the file or link, and say where the result should go. "N
 <!-- installed -->
 ## What gets installed, and what doesn't leave your computer
 
-Free, standard tools: Git, Python, Node.js, ffmpeg, a browser engine, Claude Code, and the readers and converters the skills use. About 500 MB.
+Free, standard tools: Git, Python, Node.js, ffmpeg, a browser engine, Claude Code, and the readers and converters the skills use. The largest, LibreOffice, is 300 MB and more.
 
-Setup sends nothing anywhere. It signs in to nothing for you. Five things need your own sign-in, Claude among them, and setup lists them at the end so you can do each one yourself. Anything a tool fetches from outside is treated as something to read, never as an instruction to follow.
+Setup sends nothing anywhere and signs in to nothing for you. Five things need your own sign-in, Claude among them, and setup lists them at the end. Anything a tool fetches from outside is treated as something to read, never as an instruction to follow.
 
 <!-- stays-current -->
 ## It doesn't go stale
@@ -114,7 +114,7 @@ New skills and tools land in the public repo as they're built. Double-click `upd
 <!-- status -->
 ## Where it stands
 
-The Windows installer has been through a full run on one machine. The Mac installer is new and hasn't been tested yet. If it stops, open an issue on GitHub and attach the file `setup/setup-report.md`. Next up is the Grok Bot template. It isn't out yet.
+The Windows installer has been tested on one machine. The Mac installer is new and hasn't been tested yet. If it stops, open an issue on GitHub and attach the setup report, the file named setup-report.md in the setup folder. Next up: the same setup for a Grok Bot, a hosted AI with its own computer. It isn't out yet.
 
 <!-- faq -->
 ## Questions people ask
@@ -123,13 +123,13 @@ The Windows installer has been through a full run on one machine. The Mac instal
 You need a Claude account, because Claude Code is what runs the workspace. The zip itself needs nothing. Claude opens your browser to sign in the first time it runs.
 
 **Is it free?**
-The zip is free and the code is public. Claude has its own plans, and those are between you and Claude.
+The zip is free and the code is public. Claude has its own paid plans; those are between you and Claude.
 
 **What does it send out?**
-Nothing during setup. It signs in to nothing for you; the five sign-ins are yours to do.
+Nothing during setup, and nothing afterward unless you ask it to. The five sign-ins are yours to do, and setup lists them.
 
 **Can I undo it?**
-Yes. It's one folder and a few standard programs. Delete the folder and everything it built is gone. The programs were installed with winget on Windows or Homebrew on a Mac, and those same tools remove them.
+Yes. It is one folder plus the standard programs setup installed. Delete the folder and everything it built is gone. The programs uninstall the normal way: with the app installer on Windows (winget) or Homebrew on a Mac.
 
 <!-- close -->
 ## Give it one real job this week

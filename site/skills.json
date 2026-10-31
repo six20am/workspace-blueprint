@@ -22,7 +22,7 @@
   ],
   "scrapling": [
    "Reading the web",
-   "Reads pages that refuse a normal fetch: 403s, JavaScript-only pages."
+   "Reads pages that block the normal reader."
   ],
   "agent-reach": [
    "Reading the web",
@@ -34,11 +34,11 @@
   ],
   "chrome-tools": [
    "Reading the web",
-   "Works in pages you're already signed in to, through your own browser."
+   "Reads pages you are signed in to, in your own browser."
   ],
   "last30days": [
    "Reading the web",
-   "What people said about a topic in the last 30 days, across eight platforms."
+   "Finds what people said about a topic in the last 30 days, on eight sites."
   ],
   "video-watcher": [
    "Video and audio",
@@ -46,11 +46,11 @@
   ],
   "channel-mine": [
    "Video and audio",
-   "Reads a whole YouTube channel or podcast back catalog and sorts it by theme."
+   "Reads every episode of a YouTube channel or podcast and sorts it by theme."
   ],
   "media-tools": [
    "Video and audio",
-   "Converts, trims, shrinks and resizes video, audio and image files. Makes a GIF or pulls the audio out."
+   "Edits video: joins clips, changes speed, burns in captions, adds a watermark, reframes for social. Also converts, trims and makes GIFs."
   ],
   "markitdown": [
    "Documents",
@@ -78,7 +78,7 @@
   ],
   "client-asset-harvester": [
    "Images",
-   "Collects every image from an existing website, with its details and the logo picked out."
+   "Saves every image from a website and picks out the logo."
   ],
   "photo-organizer": [
    "Images",
@@ -90,7 +90,7 @@
   ],
   "notebooklm-research": [
    "Research",
-   "Studies a pile of sources, even YouTube links, in Google NotebookLM."
+   "Reads a pile of sources, even YouTube links, with Google's NotebookLM research tool."
   ],
   "meeting-prep": [
    "Research",
@@ -130,7 +130,7 @@
   ],
   "gap-finder": [
    "Keeping the workspace honest",
-   "Notices when a task has no tool, says so, and offers to build one, find one, or do it by hand."
+   "Notices a task with no tool and offers to build one or find one."
   ],
   "tool-vetting": [
    "Keeping the workspace honest",
@@ -138,11 +138,11 @@
   ],
   "workspace-diff": [
    "Keeping the workspace honest",
-   "Compares a course or method you found with your workspace and lists what it would change. Changes nothing without your yes."
+   "Compares a method you found online with how your workspace works, and lists the changes."
   ],
   "workspace-audit": [
    "Keeping the workspace honest",
-   "Checks that the files telling Claude where things are still match your folders. Moves nothing without your yes."
+   "Checks that the files that tell the AI where things are still match your folders."
   ],
   "doctor": [
    "Keeping the workspace honest",
@@ -154,7 +154,7 @@
   ],
   "outbound-check": [
    "Keeping the workspace honest",
-   "Before anything leaves, checks it for passwords, account numbers, other people's names and your address."
+   "Before anything leaves, checks it for passwords and keys, account numbers, other people's names and your address."
   ],
   "weekly-brief": [
    "Keeping the workspace honest",
@@ -167,11 +167,11 @@
  },
  "headlines": {
   "Reading the web": "Reads the web, even behind logins",
-  "Video and audio": "Turns video and audio into text, and converts the files",
+  "Video and audio": "Turns video and audio into text, and edits video",
   "Documents": "Reads your documents and makes new ones",
-  "Images": "Finds photos with the rights recorded, and sorts your own",
-  "Research": "Answers a question from many sources, with receipts",
-  "Keeping the workspace honest": "Looks after itself and stays current",
+  "Images": "Finds free photos, records who owns them, and sorts your own",
+  "Research": "Answers a question from many sources, and shows where each fact came from",
+  "Keeping the workspace honest": "Keeps the workspace in order, and checks what goes out",
   "More": "Added since this page was written",
   "Writing": "Writes in your voice",
   "Everyday life": "Handles the paperwork of life"

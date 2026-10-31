@@ -59,6 +59,8 @@ Do this without asking more questions. Tell them you are building and that it ta
 
 A row for a skill that is not in the skills folder yet is still written; the skill lands with `update`.
 
+9. **History.** Run `python tools/undo/undo.py init`, then `python tools/undo/undo.py save "workspace built"`. From now on, save after every task that changes files (the `undo` skill).
+
 ## 3. Fix
 
 If they said "now" in step 0, work through the failed tools one at a time. For each: say what it is for in one line, then re-run the installer for just that tool. Its `id` is in `setup/tools.json`:

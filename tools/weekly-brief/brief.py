@@ -5,14 +5,14 @@
     python tools/weekly-brief/brief.py --days 14 --out x.md
     python tools/weekly-brief/brief.py --today 2026-10-31   # end the week on that date
 
-Nine sections: files that came in (changed in the window), files that went out (the ones inside
+Ten sections: files that came in (changed in the window), files that went out (the ones inside
 a delivery or sent folder), dates coming up in the next 14 days (from paperwork/dates.md), renewals
 due within 30 days or past (renewals.md, read with tools/renewals/renewals.py), things
 waited on past their time (waiting-on.md, read with tools/waiting-on/waiting.py), decisions
 logged this week (decisions.md), gaps logged (setup/gap-log.md), jobs that keep coming back
-(undo-history summaries from the last 90 days that repeat three or more times) and sign-ins still
-needed (setup/setup-report.md). It reads only file dates, those six files, the router file and the
-undo history's summaries. It saves weekly-brief-YYYY-MM-DD.md in the
+(undo-history summaries from the last 90 days that repeat three or more times), sign-ins still
+needed (setup/setup-report.md) and when the last backup ran (setup/backup-log.md). It reads only
+file dates, those seven files, the router file and the undo history's summaries. It saves weekly-brief-YYYY-MM-DD.md in the
 notes folder the router names, else the workspace folder, and prints the path. Standard library only.
 """
 import argparse
@@ -103,6 +103,12 @@ def _waiting_on(root, today):
         return []
     overdue, _ = waiting.sort_items(waiting.parse(text), today)
     return [waiting.line_for(it) for it in overdue]
+
+
+def _backup(root, today):
+    """One line on the last backup, from the backup tool; empty when the tool is not installed."""
+    tool = _sibling_tool("backup", "backup")
+    return [tool.status_line(root, today)] if tool else []
 
 
 def _renewals(root, today):
@@ -208,6 +214,7 @@ def collect(root, today, days):
         "gaps": _dated_lines(os.path.join(root, "setup", "gap-log.md"), start, today),
         "repeats": ["%d times: %s" % (n, label) for n, label in repeats(_history_summaries(root, REPEAT_DAYS))],
         "sign_ins": _sign_ins(os.path.join(root, "setup", "setup-report.md")),
+        "backup": _backup(root, today),
         "window": (start, today),
     }
 
@@ -235,6 +242,7 @@ def render(data):
     lines += _section("Gaps logged", data["gaps"])
     lines += _section("Jobs that keep coming back (last %d days)" % REPEAT_DAYS, data.get("repeats", []))
     lines += _section("Sign-ins needed", data["sign_ins"])
+    lines += _section("Backup", data.get("backup", []))
     return "\n".join(lines).rstrip("\n") + "\n"
 
 

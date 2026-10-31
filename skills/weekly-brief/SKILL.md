@@ -27,6 +27,7 @@ Run it from the workspace folder. It looks at the last 7 days, ending today. Add
 - **Gaps logged**: this week's lines in `setup/gap-log.md`.
 - **Jobs that keep coming back**: the undo-history summaries from the last 90 days that repeat three or more times, with the count. This is the look-back: the work got done, now ask whether it should become a pipeline.
 - **Sign-ins needed**: the accounts the last doctor run said the person connects by hand.
+- **Backup**: when the last one ran and to where, from the backup skill's log. Past seven days, offer to run it.
 
 It is saved as `weekly-brief-<date>.md` in the notes folder the router file names, or the workspace folder if it names none. Empty sections say "Nothing."
 

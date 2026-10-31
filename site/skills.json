@@ -208,6 +208,10 @@
   "voice-memo": [
    "Video and audio",
    "A voice memo from your phone becomes a transcript, a few notes and a to-do list, filed by date. Runs on your computer; nothing uploaded."
+  ],
+  "backup": [
+   "Keeping the workspace honest",
+   "Copies the whole workspace to a drive or synced folder you name, and the weekly brief says when it last ran. Never deletes."
   ]
  },
  "headlines": {

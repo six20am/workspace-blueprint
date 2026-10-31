@@ -8,7 +8,7 @@ python tools/weekly-brief/brief.py --days 14 --out x.md
 python tools/weekly-brief/brief.py --today 2026-10-31   # end the week on that date
 ```
 
-The brief is titled `# Week of <start> to <end>` and has nine sections, each saying `Nothing.` when empty:
+The brief is titled `# Week of <start> to <end>` and has ten sections, each saying `Nothing.` when empty:
 
 - **Came in**: files changed in the window, newest first, capped at 40. Skips `setup/`, `tools/`, `_reference/`, the skills folder, hidden files, `node_modules`, `__pycache__` and earlier briefs.
 - **Went out**: the subset inside a folder named `delivery`, `delivered`, `sent`, `out`, `3-delivery` or `6-comms` (any case).
@@ -19,7 +19,8 @@ The brief is titled `# Week of <start> to <end>` and has nine sections, each say
 - **Gaps logged**: lines in `setup/gap-log.md` dated inside the window.
 - **Jobs that keep coming back**: undo-history save summaries from the last 90 days that repeat three or more times.
 - **Sign-ins needed**: the bullets under `## Sign in yourself` in `setup/setup-report.md`.
+- **Backup**: one line from `setup/backup-log.md` on when the last backup ran and to where, with "Run it." past seven days; "No backup yet" without the file.
 
-It reads file dates only, plus those six files, the undo history's summaries and the router file (named in `setup/adapter.json`).
+It reads file dates only, plus those seven files, the undo history's summaries and the router file (named in `setup/adapter.json`).
 It saves `weekly-brief-YYYY-MM-DD.md` to `--out`, else the folder a router line names after the word
 "notes" in backticks, else the workspace folder, and prints the path. Standard library only.

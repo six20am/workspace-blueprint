@@ -36,6 +36,18 @@ Three choices: plain and direct, warm, formal. Or they can paste something they 
 **Q5. "I will never send, spend, or delete anything without asking you first. Anything else you want on that list?"**
 Say the three first, then ask. Most people say no, and that is fine; the line did its job. Anything they add goes on the same list, in their words. The list becomes the standing rules in the map file (step 2) and the "what not to do" block of every section notes file. Never shorten the three, even if they say they do not care.
 
+## 1b. Google Notebook
+
+Right after the questions, while the person is still at the keyboard, connect the one tool that needs their own sign-in and pays off on day one: Google Notebook (the `notebooklm` tool, which the `notebooklm-research` skill uses). It is where long things go to be read: a video, a course, a stack of PDFs, a folder of pages. Answers come back with the source line they came from.
+
+1. Check `setup/setup-report.md`. If the notebook tool is under "Installed now" or "Already present", go on. If it failed or the report is missing, say "The notebook tool did not install; I will come back to it with the fixes," and skip to step 2. Do not install it by hand here.
+2. Say what it is in two lines, in their terms: "One more thing before I build. There is a research notebook that reads videos, PDFs and web pages for you and answers with the source. It needs you to sign in to your Google account yourself, in a browser window. Want to do that now? Takes a minute."
+3. On yes, run `notebooklm login`. A browser window opens. Tell them: "Sign in there. I never see or type your password. Tell me when the window says you are done." Wait. Never touch the window, never read what is in it.
+4. Check it worked: `notebooklm list`. An empty list is a pass; the person has no notebooks yet. A sign-in error means run the login once more; a second failure goes on the fixes list, not into a loop.
+5. Offer once: "Got a video or a document you have been meaning to get through? Give me the link or the file and I will make your first notebook from it." On yes, use the `notebooklm-research` skill and read back one answer from it. On no, move on; the skill is there when they want it.
+
+"Not now" at step 2 is a fine answer. The tool stays listed under "Sign in yourself" in the report, and the weekly brief carries it until it is done. Ask again only if they bring up a long video or a pile of reading.
+
 ## 2. Build
 
 Do this without asking more questions. Tell them you are building and that it takes a minute.

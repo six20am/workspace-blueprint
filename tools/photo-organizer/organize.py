@@ -5,7 +5,7 @@ and sort everything into YEAR/MONTH folders inside one folder the person names.
 Safety:
   - A dry run is the default. Nothing moves until --apply is given.
   - Nothing is ever deleted. Duplicates are moved to <folder>/duplicates/.
-  - Every move stays inside the folder given with --root.
+  - Every move stays inside the folder given with --root; links and junctions are never followed.
   - An --apply run writes an undo CSV beside the folder; --undo <csv> --apply puts every file back.
   - No network. Standard library only.
 
@@ -21,9 +21,9 @@ import argparse
 import csv
 import datetime
 import hashlib
+import json
 import os
 import re
-import shutil
 import struct
 import sys
 from collections import Counter, defaultdict
@@ -37,7 +37,7 @@ DUP_DIR = 'duplicates'
 DSRC_RANK = {'exif': 0, 'video': 1, 'filename': 2, 'mtime': 3}
 DSRC_TEXT = {'exif': 'photo EXIF', 'video': 'video metadata', 'filename': 'file name',
              'mtime': 'file modified time, may be the copy date'}
-FIELDS = ['step', 'status', 'old_path', 'new_path', 'date', 'date_source', 'root', 'detail']
+FIELDS = ['step', 'status', 'old_path', 'new_path', 'date', 'date_source', 'root', 'detail', 'created_dirs']
 
 
 # ---------- EXIF / TIFF ----------
@@ -163,7 +163,7 @@ def video_created(path):
                 if sz < hl:
                     break
                 if typ == b'moov':
-                    data = f.read(min(sz - hl, 64 << 20))
+                    data = f.read(min(sz - hl, 1 << 20))  # mvhd sits near the start of moov
                     k = data.find(b'mvhd')
                     if k < 0:
                         return None
@@ -242,13 +242,19 @@ def probe(path):
 
 
 def collect(root):
-    """Walk the folder for photos and videos, skipping the top-level duplicates/. Return (files, sidecars)."""
+    """Walk the folder for photos and videos, skipping the top-level duplicates/, every symlinked or
+    junction folder, and any file whose real path is outside the folder. Return (files, sidecars)."""
     files, sidecars = [], defaultdict(list)
     for dp, dirs, fs in os.walk(root):
-        dirs[:] = sorted(d for d in dirs if not (nc(dp) == nc(root) and d.lower() == DUP_DIR))
+        dirs[:] = sorted(d for d in dirs
+                         if not (nc(dp) == nc(root) and d.lower() == DUP_DIR)
+                         and not is_link_dir(os.path.join(dp, d))
+                         and inside(root, os.path.join(dp, d)))
         for fn in sorted(fs):
             ext = os.path.splitext(fn)[1].lower()
             p = os.path.join(dp, fn)
+            if os.path.islink(p) or not inside(root, p):
+                continue
             if ext in IMG or ext in VID:
                 try:
                     files.append(probe(p))
@@ -264,11 +270,22 @@ def nc(p):
     return os.path.normcase(os.path.abspath(p))
 
 
+def rp(p):
+    """The real path: symlinks and junctions resolved, case folded on Windows."""
+    return os.path.normcase(os.path.realpath(p))
+
+
 def inside(root, p):
+    """True when the real path of p is the root or below it. Links and junctions are followed first."""
     try:
-        return os.path.commonpath([nc(root), nc(p)]) == nc(root)
+        return os.path.commonpath([rp(root), rp(p)]) == rp(root)
     except ValueError:  # different drives
         return False
+
+
+def is_link_dir(p):
+    isjunction = getattr(os.path, 'isjunction', lambda _: False)  # Python 3.12 and later
+    return os.path.islink(p) or isjunction(p)
 
 
 class Reserver:
@@ -298,7 +315,7 @@ class Reserver:
 def action(step, src, dst, f=None, detail='', status='planned', root=''):
     return {'step': step, 'status': status, 'old_path': src, 'new_path': dst,
             'date': f.dt.isoformat(' ') if f else '', 'date_source': f.dsrc if f else '',
-            'root': root, 'detail': detail}
+            'root': root, 'detail': detail, 'created_dirs': ''}
 
 
 COPY_RE = re.compile(r'copy|\(\d+\)', re.I)
@@ -411,15 +428,23 @@ def plan_organize(files, root, res, sidecars, keep_name=False, skip_mtime=False)
 
 # ---------- doing it ----------
 def move(src, dst, root):
+    """Rename src to dst inside root. Return the folders it had to create, deepest last.
+    os.rename never copies: a move that would cross drives fails instead of copying and deleting."""
     if not (inside(root, src) and inside(root, dst)):
         raise PermissionError(f'outside the folder: {dst}')
+    if os.path.splitdrive(rp(src))[0] != os.path.splitdrive(rp(dst))[0]:
+        raise PermissionError(f'on a different drive: {dst}')
     if os.path.exists(dst) and nc(src) != nc(dst):
         raise FileExistsError(f'already exists: {dst}')
+    created, d = [], os.path.dirname(os.path.abspath(dst))
+    while not os.path.isdir(d) and nc(d) != nc(root):
+        created.append(d)
+        d = os.path.dirname(d)
     os.makedirs(os.path.dirname(dst), exist_ok=True)
-    if nc(src) == nc(dst):
-        os.rename(src, dst)  # a change of letter case only
-    else:
-        shutil.move(src, dst)
+    if not inside(root, dst):  # re-check once the folders exist
+        raise PermissionError(f'outside the folder: {dst}')
+    os.rename(src, dst)
+    return list(reversed(created))
 
 
 def write_csv(path, acts):
@@ -501,7 +526,7 @@ def cmd_organize(args):
             if a['status'] != 'planned':
                 continue
             try:
-                move(a['old_path'], a['new_path'], root)
+                a['created_dirs'] = json.dumps(move(a['old_path'], a['new_path'], root))
                 a['status'] = 'done'
             except OSError as e:
                 a['status'], a['detail'] = 'failed', f'{a["detail"]} | {e}'.strip(' |')
@@ -514,15 +539,31 @@ def cmd_organize(args):
     print(f'To undo: python "{os.path.abspath(__file__)}" --undo "{log}" --apply')
 
 
-def remove_empty_dirs(path, root):
-    """After an undo, remove folders it left empty, up to the root. rmdir refuses a folder with anything in it."""
-    p = os.path.dirname(os.path.abspath(path))
-    while inside(root, p) and nc(p) != nc(root):
-        try:
-            os.rmdir(p)
-        except OSError:
-            return
-        p = os.path.dirname(p)
+UNDO_NAME = re.compile(r'^(.+)-photo-organizer-undo-\d{8}_\d{6}(?:-\d+)?\.csv$', re.I)
+
+
+def expected_roots(csv_path):
+    """The undo file is written beside the folder as <folder>-photo-organizer-undo-<time>.csv,
+    so the folder it belongs to follows from the file's own place and name."""
+    m = UNDO_NAME.match(os.path.basename(csv_path))
+    if not m:
+        return []
+    where = os.path.dirname(os.path.abspath(csv_path))
+    roots = [os.path.join(where, m.group(1))]
+    if m.group(1) == 'photos' and os.path.dirname(where) == where:  # a drive root keeps its undo file inside
+        roots.append(where)
+    return roots
+
+
+def remove_created_dirs(dirs, root):
+    """Remove only folders the run or the undo created, deepest first, and only when empty.
+    rmdir refuses a folder with anything in it, so no file can be removed this way."""
+    for d in sorted(set(dirs), key=lambda x: x.count(os.sep), reverse=True):
+        if inside(root, d) and rp(d) != rp(root) and not is_link_dir(d):
+            try:
+                os.rmdir(d)
+            except OSError:
+                pass
 
 
 def cmd_undo(args):
@@ -533,11 +574,17 @@ def cmd_undo(args):
     if not rows:
         print('Nothing in this file to undo.')
         return
-    results = Counter()
+    roots = expected_roots(args.undo)
+    match = [x for x in roots if all(rp(r.get('root') or '?') == rp(x) for r in rows)]
+    if not match:
+        sys.exit('Undo refused: this file does not match the folder it sits beside. An undo file must stay '
+                 'where the organize run wrote it, with its name and its folder column unchanged.')
+    root = match[0]
+    results, created = Counter(), []
     print('UNDO: moving files back.' if args.apply else 'UNDO PREVIEW: nothing will move.')
     for r in reversed(rows):
-        new, old, root = r['new_path'], r['old_path'], r.get('root') or ''
-        if not root or not (inside(root, new) and inside(root, old)):
+        new, old = r['new_path'], r['old_path']
+        if not (inside(root, new) and inside(root, old)):
             status = 'skipped: path outside the organized folder'
         elif not os.path.exists(new):
             status = 'skipped: not found where it was moved' if r['status'] == 'done' else 'skipped: never moved'
@@ -545,15 +592,20 @@ def cmd_undo(args):
             status = 'skipped: a file is already at the original path'
         elif args.apply:
             try:
-                move(new, old, root)
-                remove_empty_dirs(new, root)
+                created += move(new, old, root)
                 status = 'restored'
             except OSError as e:
                 status = f'failed: {e}'
         else:
             status = 'will restore'
+        try:
+            created += json.loads(r.get('created_dirs') or '[]')
+        except ValueError:
+            pass
         results[status.split(':')[0]] += 1
         print(f'  {new}  ->  {old}   [{status}]')
+    if args.apply:
+        remove_created_dirs(created, root)
     print('\n' + ', '.join(f'{k}: {v}' for k, v in results.items()))
     if not args.apply:
         print('This was a preview. To put the files back, run the same command with --apply.')

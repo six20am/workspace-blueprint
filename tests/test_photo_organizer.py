@@ -122,6 +122,95 @@ class PhotoOrganizerTests(unittest.TestCase):
         self.assertIn("outside the organized folder", out)
         self.assertFalse(os.path.exists(outside))
 
+    def run_raw(self, *args):
+        return subprocess.run([sys.executable, SCRIPT] + list(args), capture_output=True, text=True,
+                              encoding="utf-8", errors="replace")
+
+    def make_link_dir(self, link, target):
+        """A junction on Windows (no privilege needed), a symlink elsewhere. Skip the test if neither works."""
+        if os.name == "nt":
+            subprocess.run(["cmd", "/c", "mklink", "/J", link, target], capture_output=True)
+        else:
+            try:
+                os.symlink(target, link, target_is_directory=True)
+            except OSError:
+                pass
+        if not os.path.isdir(link):
+            self.skipTest("could not create a junction or symlink here")
+        self.addCleanup(lambda: os.path.isdir(link) and os.rmdir(link))  # removes the link only
+
+    def outside_folder(self):
+        outside = os.path.join(self.base, "Outside Stuff")
+        os.makedirs(outside)
+        data = jpeg_with_date("2016:08:08 08:08:08") + b"outside"
+        with open(os.path.join(outside, "outside.jpg"), "wb") as fh:
+            fh.write(data)
+        return outside, data
+
+    def test_junction_or_symlink_folder_is_skipped(self):
+        outside, data = self.outside_folder()
+        self.make_link_dir(os.path.join(self.root, "Linked Folder"), outside)
+        out = self.run_tool("--root", self.root)
+        self.assertNotIn("Linked Folder", out)
+        self.assertNotIn("outside.jpg", out)
+        out = self.run_tool("--root", self.root, "--apply")
+        self.assertNotIn("outside.jpg", out)
+        self.assertEqual(os.listdir(outside), ["outside.jpg"])
+        with open(os.path.join(outside, "outside.jpg"), "rb") as fh:
+            self.assertEqual(fh.read(), data)
+        self.assertFalse(os.path.exists(os.path.join(self.root, "2016")))
+
+    def test_target_folder_that_is_a_junction_is_refused(self):
+        outside, _ = self.outside_folder()
+        self.make_link_dir(os.path.join(self.root, "2019"), outside)
+        out = self.run_tool("--root", self.root, "--apply")
+        self.assertEqual(os.listdir(outside), ["outside.jpg"])
+        self.assertTrue(os.path.exists(os.path.join(self.root, "From Phone", "IMG_0042.jpg")))
+        self.assertIn("Failed: 1", out)
+
+    def test_undo_refuses_edited_root(self):
+        self.run_tool("--root", self.root, "--apply")
+        log = self.undo_csv()
+        after = self.snapshot()
+        with open(log, encoding="utf-8-sig") as fh:
+            text = fh.read()
+        other = os.path.join(self.base, "Somewhere Else")
+        with open(log, "w", encoding="utf-8-sig") as fh:
+            fh.write(text.replace(self.root, other))
+        r = self.run_raw("--undo", log, "--apply")
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("Undo refused", r.stdout + r.stderr)
+        self.assertEqual(self.snapshot(), after)
+        self.assertFalse(os.path.exists(other))
+
+    def test_undo_keeps_folders_that_were_already_empty(self):
+        empty = os.path.join(self.root, "2019", "05")   # exists and is empty before the run
+        os.makedirs(empty)
+        self.run_tool("--root", self.root, "--apply")
+        self.run_tool("--undo", self.undo_csv(), "--apply")
+        self.assertTrue(os.path.isdir(empty))
+        self.assertFalse(os.path.exists(os.path.join(self.root, "2020")))
+
+    def test_name_collision_gets_suffix(self):
+        self.put("first.jpg", jpeg_with_date("2015:06:06 06:06:06") + b"one", (2023, 1, 1))
+        self.put("second.jpg", jpeg_with_date("2015:06:06 06:06:06") + b"two", (2023, 1, 1))
+        self.run_tool("--root", self.root, "--apply")
+        after = self.snapshot()
+        got = {after["2015/06/2015-06-06_060606.jpg"], after["2015/06/2015-06-06_060606_2.jpg"]}
+        self.assertEqual(got, {self.files["first.jpg"], self.files["second.jpg"]})
+
+    def test_truncated_heic_and_mov_fall_back(self):
+        heic = (b"\x00\x00\x00\x18ftypheic" + b"\x07" * 100)[:100]
+        mov = b"\x00\x00\x00\x64moov" + b"\x00" * 88 + b"mvhd"
+        self.assertEqual((len(heic), len(mov)), (100, 100))
+        self.put("short.HEIC", heic, (2017, 9, 9))
+        self.put("tiny.MOV", mov, (2017, 10, 10))
+        out = self.run_tool("--root", self.root)
+        for name, target in (("short.HEIC", "2017-09-09_101500.HEIC"), ("tiny.MOV", "2017-10-10_101500.MOV")):
+            line = [l for l in out.splitlines() if name in l][0]
+            self.assertIn(target, line)
+            self.assertIn("file modified time", line)
+
 
 if __name__ == "__main__":
     unittest.main()

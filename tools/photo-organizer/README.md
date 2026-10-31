@@ -16,8 +16,9 @@ New names are `YYYY-MM-DD_HHMMSS.<ext>` in `<folder>/YYYY/MM/`. Duplicates (same
 `<folder>/duplicates/`. Dates come from photo EXIF (JPEG, TIFF, DNG, HEIC, WebP, PNG), then MP4/MOV
 metadata, then the file name, then the modified time; each plan line says which.
 
-The undo CSV is written beside the folder before anything moves. Undo skips any row whose paths are
-outside the folder it recorded, and removes only folders the undo left empty.
+Paths are compared by real path: linked or junction folders are skipped, and a cross-drive move fails
+instead of copying. The undo CSV is written beside the folder before anything moves; undo derives the
+folder from the CSV's place and name, refuses a mismatch, and removes only empty folders it created.
 
 It never deletes a file, never writes outside the named folder except the one undo CSV, and never
 uses the network. Standard library only. Tests: `python -m unittest tests.test_photo_organizer`.

@@ -21,7 +21,7 @@ Always put the folder in double quotes; Windows folder names often have spaces. 
 
 1. **Nothing is ever deleted.** Duplicates are moved to a `duplicates` folder inside the named folder, keeping their subfolder path. Do not delete files for the person, even when asked; tell them where the duplicates are and let them decide.
 2. **Plan first, then a yes.** The first run is always the dry run. Show the person the plan. Run `--apply` only after a clear yes to that plan.
-3. **Nothing leaves the folder.** Every move stays inside the folder the person named. Nothing is uploaded or sent anywhere.
+3. **Nothing leaves the folder.** Every move stays inside the folder the person named. Linked folders (shortcuts to folders elsewhere) are skipped. Nothing is uploaded or sent anywhere.
 4. **Say which date was used.** Every line of the plan names where its date came from.
 5. **Give the undo line after every apply.** The tool prints it; pass it on word for word.
 
@@ -57,7 +57,7 @@ For HEIC and MOV in particular: the date comes from inside the file when the fil
 An `--apply` run writes a CSV beside the folder (in the folder above it), named `<folder name>-photo-organizer-undo-<date and time>.csv`. Each row is one move: the old path, the new path, the date and where it came from. To reverse a run:
 
 1. `python tools/photo-organizer/organize.py --undo "<undo file>"` shows what will go back.
-2. Add `--apply` to put every file back where it was. Empty folders the run made are removed; files are not.
+2. Add `--apply` to put every file back where it was. Empty folders the run created are removed; files never are. Keep the undo file where it was written and do not rename it: undo refuses a file that has moved or been edited to point at another folder.
 
 A file that was moved or deleted by hand after the run is skipped and named. If the person emptied `duplicates/` themselves, those files cannot come back; say so plainly.
 

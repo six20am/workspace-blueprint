@@ -2,21 +2,13 @@
  "_comment": "Skills designed but not yet in the box, from the 2026-10-31 design. One plain line each, grouped like skills.json. A skill is removed from here the day its folder lands in .claude/skills/; the generator also drops any entry whose folder already exists, so the page never shows a skill twice.",
  "skills": {
   "media-tools": ["Video and audio", "Convert, trim, resize, make a GIF, pull the audio out, strip metadata, batch a folder."],
-  "summarize": ["Documents", "A document, transcript, thread or folder into a short brief with the decisions and open items."],
-  "explain-this": ["Documents", "A contract, bill, medical letter or notice in plain words, with the three things to do about it."],
   "paperwork": ["Documents", "Scan or photo in, read, named by date and type, filed, and the dates that matter pulled out."],
-  "document-builder": ["Documents", "Markdown into Word, PowerPoint, PDF, and spreadsheets into CSV."],
   "photo-organizer": ["Images", "Rename by date taken, find duplicates, sort by month. Nothing uploaded, nothing deleted."],
   "meeting-prep": ["Research", "What the workspace knows about a person or company, plus a web read, on one page."],
-  "writer": ["Writing", "Emails, replies, notes and short documents, in your voice."],
   "social-copywriter": ["Writing", "Posts for nine platforms, each in that platform's format and habits."],
   "resume-and-letter": ["Writing", "A resume tailored to a posting, the cover letter, and letters with stakes: a dispute, a landlord, a refund."],
   "money-log": ["Everyday life", "Bank or card export in, categorized monthly summary and recurring charges out. No bank connection."],
   "trip-plan": ["Everyday life", "Bookings in, one itinerary out, with what is still unbooked."],
-  "doctor": ["Keeping the workspace honest", "Checks every tool and sign-in, re-installs only what is missing."],
-  "undo": ["Keeping the workspace honest", "Version history on the workspace, so \"undo what you just did\" works."],
-  "outbound-check": ["Keeping the workspace honest", "Before anything leaves: secrets, account numbers, other people's names, your address."],
-  "weekly-brief": ["Keeping the workspace honest", "What came in, what went out, dates coming due, gaps logged, sign-ins needed."],
   "workspace-audit": ["Keeping the workspace honest", "Checks the map and routing files against what is on disk and reports the drift."]
  }
 }

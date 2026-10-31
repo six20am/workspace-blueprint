@@ -1,7 +1,7 @@
 # Workspace Blueprint: Design
 
 **Date:** 2026-10-31
-**Status:** Phase 1 built; later phases are marked in Section 6 as they land
+**Status:** Phases 1 and 2 built; Phase 4 partly built; later phases marked in Section 6
 **Repos:** core `six20am/workspace-blueprint`; Grok mirror `six20am/grokbot-blueprint`. Both public.
 **Companions:** `adapters/grok-bot/publish.md` (how the Grok Bot template is published), and the mirror repo `six20am/grokbot-blueprint`.
 
@@ -42,7 +42,7 @@ six20am/workspace-blueprint/
 Rules:
 
 1. A skill is edited in `skills/` and nowhere else. `grokbot-blueprint` becomes a mirror that `build.py` pushes to; its README says so.
-2. Anything that names one platform (`CLAUDE.md`, `claude mcp add`, plugin names, `/workspace/<bot>`) lives in the adapter or in a neutral phrasing. Inventory the 21 skills for platform words before moving them.
+2. Anything that names one platform (`CLAUDE.md`, `claude mcp add`, plugin names, `/workspace/<bot>`) lives in the adapter or in a neutral phrasing. Inventory the skills for platform words before moving them.
 3. `tools/update/update.py` keeps working for owners who installed from the old layout: its `OWNED` list is updated to the new paths, and the old paths are removed from the owner's copy once on first update.
 4. `update` on Grok Bot is `doctor` plus the same file sync; both adapters share the Python.
 
@@ -100,6 +100,7 @@ Held back, with the trigger that reopens each: `reminders` (a calendar connector
 | Defuddle, Trafilatura | main-text-only web reads for `web-read` | npm / pip |
 | ccusage | cost view, Claude adapter only | npx |
 | Repomix, codeburn | trial: pack one section; waste audit once Grok logs confirmed | npx |
+| Ghostscript | needed by OCRmyPDF; Windows has no winget package, so the installer downloads the pinned official release | direct download / brew / apt |
 
 Dropped: GraphicsMagick (ImageMagick covers it). Declined on license or fit: Headroom, Caveman, Claude-Mem, Serena (link only), Docling, token-optimizer, context-mode.
 
@@ -119,10 +120,10 @@ A third platform needs four things: files that persist, a way to load the map an
 ## Section 6: Build order
 
 1. **Split.** (built 2026-10-31) Move the 21 skills to `skills/`, write `adapters/claude-code/` and `adapters/grok-bot/`, update `build.py`, `update.py`, the tests and the workflow. The zip must still install and pass the Windows test. Ship nothing new in this phase.
-2. **Programs and care.** `tools.json` linux column and the eleven new programs; `doctor`, `undo`, `outbound-check`, `update` for Grok. Installer tested on Windows and on a Linux container.
+2. **Programs and care.** (built 2026-10-31) `tools.json` linux column and the eleven new programs; `doctor`, `undo`, `outbound-check`, `update` for Grok. Installer tested on Windows and on a Linux container.
 3. **Adopt and trial.** The five adopts and four trials, each behind its gate, each with `TEST.md`.
-4. **New skills.** The nine written fresh, each with `TEST.md`.
-5. **Grok clean import.** Build the source Bot, publish, run the four checks in `grokbot-blueprint/docs/publish.md` on a clean account.
+4. **New skills.** (five of nine built 2026-10-31: summarize, explain-this, document-builder, writer, weekly-brief) The nine written fresh, each with `TEST.md`.
+5. **Grok clean import.** Build the source Bot, publish, run the four checks in `adapters/grok-bot/publish.md` on a clean account.
 
 Each phase ends with the site rebuilt (the skills grid moves entries from coming to in the box on its own) and a commit.
 

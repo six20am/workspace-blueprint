@@ -42,7 +42,7 @@ six20am/workspace-blueprint/
 `setup.ps1`, `setup.sh` and `runner.py` stay in the core `setup/` folder, not in the adapter, because `doctor` and both adapters call them.
 
 1. A skill is edited in `skills/` and nowhere else. `grokbot-blueprint` becomes a mirror that `build.py` pushes to; its README says so.
-2. Anything that names one platform (`CLAUDE.md`, `claude mcp add`, plugin names, `/workspace/<bot>`) lives in the adapter or in a neutral phrasing. Inventory the 21 skills for platform words before moving them.
+2. Anything that names one platform (`CLAUDE.md`, `claude mcp add`, plugin names, `/workspace/<bot>`) lives in the adapter or in a neutral phrasing. Inventory the skills for platform words before moving them.
 3. `tools/update/update.py` keeps working for owners who installed from the old layout: its `OWNED` list is updated to the new paths, and the old paths are removed from the owner's copy once on first update.
 4. `update` on Grok Bot is `doctor` plus the same file sync; both adapters share the Python.
 

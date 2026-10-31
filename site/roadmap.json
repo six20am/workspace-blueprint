@@ -1,4 +1,9 @@
 {
  "_comment": "Skills designed but not yet in the box, from the 2026-10-31 design. One plain line each, grouped like skills.json. A skill is removed from here the day its folder lands in .claude/skills/; the generator also drops any entry whose folder already exists, so the page never shows a skill twice.",
- "skills": {}
+ "skills": {
+  "motion-video": [
+   "Video and audio",
+   "Makes animated videos: title cards, captions timed to the words, slideshows, before-and-after, a logo clip, a numbers video, in three sizes."
+  ]
+ }
 }

@@ -7,7 +7,7 @@ cta: Download the zip
 persona: none
 swipe: swipe_empty: web-page
 set_aside: none
-revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft; their fixes applied the same day (second commit); the vendor adapter replaced by the neutral ADAPT.md path (third commit)
+revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft; their fixes applied the same day (second commit); the vendor adapter replaced by the neutral ADAPT.md path (third commit); motion-video added as coming and the FAQ send-out answer cut to sourced wording (fourth commit)
 ```
 
 <!-- hero -->
@@ -102,7 +102,7 @@ Say what you want, name the file or link, and say where the result should go. "N
 <!-- installed -->
 ## What gets installed, and what doesn't leave your computer
 
-Free, standard tools: Git, Python, Node.js, ffmpeg, a browser engine, Claude Code, and the readers and converters the skills use. The largest, LibreOffice, is 300 MB and more.
+Free, standard tools: Git, Python, Node.js, ffmpeg, a browser engine, Claude Code, and the readers and converters the skills use. The largest, LibreOffice, is 300 MB and more. Animated video uses Remotion, which is free for individuals and companies of three people or fewer; bigger companies need its company license.
 
 Setup sends nothing anywhere and signs in to nothing for you. Five things need your own sign-in, Claude among them, and setup lists them at the end. Anything a tool fetches from outside is treated as something to read, never as an instruction to follow.
 
@@ -126,7 +126,7 @@ You need a Claude account, because Claude Code is what runs the workspace. The z
 The zip is free and the code is public. Claude has its own paid plans; those are between you and Claude.
 
 **What does it send out?**
-Nothing during setup, and nothing afterward unless you ask it to. The five sign-ins are yours to do, and setup lists them.
+Nothing during setup. It signs in to nothing for you; the five sign-ins are yours to do, and setup lists them.
 
 **Can I undo it?**
 Yes. It is one folder plus the standard programs setup installed. Delete the folder and everything it built is gone. The programs uninstall the normal way: with the app installer on Windows (winget) or Homebrew on a Mac.

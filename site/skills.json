@@ -52,6 +52,10 @@
    "Video and audio",
    "Edits video: joins clips, changes speed, burns in captions, adds a watermark, reframes for social. Also converts, trims and makes GIFs."
   ],
+  "motion-video": [
+   "Video and audio",
+   "Makes animated videos: title cards, captions timed to the words, slideshows, before-and-after, a logo clip, a numbers video, in three sizes."
+  ],
   "markitdown": [
    "Documents",
    "Turns Word, Excel, PowerPoint, PDF, HTML and Outlook files into plain text with a note of where each came from."

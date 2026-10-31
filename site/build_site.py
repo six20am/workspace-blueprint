@@ -53,7 +53,8 @@ def md_block(text, section):
             items = []
             while i < len(lines) and lines[i].startswith("- "):
                 items.append(f"<li>{inline(lines[i][2:])}</li>"); i += 1
-            out.append("<ul>" + "".join(items) + "</ul>"); continue
+            cls = ' class="outcomes"' if section == "what-you-get" else ""
+            out.append(f"<ul{cls}>" + "".join(items) + "</ul>"); continue
         elif re.match(r"\d+\. ", l):
             items = []
             while i < len(lines) and re.match(r"\d+\. ", lines[i]):
@@ -158,6 +159,10 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(out)
+    assets = os.path.join(HERE, "assets")
+    if os.path.isdir(assets):
+        import shutil
+        shutil.copytree(assets, os.path.join(OUT, "assets"), dirs_exist_ok=True)
     with open(os.path.join(OUT, "_headers"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("/*\n  X-Content-Type-Options: nosniff\n  X-Frame-Options: DENY\n  Referrer-Policy: strict-origin-when-cross-origin\n")
     print(f"wrote {OUT}/index.html: {count} skills, {len(tool_names)} tools, {sha} {date}")

@@ -34,7 +34,13 @@ $stop = Test-Preflight -Root $root
 if ($stop) { Write-Host $stop -ForegroundColor Red; exit 4 }
 
 Update-SessionPath
-$selected = @(Select-Tools -Tools $tools -Only $Only)
+$adapter = 'claude-code'
+$adapterFile = Join-Path $PSScriptRoot 'adapter.json'
+if (Test-Path -LiteralPath $adapterFile) {
+    $a = Get-Content -LiteralPath $adapterFile -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($a.adapter) { $adapter = [string]$a.adapter }
+}
+$selected = @(Select-Tools -Tools $tools -Only $Only -Adapter $adapter)
 $plan = @(Invoke-ToolRun -Tools $selected -Root $root -DryRun)
 foreach ($r in $plan) {
     $label = @{ present = 'already installed'; planned = 'will install'; manual = 'you do this'; skipped = 'skipped' }[$r.Status]

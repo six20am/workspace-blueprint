@@ -1,5 +1,5 @@
 # Loads and validates setup/tools.json. Never touches the machine.
-$script:SetupAreas = @('base', 'claude', 'plugins', 'tools', 'mcp', 'logins')
+$script:SetupAreas = @('base', 'claude', 'plugins', 'tools', 'mcp', 'logins', 'programs')
 
 function Read-ToolList([string]$Path) {
     $raw = Get-Content -Path $Path -Raw -Encoding UTF8
@@ -7,10 +7,10 @@ function Read-ToolList([string]$Path) {
     $parsed = ConvertFrom-Json -InputObject $raw
     $tools = @(foreach ($item in $parsed) { $item })
     for ($i = 0; $i -lt $tools.Count; $i++) {
-        foreach ($arr in 'needs', 'install', 'install_mac') {
+        foreach ($arr in 'needs', 'install', 'install_mac', 'install_linux') {
             if ($null -eq $tools[$i].$arr) { $tools[$i] = $tools[$i] | Add-Member -NotePropertyName $arr -NotePropertyValue @() -Force -PassThru }
         }
-        foreach ($opt in 'login', 'check_mac') {
+        foreach ($opt in 'login', 'check_mac', 'check_linux', 'adapter') {
             if (-not ($tools[$i].PSObject.Properties.Name -contains $opt)) { $tools[$i] = $tools[$i] | Add-Member -NotePropertyName $opt -NotePropertyValue $null -PassThru }
         }
     }
@@ -29,6 +29,8 @@ function Test-ToolList([object[]]$Tools) {
         if ($ids.ContainsKey([string]$t.id)) { $errors.Add("duplicate id: $($t.id)") } else { $ids[[string]$t.id] = $t }
         if ($t.area -and ($script:SetupAreas -notcontains $t.area)) { $errors.Add("$($t.id): unknown area '$($t.area)'") }
         if ((@($t.install_mac).Count -gt 0) -and [string]::IsNullOrWhiteSpace([string]$t.check_mac)) { $errors.Add("$($t.id): has install_mac but no check_mac") }
+        if ((@($t.install_linux | Where-Object { $_ }).Count -gt 0) -and [string]::IsNullOrWhiteSpace([string]$t.check_linux)) { $errors.Add("$($t.id): has install_linux but no check_linux") }
+        if ($t.adapter -and (@('claude-code', 'grok-bot') -notcontains [string]$t.adapter)) { $errors.Add("$($t.id): unknown adapter '$($t.adapter)'") }
     }
     foreach ($t in $Tools) {
         foreach ($n in @($t.needs)) {

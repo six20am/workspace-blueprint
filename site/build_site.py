@@ -144,7 +144,7 @@ def skills():
 
 def tools():
     data = json.load(open(os.path.join(ROOT, "setup", "tools.json"), encoding="utf-8"))
-    names = [t["name"] for t in data if t.get("area") in ("base", "claude", "plugins", "tools", "mcp")]
+    names = [t["name"] for t in data if t.get("area") in ("base", "claude", "plugins", "tools", "mcp", "programs")]
     logins = [t["name"] for t in data if t.get("login")]
     return names, logins
 

@@ -1,4 +1,4 @@
-import json, os, sys, tempfile, unittest
+import contextlib, io, json, os, sys, tempfile, unittest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "setup"))
 import mac_runner
 
@@ -33,7 +33,8 @@ class RunToolsTest(unittest.TestCase):
         self.m = FakeMachine()
 
     def status(self, tools, **kw):
-        res = mac_runner.run_tools(tools, self.m.run, self.m.check, **kw)
+        with contextlib.redirect_stdout(io.StringIO()):
+            res = mac_runner.run_tools(tools, self.m.run, self.m.check, **kw)
         return {r["id"]: r for r in res}
 
     def test_present_runs_nothing(self):
@@ -89,7 +90,7 @@ class SelectTest(unittest.TestCase):
         tools = [tool("claude"), tool("plugin", needs=["claude"]), tool("node"), tool("mcp", needs=["node", "claude"])]
         self.assertEqual([t["id"] for t in mac_runner.select_tools(tools, "mcp")], ["node", "claude", "mcp"])
         self.assertEqual([t["id"] for t in mac_runner.select_tools(tools, None)], ["claude", "plugin", "node", "mcp"])
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(SystemExit), contextlib.redirect_stdout(io.StringIO()):
             mac_runner.select_tools(tools, "nope")
 
 
@@ -104,7 +105,8 @@ class ReportTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             p = os.path.join(d, "setup-report.md")
             mac_runner.write_report(results, p, "mac")
-            text = open(p, encoding="utf-8").read()
+            with open(p, encoding="utf-8") as fh:
+                text = fh.read()
         for heading in ("# Setup report", "## Needs attention", "## Sign in yourself", "## Installed now", "## Already present"):
             self.assertIn(heading, text)
         self.assertIn("- **C** (failed): exit code 1", text)
@@ -116,7 +118,8 @@ class ReportTest(unittest.TestCase):
             p = os.path.join(d, "setup-report.md")
             mac_runner.write_report([{"id": "a", "name": "A", "area": "base", "status": "failed", "detail": "x", "login": None}], p, "mac")
             mac_runner.write_report([], p, "mac")
-            self.assertNotIn("Needs attention", open(p, encoding="utf-8").read())
+            with open(p, encoding="utf-8") as fh:
+                self.assertNotIn("Needs attention", fh.read())
 
 
 class LoadTest(unittest.TestCase):

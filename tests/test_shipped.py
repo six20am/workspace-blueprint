@@ -1,13 +1,28 @@
 import os, re, unittest
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
-FORBIDDEN = re.compile(r"six20am|motus|machado|mtesi|C:\\Users\\|/c/Users/|shared-core|shared-systems|work-log|Michael|GHL|HighLevel|Hard Rule \d|\b[0-9a-f]{32}\b", re.I)
-ALLOWED = {"README.md", os.path.join("docs", "design.md"), os.path.join("tools", "update", "update.py")}  # the updater names the public repo
+FORBIDDEN = re.compile(r"six20am|motus|machado|mtesi|C:\\Users\\|/c/Users/|shared-core|shared-systems|work-log|Michael|\bGHL\b|HighLevel|Hard Rule \d|\b[0-9a-f]{32}\b", re.I)
+# files that may name the maintainer (same set as build.py): the updater and the mirror repo's README name the public repos
+ALLOWED = {"README.md", "docs/design.md", "tools/update/update.py", "adapters/grok-bot/README.md"}
 # vendor code shipped as-is; scanned by eye, not by string (see the ledger ruling)
-VENDOR = (os.path.join(".claude", "skills", "last30days", "scripts"), os.path.join(".claude", "skills", "agent-reach", "_references"))
+VENDOR = ("skills/last30days/scripts/", "skills/agent-reach/_references")
 TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js")
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".superpowers", ".impeccable"}
-SKIP_ROOT_DIRS = {"site", ".github", "docs"}  # the website and CI never ship; build.py skips them too
+SKIP_ROOT_DIRS = {"site", ".github", "docs", "dist"}  # the website, CI and build outputs never ship; build.py skips them too
+ADAPTER_SKIP_FILES = ("publish.md",)  # maintainer notes inside an adapter folder; never shipped (like the root README.md)
+PLATFORM = re.compile(r"\.claude/|\bCLAUDE\.md\b|\bCONTEXT\.md\b|claude mcp add|/workspace/<")
+# backticked names an adapter root or the run time supplies; not files in this repo
+RUNTIME = {"setup/platform.md", "setup/adapter.json", "setup/version.json", "setup/setup-report.md", "setup/update-report.md",
+           "install.sh", "setup.cmd", "setup.command", "update.cmd", "update.command", "CLAUDE.md", "CONTEXT.md", "voice.md"}
+
+
+def rel_of(p):
+    return os.path.relpath(p, ROOT).replace(os.sep, "/")
+
+
+def is_adapter_note(rel):
+    parts = rel.split("/")
+    return len(parts) == 3 and parts[0] == "adapters" and parts[2] in ADAPTER_SKIP_FILES
 
 
 def shipped_files():
@@ -16,14 +31,18 @@ def shipped_files():
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS and not (at_root and d in SKIP_ROOT_DIRS)]
         for f in files:
             p = os.path.join(dirpath, f)
-            rel = os.path.relpath(p, ROOT)
-            if f.endswith(TEXT) and not rel.startswith("tests") and rel != "build.py":
+            rel = rel_of(p)
+            if f.endswith(TEXT) and not rel.startswith("tests/") and rel != "build.py" and not is_adapter_note(rel):
                 yield rel, p
 
 
 class ShippedTest(unittest.TestCase):
     def test_required_files_exist(self):
-        for f in ("START-HERE.md", "CLAUDE.md", "AGENTS.md", "GEMINI.md", "setup/SETUP.md", "setup/filing-styles.md", "setup/gap-log.md", "setup/tools.json"):
+        for f in ("adapters/claude-code/START-HERE.md", "adapters/claude-code/CLAUDE.md", "adapters/claude-code/AGENTS.md",
+                  "adapters/claude-code/GEMINI.md", "adapters/claude-code/setup.cmd", "adapters/claude-code/setup.command",
+                  "adapters/claude-code/platform.md", "adapters/grok-bot/START-HERE.md", "adapters/grok-bot/README.md",
+                  "adapters/grok-bot/install.sh", "adapters/grok-bot/platform.md", "skills/INDEX.md",
+                  "setup/SETUP.md", "setup/filing-styles.md", "setup/gap-log.md", "setup/tools.json"):
             self.assertTrue(os.path.exists(os.path.join(ROOT, f)), f)
 
     def test_no_em_dashes(self):
@@ -40,30 +59,44 @@ class ShippedTest(unittest.TestCase):
                 self.assertIsNone(m, "%s contains %r" % (rel, m.group(0) if m else None))
 
     def test_backticked_paths_resolve(self):
-        for rel in ("CLAUDE.md", "AGENTS.md", "GEMINI.md", "START-HERE.md", "setup/SETUP.md"):
+        for rel in ("adapters/claude-code/CLAUDE.md", "adapters/claude-code/AGENTS.md", "adapters/claude-code/GEMINI.md",
+                    "adapters/claude-code/START-HERE.md", "setup/SETUP.md", "adapters/grok-bot/START-HERE.md",
+                    "adapters/grok-bot/README.md"):
             with open(os.path.join(ROOT, rel), encoding="utf-8") as fh:
                 text = fh.read()
-            for path in re.findall(r"`((?:setup|_reference|\.claude)/[A-Za-z0-9_./-]+)`", text):
-                if path.endswith(("setup-report.md", "version.json", "update-report.md")):
-                    continue  # written by the installer, the zip build or the updater at run time
-                self.assertTrue(os.path.exists(os.path.join(ROOT, path)), "%s names %s" % (rel, path))
+            for path in re.findall(r"`((?:setup|_reference|skills|\.claude)/[A-Za-z0-9_./-]+)`", text):
+                if path in RUNTIME:
+                    continue  # an adapter root file or written at run time
+                tries = (path, path.replace(".claude/skills/", "skills/"))
+                self.assertTrue(any(os.path.exists(os.path.join(ROOT, t)) for t in tries), "%s names %s" % (rel, path))
 
     def test_claude_md_routes_setup(self):
-        with open(os.path.join(ROOT, "CLAUDE.md"), encoding="utf-8") as fh:
+        with open(os.path.join(ROOT, "adapters", "claude-code", "CLAUDE.md"), encoding="utf-8") as fh:
             text = fh.read()
         self.assertIn("set this up", text)
         self.assertIn("setup/SETUP.md", text)
 
     def test_gap_finder_present_and_skill_count(self):
-        skills = os.path.join(ROOT, ".claude", "skills")
+        skills = os.path.join(ROOT, "skills")
         names = sorted(d for d in os.listdir(skills) if os.path.isfile(os.path.join(skills, d, "SKILL.md")))
         self.assertIn("gap-finder", names)
         self.assertIn("update", names)
-        self.assertEqual(len(names), 21, names)
+        self.assertGreaterEqual(len(names), 22, names)
+        with open(os.path.join(skills, "INDEX.md"), encoding="utf-8") as fh:
+            indexed = [l for l in fh.read().splitlines() if l.startswith("- `")]
+        self.assertEqual(len(names), len(indexed), "skills/INDEX.md is stale; run build.py")
         with open(os.path.join(skills, "gap-finder", "SKILL.md"), encoding="utf-8") as fh:
             text = fh.read()
         for word in ("build", "find", "by hand", "gap-log.md", "three times", "tool-vetting"):
             self.assertIn(word, text)
+
+    def test_no_platform_paths_in_core_skills(self):
+        for rel, p in shipped_files():
+            if not rel.startswith("skills/") or rel.startswith(VENDOR) or rel.startswith("skills/last30days/"):
+                continue
+            with open(p, encoding="utf-8", errors="replace") as fh:
+                m = PLATFORM.search(fh.read())
+                self.assertIsNone(m, "%s names a platform path %r" % (rel, m.group(0) if m else None))
 
     def test_filing_styles_has_six(self):
         with open(os.path.join(ROOT, "setup/filing-styles.md"), encoding="utf-8") as fh:
@@ -78,7 +111,8 @@ class ShippedTest(unittest.TestCase):
                 continue
             t = os.path.join(skills, d, "TEST.md")
             self.assertTrue(os.path.isfile(t), d + " has no TEST.md")
-            text = open(t, encoding="utf-8").read()
+            with open(t, encoding="utf-8") as fh:
+                text = fh.read()
             for h in ("## The ask", "## The input", "## Done looks like"):
                 self.assertIn(h, text, d + " TEST.md missing " + h)
 

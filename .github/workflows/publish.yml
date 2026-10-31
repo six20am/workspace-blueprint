@@ -1,8 +1,9 @@
 name: publish
 
-# On every push to main: run the tests, build the zip, publish it as the "latest" release,
-# build the one-page site and deploy it to Cloudflare Pages. The site reads the skill files,
-# so a new skill shows up on the page the moment it lands.
+# On every push to main: run the tests, build the zip and the Grok Bot folder, publish the zip
+# as the "latest" release, push the Grok Bot folder to its mirror repo, build the one-page site
+# and deploy it to Cloudflare Pages. The site reads the skill files, so a new skill shows up on
+# the page the moment it lands.
 
 on:
   push:
@@ -21,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+      HAS_GROK_TOKEN: ${{ secrets.GROKBOT_PUSH_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,8 +35,8 @@ jobs:
       - name: Tests
         run: python -m unittest discover -s tests -t . -q
 
-      - name: Build the zip
-        run: python build.py --out "dist/Six20AM-Workspace-Blueprint.zip"
+      - name: Build the zip and the Grok Bot folder
+        run: python build.py --adapter all --out "dist/Six20AM-Workspace-Blueprint.zip" --grok-dir dist/grokbot-blueprint
 
       - name: Publish the zip as the latest release
         env:
@@ -48,6 +50,18 @@ jobs:
             gh release create latest "dist/Six20AM-Workspace-Blueprint.zip" --title "Latest build" \
               --notes "Built from ${GITHUB_SHA::12} on $(date -u +%Y-%m-%d). This tag moves with main." --latest
           fi
+
+      - name: Push the Grok Bot folder to the mirror repo
+        # Skipped until the GROKBOT_PUSH_TOKEN secret exists: a fine-grained token with
+        # contents: write on six20am/grokbot-blueprint, and nothing else. The zip still publishes above.
+        if: env.HAS_GROK_TOKEN == 'true'
+        env:
+          GROKBOT_PUSH_TOKEN: ${{ secrets.GROKBOT_PUSH_TOKEN }}
+        run: |
+          set -e
+          git config --global user.name "workspace-blueprint-bot"
+          git config --global user.email "noreply@six20am.com"
+          python build.py --adapter grok-bot --grok-dir dist/grokbot-blueprint --push
 
       - name: Build the site
         run: python site/build_site.py

@@ -94,12 +94,12 @@ def read_copy():
 
 
 def skills():
-    """Shipped skills from .claude/skills (plain lines from skills.json), plus designed-but-not-built ones from
+    """Shipped skills from skills/ (plain lines from skills.json), plus designed-but-not-built ones from
     roadmap.json marked as coming. A roadmap entry whose folder already exists is dropped, so nothing shows twice."""
     meta = json.load(open(os.path.join(HERE, "skills.json"), encoding="utf-8"))
     road = json.load(open(os.path.join(HERE, "roadmap.json"), encoding="utf-8"))["skills"]
     groups = {g: [] for g in meta["groups"]}
-    skills_dir = os.path.join(ROOT, ".claude", "skills")
+    skills_dir = os.path.join(ROOT, "skills")  # INDEX.md sits here too; it has no SKILL.md, so the loop skips it
     shipped = []
     for d in sorted(os.listdir(skills_dir)):
         p = os.path.join(skills_dir, d, "SKILL.md")
@@ -172,6 +172,8 @@ def main():
         if sid == "can-do":
             text = text.replace("<!-- generated skill list goes here -->", "")
             text = re.sub(r"knowing how to do twenty-one things", f"knowing how to do {num_word(count).lower()} things", text)
+            if coming == 0:  # nothing left on the roadmap: drop the sentence about what is on the way
+                text = re.sub(r"\s*Another \{\{coming\}\}[^.]*?where it's going\.", "", text)
             text = text.replace("{{coming}}", str(coming))
         body[sid] = md_block(text, sid)
         if sid == "two-ways":
@@ -210,9 +212,12 @@ def main():
 
 
 def num_word(n):
-    words = {20: "Twenty", 21: "Twenty-one", 22: "Twenty-two", 23: "Twenty-three", 24: "Twenty-four", 25: "Twenty-five",
-             26: "Twenty-six", 27: "Twenty-seven", 28: "Twenty-eight", 29: "Twenty-nine", 30: "Thirty"}
-    return words.get(n, str(n))
+    tens = {20: "Twenty", 30: "Thirty", 40: "Forty"}
+    ones = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+    if 20 <= n <= 40:
+        t, o = n - n % 10, n % 10
+        return tens[t] + ("-" + ones[o] if o else "")
+    return str(n)
 
 
 if __name__ == "__main__":

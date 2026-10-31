@@ -92,6 +92,10 @@
    "Keeping the workspace honest",
    "Compares an outside method, claim by claim, against how your workspace already works."
   ],
+  "workspace-audit": [
+   "Keeping the workspace honest",
+   "Checks that your map still matches the folders on disk. Moves nothing without your yes."
+  ],
   "update": [
    "Keeping the workspace honest",
    "Pulls new skills and tools from the public repo. Never touches your files."

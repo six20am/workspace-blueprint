@@ -16,7 +16,20 @@ One folder on your own computer. Claude reads what's in it, follows your rules, 
 
 [Download the zip]
 
-Works on Windows today. The Mac version is new and hasn't been tested yet.
+<!-- hero-status -->
+Windows | Tested on one machine
+Mac | New, not tested yet
+Installs | About 500 MB of free tools
+Privacy | Setup sends nothing off your computer
+Undo | Delete the folder to remove what it built
+
+<!-- hero-jobs -->
+Transcribe a video | For a transcript, Claude opens only what the job needs: the lit files.
+Read a PDF | For a PDF, Claude opens only what the job needs: the lit files.
+Learn my voice | To learn your voice, Claude opens only what the job needs: the lit files.
+
+<!-- hero-figure -->
+A sample folder. Yours gets named for your work. Pick a job to see what Claude opens.
 
 <!-- problem -->
 ## The chat box forgets
@@ -123,6 +136,11 @@ Yes. It's one folder and a few standard programs. Delete the folder and everythi
 Download it, run setup, and hand it the thing you've been putting off.
 
 [Download the zip]
+
+<!-- signed -->
+One person makes this. The code is public, so you can read all of it before you run it. If setup stops, it saves a report. Post it to us on GitHub.
+
+Six20AM
 
 <!-- footer -->
 Made by Six20AM. Source on GitHub: github.com/six20am/workspace-blueprint and github.com/six20am/grokbot-blueprint. The routing method comes from a teaching kit, used with its author's permission.

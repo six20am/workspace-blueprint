@@ -33,7 +33,7 @@
   --fg:#141210; --fg2:#524c44; --fg3:#6a635a;
   --amber-ink:#9a5400; --hatch:rgba(0,0,0,.04); color-scheme:light}}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
 body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 h1,h2{font-family:var(--serif);font-weight:400;line-height:1.06;letter-spacing:-.018em;text-wrap:balance;margin:0 0 var(--s3)}
@@ -47,11 +47,14 @@ a:hover{text-decoration-color:var(--amber)}
 code{font:400 .88em var(--mono);color:var(--fg)}
 strong{font-weight:600;color:var(--fg)}
 .wrap{max-width:1160px;margin:0 auto}
-header.top{display:flex;justify-content:space-between;align-items:center;padding-block:var(--s3);gap:var(--s2)}
+header.top{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding-block:10px;gap:var(--s2);background:var(--bg);border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;gap:12px;min-height:44px;text-decoration:none;color:var(--fg);font:500 13px var(--mono);letter-spacing:.02em}
 .brand img{width:32px;height:32px;border-radius:var(--r)}
-header.top a.small{font:400 13px var(--mono);color:var(--fg2);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
-header.top a.small:hover{color:var(--fg)}
+nav.menu{display:flex;align-items:center;gap:var(--s3)}
+nav.menu a{font:400 13px var(--mono);color:var(--fg2);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+nav.menu a:hover{color:var(--fg)}
+nav.menu a.go{color:var(--fg);border:1px solid var(--amber);border-radius:var(--r);padding:0 14px}
+nav.menu a.go:hover{background:var(--amber);color:var(--on-amber)}
 
 .eyebrow{font:500 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);margin:0 0 var(--s3)}
 .hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.9fr);gap:var(--s6);align-items:start;padding-block:var(--s5) var(--s5);position:relative}
@@ -111,6 +114,7 @@ ol.week li::before{content:counter(step);position:absolute;left:0;top:15px;font:
 .grokline{font-size:15px;color:var(--fg2);margin-top:var(--s3)}
 
 .prompt{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);margin:var(--s2) 0}
+#prompt:target .prompt:first-of-type{border-color:var(--amber)}
 .prompt pre{margin:0;padding:var(--s3) var(--s3) 68px;font:400 14px/1.7 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--fg)}
 .copy{position:absolute;right:var(--s2);bottom:var(--s2);min-height:44px;padding:6px 16px;border-radius:var(--r);border:1px solid var(--line2);background:transparent;color:var(--fg);font:500 13px var(--mono);cursor:pointer}
 .copy:hover{border-color:var(--amber)}
@@ -170,7 +174,9 @@ footer a{color:var(--fg2)}
 }
 @media (max-width:640px){
   body{font-size:16px}
-  header.top a.small{display:none}
+  .brand span,nav.menu a.wide{display:none}
+  nav.menu{gap:var(--s2)}
+  html{scroll-padding-top:80px}
   .tree{font-size:12px}
   .ln{grid-template-columns:23ch minmax(0,1fr);padding-inline:4px}
   ol.week,.paths,.two{grid-template-columns:minmax(0,1fr)}
@@ -202,7 +208,13 @@ footer a{color:var(--fg2)}
 <div class="wrap">
 <header class="top">
   <a class="brand" href="#top"><img src="assets/six20am-logo-square-128.png" alt="Six20AM" width="32" height="32"><span>Workspace Blueprint</span></a>
-  <a class="small" href="{{repo}}">Source on GitHub</a>
+  <nav class="menu" aria-label="On this page">
+    <a href="#setup">Setup</a>
+    <a href="#skills">Skills</a>
+    <a class="wide" href="#questions">Questions</a>
+    <a class="wide" href="{{repo}}">GitHub</a>
+    <a class="go" href="#prompt">Get the prompt</a>
+  </nav>
 </header>
 
 <main id="top">
@@ -238,11 +250,11 @@ footer a{color:var(--fg2)}
 {{what-you-get}}
 </div></section>
 
-<section class="row"><p class="rail">Setup</p><div class="body">
+<section class="row" id="setup"><p class="rail">Setup</p><div class="body">
 {{how-it-works}}
 </div></section>
 
-<section class="row"><p class="rail">Skills</p><div class="body">
+<section class="row" id="skills"><p class="rail">Skills</p><div class="body">
 {{can-do}}
 </div></section>
 
@@ -250,7 +262,7 @@ footer a{color:var(--fg2)}
 {{two-ways}}
 </div></section>
 
-<section class="row"><p class="rail">Paste-in</p><div class="body">
+<section class="row" id="prompt"><p class="rail">Paste-in</p><div class="body">
 {{paste-this}}
 </div></section>
 
@@ -276,7 +288,7 @@ footer a{color:var(--fg2)}
 </div>
 </div></section>
 
-<section class="row"><p class="rail">Questions</p><div class="body">
+<section class="row" id="questions"><p class="rail">Questions</p><div class="body">
 {{faq}}
 </div></section>
 

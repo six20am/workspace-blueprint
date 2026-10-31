@@ -111,7 +111,7 @@ ol.week li::before{content:counter(step);position:absolute;left:0;top:15px;font:
 .paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s5);margin-top:var(--s2)}
 .paths p{margin:0;color:var(--fg2);min-width:0}
 .paths p strong{display:block;margin-bottom:var(--s1)}
-.grokline{font-size:15px;color:var(--fg2);margin-top:var(--s3)}
+.agentline{font-size:15px;color:var(--fg2);margin-top:var(--s3)}
 
 .prompt{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);margin:var(--s2) 0}
 #prompt:target .prompt:first-of-type{border-color:var(--amber)}
@@ -127,7 +127,7 @@ summary::-webkit-details-marker{display:none}
 summary::after{content:"+";margin-left:auto;font:400 18px var(--mono);color:var(--fg3)}
 details[open]>summary::after{content:"\2212"}
 details p{margin:0 0 var(--s3);color:var(--fg2)}
-details.grok,details.inst{margin-top:var(--s2)}
+details.agent,details.inst{margin-top:var(--s2)}
 
 .schedule{margin-top:var(--s4)}
 .sched summary small{font:400 12px var(--mono);color:var(--fg3);margin-left:auto;white-space:nowrap}

@@ -212,9 +212,6 @@ def main():
     login_list = "".join(f"<li>{esc(n)}</li>" for n in logins)
 
     tpl = open(os.path.join(HERE, "template.html"), encoding="utf-8").read()
-    # template.html still names the dropped vendor path in two class names; map them to the neutral ones
-    # until the template's owner renames them (no-op once renamed)
-    tpl = tpl.replace(".grokline", ".agentline").replace("details.grok,", "details.agent,")
     out = tpl
     for k, v in body.items():
         out = out.replace("{{" + k + "}}", v)

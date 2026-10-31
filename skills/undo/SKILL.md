@@ -19,7 +19,7 @@ Six words, plain: "renamed March invoices by date", "added voice notes to refere
 python tools/undo/undo.py undo
 ```
 
-It prints `Undid: <what>` and the files that came back. Tell the person in one line what is back, in their words: "The three invoices have their old names again." Unsaved changes are saved first as "before undo", so nothing is lost.
+It prints `Undid: <what>` and the files that came back. Tell the person in one line what is back, in their words: "The three invoices have their old names again." Unsaved changes are saved first as "before undo", so nothing is lost. If it says `Undid: before undo`, those were unsaved changes: name the files to the person before stepping back further.
 
 If it says `No history yet`, run `python tools/undo/undo.py init` and tell them history starts now; there is nothing earlier to undo. If it says `Nothing to undo yet.`, say so.
 

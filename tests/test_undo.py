@@ -94,6 +94,35 @@ class UndoTests(unittest.TestCase):
         self.assertEqual(self.read("keep.md"), "keep\n")
         self.assertFalse(os.path.exists(os.path.join(self.tmp, ".git")))
 
+    def test_cloned_repo_is_refused(self):
+        self.git("init", "-q")
+        self.write("upstream.md", "from upstream\n")
+        self.git("add", "-A")
+        self.git("-c", "user.name=Up", "-c", "user.email=up@example.com", "commit", "-q", "-m", "upstream work")
+        self.git("remote", "add", "origin", "https://example.com/blueprint.git")
+        r = self.run_undo("init")
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("This folder is a copy of a repository, not a workspace history.", r.stdout)
+        self.assertEqual(self.git("config", "--local", "--get", "workspace.undo").strip(), "")
+        self.assertFalse(os.path.exists(os.path.join(self.tmp, ".gitignore")))
+        r = self.run_undo("undo")
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("This folder's history was not started by undo.", r.stdout)
+        self.assertEqual(self.commit_count(), 1)
+
+    def test_existing_gitignore_gains_missing_lines(self):
+        self.write(".gitignore", "notes-private/\n.env\n")
+        r = self.run_undo("init")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        lines = self.read(".gitignore").splitlines()
+        self.assertEqual(lines[0], "notes-private/")
+        self.assertEqual(lines.count(".env"), 1)
+        for line in ("*.pem", "accounts.json", "setup/setup-report.md", "*.mp4", "*.dmg"):
+            self.assertIn(line, lines)
+        self.assertEqual(self.git("config", "--local", "--get", "workspace.undo").strip(), "1")
+        self.run_undo("init")
+        self.assertEqual(self.read(".gitignore").splitlines(), lines)
+
     def test_undo_with_one_commit_is_refused(self):
         self.run_undo("init")
         r = self.run_undo("undo")

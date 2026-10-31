@@ -9,8 +9,9 @@ python tools/undo/undo.py list            # the last ten saves: id, date, messag
 python tools/undo/undo.py undo            # step back one save and print the files that came back
 ```
 
-`init` is safe to run again: it writes `.gitignore` from `gitignore-template` only when there is none,
-and sets a local name and email only when git has none, so saves work on a fresh machine.
+`init` is safe to run again: it adds every `gitignore-template` line `.gitignore` lacks, sets a local
+name and email only when git has none, and marks the history as its own. `save`, `list` and `undo` refuse
+a history without that mark, and `init` refuses a cloned copy of a repository (one with a remote).
 
 `undo` reverts the newest save with a new commit, so the history is kept and nothing is lost.
 Run it again and it steps back one more save, never putting the last undo back. Unsaved changes

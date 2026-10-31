@@ -59,7 +59,7 @@ Do this without asking more questions. Tell them you are building and that it ta
 
 A row for a skill that is not in the skills folder yet is still written; the skill lands with `update`.
 
-9. **History.** Run `python tools/undo/undo.py init`, then `python tools/undo/undo.py save "workspace built"`. From now on, save after every task that changes files (the `undo` skill).
+9. **History.** Run `python tools/undo/undo.py init`. From now on, save after every task that changes files (the `undo` skill).
 
 ## 3. Fix
 

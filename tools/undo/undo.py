@@ -16,6 +16,10 @@ import sys
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 TEMPLATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "gitignore-template")
 NO_HISTORY = "No history yet. Run: python tools/undo/undo.py init"
+NOT_OURS = "This folder's history was not started by undo. Run: python tools/undo/undo.py init"
+CLONE = ("This folder is a copy of a repository, not a workspace history. "
+         "Undo only works on a folder made by the installer.")
+MARKER = "workspace.undo"
 
 
 def run_git(args, cwd=ROOT, check=True):
@@ -42,6 +46,60 @@ def has_history():
     return os.path.exists(os.path.join(ROOT, ".git"))
 
 
+def has_marker():
+    return run_git(["config", "--local", "--get", MARKER], check=False).stdout.strip() == "1"
+
+
+def require_history():
+    """save, list and undo only work on a history that init started."""
+    if not has_history():
+        fail(NO_HISTORY)
+    if not has_marker():
+        fail(NOT_OURS)
+
+
+def template_groups():
+    """The template as (comment, [patterns]) groups."""
+    groups = []
+    if not os.path.exists(TEMPLATE):
+        return groups
+    with open(TEMPLATE, encoding="utf-8") as fh:
+        for line in fh.read().splitlines():
+            line = line.strip()
+            if line.startswith("#"):
+                groups.append((line, []))
+            elif line:
+                if not groups:
+                    groups.append(("", []))
+                groups[-1][1].append(line)
+    return groups
+
+
+def merge_gitignore():
+    """Write .gitignore from the template, or append every template line it is missing."""
+    path = os.path.join(ROOT, ".gitignore")
+    existing = ""
+    if os.path.exists(path):
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            existing = fh.read()
+    have = set(l.strip() for l in existing.splitlines())
+    blocks = []
+    for comment, patterns in template_groups():
+        missing = [p for p in patterns if p not in have]
+        if missing:
+            blocks.append("\n".join(([comment] if comment else []) + missing))
+    if not blocks:
+        return
+    text = existing
+    if text and not text.endswith("\n"):
+        text += "\n"
+    if text:
+        text += "\n"
+    text += "\n\n".join(blocks) + "\n"
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(text)
+
+
 def is_dirty():
     return run_git(["status", "--porcelain"]).stdout.strip() != ""
 
@@ -63,21 +121,26 @@ def commit_all(message):
 
 
 def cmd_init():
-    created = False
+    created = adopted = False
     if not has_history():
         if run_git(["init", "-q", "-b", "main"], check=False).returncode != 0:
             run_git(["init", "-q"])
             run_git(["symbolic-ref", "HEAD", "refs/heads/main"])
         created = True
-    gitignore = os.path.join(ROOT, ".gitignore")
-    if not os.path.exists(gitignore) and os.path.exists(TEMPLATE):
-        shutil.copyfile(TEMPLATE, gitignore)
+    elif not has_marker() and commit_count() > 0:
+        if run_git(["config", "--get", "remote.origin.url"], check=False).stdout.strip():
+            fail(CLONE)
+        adopted = True
+    merge_gitignore()
     if run_git(["config", "user.name"], check=False).stdout.strip() == "":
         run_git(["config", "user.name", "Workspace"])
     if run_git(["config", "user.email"], check=False).stdout.strip() == "":
         run_git(["config", "user.email", "workspace@localhost"])
-    sha = commit_all("workspace built") if commit_count() == 0 else None
-    if sha:
+    sha = commit_all("workspace built") if (commit_count() == 0 or adopted) else None
+    run_git(["config", "--local", MARKER, "1"])
+    if adopted:
+        print("History adopted, %d saves." % commit_count())
+    elif sha:
         print("History started: %s workspace built" % sha)
     elif created:
         print("History started, nothing to save yet.")
@@ -86,8 +149,7 @@ def cmd_init():
 
 
 def cmd_save(message):
-    if not has_history():
-        fail(NO_HISTORY)
+    require_history()
     sha = commit_all(message)
     if sha is None:
         print("nothing to save")
@@ -96,8 +158,7 @@ def cmd_save(message):
 
 
 def cmd_list():
-    if not has_history():
-        fail(NO_HISTORY)
+    require_history()
     if commit_count() == 0:
         print("No saves yet.")
         return
@@ -115,11 +176,11 @@ def undo_target():
     """
     out = run_git(["log", "--first-parent", "--format=%H%x1f%P%x1f%s%x1f%b%x1e"]).stdout
     undone = set()
-    for record in out.split(""):
+    for record in out.split("\x1e"):
         record = record.strip()
         if not record:
             continue
-        sha, parents, subject, body = (record.split("") + ["", "", ""])[:4]
+        sha, parents, subject, body = (record.split("\x1f") + ["", "", ""])[:4]
         reverted = None
         for line in body.splitlines():
             line = line.strip()
@@ -137,8 +198,7 @@ def undo_target():
 
 
 def cmd_undo():
-    if not has_history():
-        fail(NO_HISTORY)
+    require_history()
     if is_dirty():
         commit_all("before undo")
     if commit_count() < 2:
@@ -149,7 +209,8 @@ def cmd_undo():
     sha, message = target
     r = run_git(["revert", "--no-edit", sha], check=False)
     if r.returncode != 0:
-        run_git(["revert", "--abort"], check=False)
+        if run_git(["revert", "--abort"], check=False).returncode != 0:
+            print("History is mid-undo; run: git revert --abort")
         fail("Could not undo %s cleanly: %s" % (message, " ".join((r.stderr or r.stdout).split())))
     files = run_git(["show", "--stat", "--format=", "HEAD"]).stdout.rstrip()
     print("Undid: %s" % message)

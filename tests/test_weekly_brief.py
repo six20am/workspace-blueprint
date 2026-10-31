@@ -45,6 +45,11 @@ def build():
             "# Dates\n\n2026-11-10 | water bill due | from money/water.pdf\n"
             "2026-12-25 | lease renewal | from home/lease.pdf\n"
             "2026-11-02 | car tag renewal | from car/tag.pdf\n")
+    ws.file("renewals.md", d(30),
+            "# Renewals\n\n2027-03-15 | car insurance | Example Mutual | every 6 months\n"
+            "2026-11-05 | furnace service plan | Northwind Heating | once\n"
+            "2026-11-19 | web domain example.com | the registrar | every year\n"
+            "2026-10-28 | truck registration | state motor vehicles | every year\n")
     ws.file("waiting-on.md", d(30),
             "# Waiting on\n\n2026-10-19 | Harbor Plumbing | quote for the back bathroom | emailed\n"
             "2026-10-30 | Pat | the photos from Saturday | texted\n"
@@ -79,7 +84,7 @@ class RepeatsTests(unittest.TestCase):
         self.assertEqual(brief.repeats(["fixed it", "fixed it", "fixed it"]), [])
 
     def test_render_has_the_section(self):
-        data = {"came_in": [], "went_out": [], "dates_due": [], "waiting": [], "gaps": [], "sign_ins": [],
+        data = {"came_in": [], "went_out": [], "dates_due": [], "renewals": [], "waiting": [], "gaps": [], "sign_ins": [],
                 "repeats": ["4 times: wrote Monday update email"], "window": (datetime.date(2026, 10, 25), datetime.date(2026, 10, 31))}
         text = brief.render(data)
         self.assertIn("## Jobs that keep coming back (last 90 days)", text)
@@ -106,6 +111,15 @@ class WeeklyBriefTests(unittest.TestCase):
         self.assertEqual(self.data["dates_due"], ["2026-11-02 | car tag renewal | from car/tag.pdf",
                                                   "2026-11-10 | water bill due | from money/water.pdf"])
 
+    def test_renewals_past_and_within_30_days(self):
+        self.assertEqual(self.data["renewals"], [
+            "3 days past: truck registration, state motor vehicles (2026-10-28, every year), ask if renewed",
+            "in 5 days: furnace service plan, Northwind Heating (2026-11-05, once), this week",
+            "in 19 days: web domain example.com, the registrar (2026-11-19, every year)",
+        ])
+        os.remove(os.path.join(self.ws.root, "renewals.md"))
+        self.assertEqual(brief.collect(self.ws.root, TODAY, 7)["renewals"], [])
+
     def test_waiting_on_overdue_only(self):
         self.assertEqual(self.data["waiting"], ["12 days: Harbor Plumbing, quote for the back bathroom (asked 2026-10-19, emailed)"])
         os.remove(os.path.join(self.ws.root, "waiting-on.md"))
@@ -121,13 +135,15 @@ class WeeklyBriefTests(unittest.TestCase):
         text = brief.render(self.data)
         self.assertTrue(text.startswith("# Week of 2026-10-25 to 2026-10-31\n"))
         heads = [l for l in text.splitlines() if l.startswith("## ")]
-        self.assertEqual(heads, ["## Came in", "## Went out", "## Dates coming up", "## Waiting on, overdue", "## Gaps logged",
+        self.assertEqual(heads, ["## Came in", "## Went out", "## Dates coming up", "## Renewals coming up (30 days)",
+                                 "## Waiting on, overdue", "## Gaps logged",
                                  "## Jobs that keep coming back (last 90 days)", "## Sign-ins needed"])
         self.assertIn("- clients/acme/notes.md", text)
         self.assertIn("- 2026-11-10 | water bill due | from money/water.pdf", text)
+        self.assertIn("- in 5 days: furnace service plan", text)
         self.assertIn("- 12 days: Harbor Plumbing", text)
-        empty = dict(self.data, came_in=[], went_out=[], dates_due=[], waiting=[], gaps=[], sign_ins=[])
-        self.assertEqual(brief.render(empty).count("Nothing."), 7)
+        empty = dict(self.data, came_in=[], went_out=[], dates_due=[], renewals=[], waiting=[], gaps=[], sign_ins=[])
+        self.assertEqual(brief.render(empty).count("Nothing."), 8)
 
     def test_output_path_from_router_notes_line(self):
         out = brief.output_path(self.ws.root, TODAY, None)

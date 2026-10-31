@@ -5,12 +5,13 @@
     python tools/weekly-brief/brief.py --days 14 --out x.md
     python tools/weekly-brief/brief.py --today 2026-10-31   # end the week on that date
 
-Seven sections: files that came in (changed in the window), files that went out (the ones inside
-a delivery or sent folder), dates coming up in the next 14 days (from paperwork/dates.md), things
+Eight sections: files that came in (changed in the window), files that went out (the ones inside
+a delivery or sent folder), dates coming up in the next 14 days (from paperwork/dates.md), renewals
+due within 30 days or past (renewals.md, read with tools/renewals/renewals.py), things
 waited on past their time (waiting-on.md, read with tools/waiting-on/waiting.py), gaps
 logged (setup/gap-log.md), jobs that keep coming back (undo-history summaries from the last 90
 days that repeat three or more times) and sign-ins still needed (setup/setup-report.md). It reads
-only file dates, those four files, the router file and the undo history's summaries. It saves weekly-brief-YYYY-MM-DD.md in the
+only file dates, those five files, the router file and the undo history's summaries. It saves weekly-brief-YYYY-MM-DD.md in the
 notes folder the router names, else the workspace folder, and prints the path. Standard library only.
 """
 import argparse
@@ -103,6 +104,19 @@ def _waiting_on(root, today):
     return [waiting.line_for(it) for it in overdue]
 
 
+def _renewals(root, today):
+    """Lines from renewals.md past or due within 30 days, soonest first, 'this week' marked. Empty without the file or the tool."""
+    renewals = _sibling_tool("renewals", "renewals")
+    text = _read(os.path.join(root, "renewals.md"))
+    if renewals is None or not text:
+        return []
+    b = renewals.sort_items(renewals.parse(text), today)
+    out = [renewals.line_for(it) + ", ask if renewed" for it in b["past"]]
+    out += [renewals.line_for(it) + ", this week" for it in b["soon"]]
+    out += [renewals.line_for(it) for it in b["month"]]
+    return out
+
+
 REPEAT_DAYS = 90
 REPEAT_MIN = 3
 STOP = {"a", "an", "the", "and", "or", "of", "to", "for", "in", "on", "at", "by", "with", "from", "into", "up",
@@ -187,6 +201,7 @@ def collect(root, today, days):
         "came_in": came_in,
         "went_out": went_out,
         "dates_due": _dated_lines(os.path.join(root, "paperwork", "dates.md"), today, today + datetime.timedelta(days=DUE_DAYS)),
+        "renewals": _renewals(root, today),
         "waiting": _waiting_on(root, today),
         "gaps": _dated_lines(os.path.join(root, "setup", "gap-log.md"), start, today),
         "repeats": ["%d times: %s" % (n, label) for n, label in repeats(_history_summaries(root, REPEAT_DAYS))],
@@ -212,6 +227,7 @@ def render(data):
     lines += _section("Came in", data["came_in"], CAP)
     lines += _section("Went out", data["went_out"], CAP)
     lines += _section("Dates coming up", data["dates_due"])
+    lines += _section("Renewals coming up (30 days)", data.get("renewals", []))
     lines += _section("Waiting on, overdue", data.get("waiting", []))
     lines += _section("Gaps logged", data["gaps"])
     lines += _section("Jobs that keep coming back (last %d days)" % REPEAT_DAYS, data.get("repeats", []))

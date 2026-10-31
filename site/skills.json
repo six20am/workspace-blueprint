@@ -188,6 +188,10 @@
   "waiting-on": [
    "Everyday life",
    "One list of what other people owe you: a quote, a reply, a refund. The weekly brief says what is overdue and drafts the nudge. It never sends it."
+  ],
+  "renewals": [
+   "Everyday life",
+   "Insurance, licenses, registrations, domains, passports: one list of what expires when. The weekly brief warns 30 days out and again at 7. Never pays or renews."
   ]
  },
  "headlines": {

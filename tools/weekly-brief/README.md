@@ -8,16 +8,17 @@ python tools/weekly-brief/brief.py --days 14 --out x.md
 python tools/weekly-brief/brief.py --today 2026-10-31   # end the week on that date
 ```
 
-The brief is titled `# Week of <start> to <end>` and has seven sections, each saying `Nothing.` when empty:
+The brief is titled `# Week of <start> to <end>` and has eight sections, each saying `Nothing.` when empty:
 
 - **Came in**: files changed in the window, newest first, capped at 40. Skips `setup/`, `tools/`, `_reference/`, the skills folder, hidden files, `node_modules`, `__pycache__` and earlier briefs.
 - **Went out**: the subset inside a folder named `delivery`, `delivered`, `sent`, `out`, `3-delivery` or `6-comms` (any case).
 - **Dates coming up**: lines in `paperwork/dates.md` dated today to 14 days out. The file is optional.
+- **Renewals coming up (30 days)**: lines in `renewals.md` past their date or due within 30 days, as `tools/renewals/renewals.py` prints them, with "this week" inside 7 days. The file is optional.
 - **Waiting on, overdue**: the lines in `waiting-on.md` past their wait, as `tools/waiting-on/waiting.py` prints them. The file is optional.
 - **Gaps logged**: lines in `setup/gap-log.md` dated inside the window.
 - **Jobs that keep coming back**: undo-history save summaries from the last 90 days that repeat three or more times.
 - **Sign-ins needed**: the bullets under `## Sign in yourself` in `setup/setup-report.md`.
 
-It reads file dates only, plus those four files, the undo history's summaries and the router file (named in `setup/adapter.json`).
+It reads file dates only, plus those five files, the undo history's summaries and the router file (named in `setup/adapter.json`).
 It saves `weekly-brief-YYYY-MM-DD.md` to `--out`, else the folder a router line names after the word
 "notes" in backticks, else the workspace folder, and prints the path. Standard library only.

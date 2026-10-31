@@ -9,6 +9,7 @@ Standard library only.
     python build.py [--adapter claude-code|grok-bot|all] [--out <zip>] [--grok-dir <dir>] [--push] [--names <file>]
 """
 import argparse
+import base64
 import datetime
 import json
 import os
@@ -44,7 +45,9 @@ HARD_RULE = re.compile(r"Hard Rule \d", re.I)     # a numbered rule from the par
 HEX_ID = re.compile(r"\b[0-9a-f]{32}\b")
 # files that may name the maintainer, keyed by repo-relative source path: the updater and the publish notes name the public repos
 ALLOWED = {"README.md", "docs/design.md", "tools/update/update.py",
-           "adapters/claude-code/publish.md", "adapters/grok-bot/publish.md", "adapters/grok-bot/README.md"}
+           "adapters/grok-bot/README.md"}  # the mirror repo's README: names the two public repos on purpose
+# maintainer notes inside an adapter folder; never walked, scanned or shipped (like the root README.md)
+ADAPTER_SKIP_FILES = ("publish.md",)
 # vendor code shipped as-is; scanned by eye, not by string (same exemption as tests/test_shipped.py)
 VENDOR = ("skills/last30days/scripts/", "skills/agent-reach/_references")
 SENTENCE_END = re.compile(r"(?<!\be\.g)(?<!\bi\.e)(?<!\betc)\.(?=\s|$)")
@@ -182,7 +185,7 @@ def entries(repo, adapter):
     cfg = ADAPTERS[adapter]
     skip = ADAPTER_SKIP.get(adapter, ())
     overlay = []
-    for rel, p in walk(os.path.join(repo, "adapters", adapter)):
+    for rel, p in walk(os.path.join(repo, "adapters", adapter), skip_root_files=ADAPTER_SKIP_FILES):
         arc = "setup/platform.md" if rel == "platform.md" else map_skills(rel, cfg["skills_dir"])
         overlay.append(("adapters/%s/%s" % (adapter, rel), arc, p))
     taken = {arc for _, arc, _ in overlay}
@@ -269,8 +272,29 @@ def build(repo, out, names, adapter="claude-code", top=TOP):
     return write_report(os.path.splitext(out)[0] + "-build-report.md", adapter, out, rels)
 
 
+def _inside(path, parent):
+    """True when path is parent or anywhere below it (case-insensitive on Windows)."""
+    path, parent = os.path.normcase(path), os.path.normcase(parent)
+    try:
+        return os.path.commonpath([path, parent]) == parent
+    except ValueError:   # different drives
+        return False
+
+
+def check_out_dir(repo, out_dir):
+    """Refuses an output folder that would wipe or pollute the repo: the repo itself, any folder above it,
+    or any folder inside it other than one under <repo>/dist/."""
+    out, root = os.path.realpath(out_dir), os.path.realpath(repo)
+    if _inside(root, out):
+        raise ValueError("refusing to build into %s: it is the repo or a folder above it, and clearing it would delete the repo" % out_dir)
+    dist = os.path.join(root, "dist")
+    if _inside(out, root) and not (_inside(out, dist) and os.path.normcase(out) != os.path.normcase(dist)):
+        raise ValueError("refusing to build into %s: inside the repo, only a folder under dist/ may be an output" % out_dir)
+
+
 def build_folder(repo, out_dir, names, adapter):
     """Writes one adapter's output as a plain folder, cleared first except its .git. Returns the build report."""
+    check_out_dir(repo, out_dir)
     included = collect(repo, adapter, names)
     os.makedirs(out_dir, exist_ok=True)
     for entry in os.listdir(out_dir):
@@ -293,26 +317,47 @@ def build_folder(repo, out_dir, names, adapter):
     return write_report(report_path, adapter, out_dir, [arc for arc, _ in items])
 
 
+def push_command(url, token):
+    """(argv, env_additions) for the force-push. With a token, the credential travels as an http header set
+    through GIT_CONFIG_* env vars, so it is in neither the URL, the process list, .git/config nor a credential
+    helper (helpers are switched off for this push). Without one, the user's own credentials are used."""
+    argv = ["git", "push", "--force", url, "HEAD:main"]
+    if not token:
+        return argv, {}
+    basic = base64.b64encode(("x-access-token:" + token).encode("utf-8")).decode("ascii")
+    return argv, {
+        "GIT_CONFIG_COUNT": "2",
+        "GIT_CONFIG_KEY_0": "http.https://github.com/.extraHeader",
+        "GIT_CONFIG_VALUE_0": "Authorization: Basic " + basic,
+        "GIT_CONFIG_KEY_1": "credential.helper",
+        "GIT_CONFIG_VALUE_1": "",
+    }
+
+
 def push_grok(out_dir, sha):
     """Commits the grok folder and force-pushes it to the mirror's main. The token never reaches the output."""
     token = os.environ.get("GROKBOT_PUSH_TOKEN")
-    url = ("https://x-access-token:%s@%s" % (token, GROK_REPO)) if token else "https://" + GROK_REPO
+    secrets = [s for s in (token, token and base64.b64encode(("x-access-token:" + token).encode("utf-8")).decode("ascii")) if s]
 
-    def git(*args, capture=False):
+    def git(argv, extra_env=None):
+        env = dict(os.environ, **(extra_env or {}))
         try:
-            r = subprocess.run(["git"] + list(args), cwd=out_dir, check=True, text=True,
+            r = subprocess.run(argv, cwd=out_dir, env=env, check=True, text=True,
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         except subprocess.CalledProcessError as e:
-            msg = "git %s failed: %s" % (args[0], (e.stderr or "").strip())
-            raise RuntimeError(msg.replace(token, "***") if token else msg) from None
+            msg = "git %s failed: %s" % (argv[1], (e.stderr or "").strip())
+            for s in secrets:
+                msg = msg.replace(s, "***")
+            raise RuntimeError(msg) from None
         return r.stdout
 
     if not os.path.isdir(os.path.join(out_dir, ".git")):
-        git("init", "-b", "main")
-    git("add", "-A")
-    if git("status", "--porcelain").strip():
-        git("commit", "-m", "Mirror of six20am/workspace-blueprint %s" % (sha or "unknown"))
-    git("push", "--force", url, "HEAD:main")
+        git(["git", "init", "-b", "main"])
+    git(["git", "add", "-A"])
+    if git(["git", "status", "--porcelain"]).strip():
+        git(["git", "commit", "-m", "Mirror of six20am/workspace-blueprint %s" % (sha or "unknown")])
+    argv, extra = push_command("https://" + GROK_REPO, token)
+    git(argv, extra)
 
 
 def main():
@@ -340,7 +385,7 @@ def main():
             if a.push:
                 push_grok(a.grok_dir, git_sha(repo))
                 print("grok-bot: pushed to https://" + GROK_REPO)
-    except LeakError as e:
+    except (LeakError, ValueError) as e:
         print(e)
         return 1
     return 0

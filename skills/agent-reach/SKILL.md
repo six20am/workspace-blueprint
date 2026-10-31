@@ -1,7 +1,7 @@
 ---
 name: agent-reach
 description: >
-  Use to READ or SEARCH content on platforms that a normal fetch can't reach , 
+  Use to READ or SEARCH content on platforms that a normal fetch can't reach,
   X/Twitter, Reddit, LinkedIn, Facebook, Instagram, YouTube, GitHub code search,
   and RSS feeds: plus any single web URL that WebFetch fails on (e.g. 402/403,
   login walls). Trigger when the user asks to research a topic across these

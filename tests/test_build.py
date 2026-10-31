@@ -1,4 +1,4 @@
-import json, os, sys, tempfile, unittest, zipfile
+import base64, json, os, sys, tempfile, unittest, zipfile
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import build
 
@@ -19,6 +19,9 @@ def make_repo(d, extra=None):
     write(d, "adapters/grok-bot/README.md", "# grok readme, names the maintainer\n")
     write(d, "adapters/grok-bot/install.sh", "#!/bin/bash\r\necho grok\r\n", newline="")
     write(d, "adapters/grok-bot/platform.md", "# grok bot platform\n")
+    # maintainer notes name the public repos; they are never walked, so they never trip the scan
+    write(d, "adapters/claude-code/publish.md", "# publish the six20am zip\n")
+    write(d, "adapters/grok-bot/publish.md", "# publish the six20am mirror\n")
     write(d, "adapters/grok-bot/skills/getting-started/SKILL.md", '---\nname: getting-started\ndescription: "Starts. Use first."\n---\n')
     write(d, "setup/setup.ps1", "# windows installer\n")
     write(d, "setup/setup.sh", "#!/bin/bash\n")
@@ -99,6 +102,7 @@ class BuildTest(unittest.TestCase):
                 self.assertFalse(any(n.startswith("T/skills/") for n in names), "core skills/ must map to .claude/skills")
                 self.assertFalse(any("/adapters/" in n for n in names))
                 self.assertNotIn("T/install.sh", names)
+                self.assertFalse(any(n.endswith("publish.md") for n in names), "maintainer publish notes stay in the repo")
                 self.assertFalse(any("getting-started" in n for n in names), "the grok adapter skill never reaches the zip")
                 self.assertEqual(z.read("T/setup/platform.md").decode(), "# claude code platform\n")
                 meta = json.loads(z.read("T/setup/adapter.json"))
@@ -116,7 +120,7 @@ class BuildTest(unittest.TestCase):
             for want in ("skills/a/SKILL.md", "skills/getting-started/SKILL.md", "skills/INDEX.md", "install.sh",
                          "README.md", "setup/setup.sh", "setup/platform.md", "setup/version.json", "tools/x/README.md"):
                 self.assertTrue(os.path.isfile(os.path.join(out, want)), want)
-            for gone in ("CLAUDE.md", "setup.command", "setup/setup.ps1", "setup/tests", ".claude", "adapters", "stale.md", "build.py"):
+            for gone in ("CLAUDE.md", "setup.command", "setup/setup.ps1", "setup/tests", ".claude", "adapters", "stale.md", "build.py", "publish.md", "setup/publish.md"):
                 self.assertFalse(os.path.exists(os.path.join(out, gone)), gone)
             self.assertTrue(os.path.isfile(os.path.join(out, ".git", "HEAD")), "the mirror's .git survives a rebuild")
             with open(os.path.join(out, "README.md"), encoding="utf-8") as fh:
@@ -130,6 +134,34 @@ class BuildTest(unittest.TestCase):
             self.assertEqual(meta["adapter"], "grok-bot")
             self.assertEqual(meta["map"], "MAP.md")
             self.assertEqual(meta["skills_dir"], "skills")
+
+    def test_build_folder_refuses_repo_and_ancestors_and_inside_tree(self):
+        with tempfile.TemporaryDirectory() as d:
+            repo = os.path.join(d, "repo"); make_repo(repo)
+            for bad in (repo, d, os.path.join(repo, "tools", "out"), os.path.join(repo, "dist")):
+                with self.assertRaises(ValueError, msg=bad):
+                    build.build_folder(repo, bad, names=[], adapter="grok-bot")
+            self.assertTrue(os.path.isfile(os.path.join(repo, "skills", "a", "SKILL.md")), "a refused build deletes nothing")
+            self.assertFalse(os.path.exists(os.path.join(repo, "tools", "out")))
+            ok = os.path.join(repo, "dist", "x")
+            build.build_folder(repo, ok, names=[], adapter="grok-bot")
+            self.assertTrue(os.path.isfile(os.path.join(ok, "skills", "a", "SKILL.md")))
+
+    def test_push_env_carries_token_as_header_not_url(self):
+        token = "ghs_testtoken123"
+        url = "https://github.com/six20am/grokbot-blueprint.git"
+        argv, env = build.push_command(url, token)
+        self.assertEqual(argv, ["git", "push", "--force", url, "HEAD:main"])
+        self.assertFalse(any(token in a for a in argv), "the token is never in the argv")
+        self.assertNotIn("@", argv[3])
+        basic = base64.b64encode(("x-access-token:" + token).encode()).decode()
+        self.assertEqual(env["GIT_CONFIG_COUNT"], "2")
+        self.assertEqual(env["GIT_CONFIG_KEY_0"], "http.https://github.com/.extraHeader")
+        self.assertEqual(env["GIT_CONFIG_VALUE_0"], "Authorization: Basic " + basic)
+        self.assertEqual(env["GIT_CONFIG_KEY_1"], "credential.helper")
+        self.assertEqual(env["GIT_CONFIG_VALUE_1"], "", "credential helpers are switched off so the token is never stored")
+        self.assertFalse(any(token in v for v in env.values()), "the raw token appears only inside the base64 header")
+        self.assertEqual(build.push_command(url, None), (argv, {}), "no token: the user's own credentials, no overrides")
 
     def test_index_lists_every_skill_one_line_each(self):
         with tempfile.TemporaryDirectory() as d:

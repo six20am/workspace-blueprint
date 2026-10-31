@@ -6,7 +6,7 @@ A base workspace for a Grok Bot, built the way the Workspace Blueprint is built:
 
 No file editing. Four questions, one filing style.
 
-**Status:** mirrored from the core repo; not yet run with a new owner on a clean import. The checks still open are in `publish.md`.
+**Status:** mirrored from the core repo; not yet run with a new owner on a clean import. The checks still open are in the core repo's `adapters/grok-bot/publish.md`.
 
 The design is `docs/design.md` in `six20am/workspace-blueprint`.
 
@@ -27,7 +27,7 @@ The design is `docs/design.md` in `six20am/workspace-blueprint`.
 
 Nothing to download. The bot's cloud computer is the machine.
 
-Publishing a new version is in `publish.md`.
+Publishing a new version is in the core repo's `adapters/grok-bot/publish.md`.
 
 ## Built from
 

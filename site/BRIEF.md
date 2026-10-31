@@ -4,25 +4,25 @@ Format: web-page. Written 2026-10-31 for `/copywriter`. Facts below come from `R
 
 ## Who reads this
 
-One person who runs something: a small business, a practice, a side project, a household with too much paperwork. They have tried an AI chat box and found it forgets everything and knows nothing about their files. Not technical. They can unzip a folder and double-click a file. They have heard "Claude" and may or may not have an account.
+One person who runs something: a small business, a practice, a side project, a household with too much paperwork. They have tried an AI chat box and found it forgets everything and knows nothing about their files. Not technical. They use, or are about to try, an AI service that gives the AI its own computer. They can copy and paste. Some would rather keep everything on their own machine, and for them Claude Code comes second. They have heard "Claude" and may or may not have an account.
 
 Awareness: problem aware. They know the chat box is not enough. They have not heard of a "workspace" as the fix.
 
 ## The one job this page does
 
-Get them to download the zip and run setup. Nothing else.
+Get them to copy the prompt and paste it into their AI. Nothing else.
 
 ## The offer
 
-Free. A zip file. Inside it, a setup that installs the tools, installs Claude Code, then has Claude ask four questions and build a workspace around their answers.
+Free. One prompt for an AI service that gives the AI its own computer: the AI fetches the blueprint, fits it to its own setup from `ADAPT.md`, asks four questions and builds a workspace around the answers. Second path: a zip for Claude Code on the reader's own computer. Services are never named on the page (Michael, 2026-10-31).
 
 ## Facts (binding)
 
 **What it is.** A base workspace for anyone, in any line of work. A folder on their own computer where an AI can find their files, follow their rules and do real work. Not a chat box.
 
-**Setup.** Unzip, move the folder to Documents, double-click `setup.cmd` (Windows) or `setup.command` (Mac). Fifteen to thirty minutes, most of it installs, in a black window. Windows may ask "allow this app to make changes" a few times. When it finishes, Claude opens and asks four questions: what you do, what work you want help with, how you like things filed, how you want it to sound when it writes for you. "Not sure" is an acceptable answer to each; it picks something sensible. Then it builds the folders and names three things to try.
+**Setup.** Unzip, move the folder to Documents, double-click `setup.cmd` (Windows) or `setup.command` (Mac). Fifteen to thirty minutes, most of it installs, in a black window. Windows may ask "allow this app to make changes" a few times. When it finishes, Claude opens and asks four questions: what you do, what work you want help with, how you like things filed, how you want it to sound when it writes for you. "Not sure" is an acceptable answer to each; it picks something sensible. Then it builds the folders and says what to try first. On Claude Code, a Mac refuses the setup file the first time; the fix is System Settings, Privacy and Security, Open Anyway (`adapters/claude-code/START-HERE.md`).
 
-**Status.** Setup writes `setup/setup-report.md` (what installed, what failed, what needs a sign-in); that file is what to attach to an issue. Windows installer tested on one machine. Mac installer is new and untested; the page must say so in those words or plainer. What is next: the first run on another AI agent, and the Mac installer test.
+**Status.** Setup writes `setup/setup-report.md` (what installed, what failed, what needs a sign-in); that file is what to attach to an issue. Windows installer tested on one machine. Mac installer is new and untested; the page must say so in those words or plainer. What is next: the first run on an AI service, and the Mac installer test.
 
 **What gets built.** Folders in one of six filing styles (military, by stage, by client or project, PARA, numbered index, by date). Three routing files so the AI loads only what a task needs. A voice file so anything it writes sounds like the owner.
 
@@ -44,15 +44,15 @@ Free. A zip file. Inside it, a setup that installs the tools, installs Claude Co
 
 **Who makes it.** Six20AM, a two-brand marketing agency run by one person. The repo is public: `github.com/six20am/workspace-blueprint`. The routing method comes from a teaching kit whose author approved redistribution.
 
-**Two ways to run it.** The page guides the reader to the right one.
+**Two ways to run it.** AI service first, Claude Code second. On a service, files live on the computer the service gives the AI, under that service's rules, and chats and files go through it; "nothing leaves your computer" and the Windows and Mac status apply to Claude Code only.
 
-- *Claude Code, on your own computer.* The zip. Unzip, double-click setup, answer four questions. Everything installs on the reader's machine. Windows tested, Mac untested. This is the path the CTA sells.
-- *Another AI agent with its own computer and files.* It adapts the blueprint itself from the neutral file `ADAPT.md` at the repo root: download the repo zip, unzip into its own folder, write a small adapter file, run `bash setup/setup.sh --no-launch`, save one standing rule, follow setup, run doctor. **Not yet run on a real third-party agent.** The page names no vendor.
+- *Claude Code, on your own computer.* The zip. Unzip, double-click setup, answer four questions. Everything installs on the reader's machine. Windows tested, Mac untested.
+- *An AI service that gives the AI its own computer.* This is the path the CTA sells. It adapts the blueprint itself from the neutral file `ADAPT.md` at the repo root: download the repo zip, unzip into its own folder, write a small adapter file, run `bash setup/setup.sh --no-launch`, save one standing rule, follow setup, run doctor. **Not yet run on a real service.** The page names no vendor.
 
 **Paste-in prompts.** For a reader who already has the tool, the page gives one prompt to paste, and the agent fetches everything itself.
 
 - *Already have Claude Code:* the prompt tells Claude to download the release zip (the Guardrails link) and unzip it into Documents, which gives a folder named `Six20AM Workspace Blueprint`. A clone of the repo does not work: `setup.cmd` and `CLAUDE.md` sit in `adapters/claude-code/` and reach the root only in the zip. The page then tells the reader to double-click `setup.cmd` (Windows) or `setup.command` (Mac) in that folder, because the installer puts in the tools and skips anything already present, and then to say "set this up". The repo's `CLAUDE.md` routes "set this up" to `setup/SETUP.md`.
-- *Have another AI agent:* the prompt tells the agent to download `https://github.com/six20am/workspace-blueprint/archive/refs/heads/main.zip`, unzip it into a folder of its own (not the shared root of its file area), read `ADAPT.md` and follow it, asking the reader the four questions when it says to. **Untested on a real third-party agent**; the page must say so.
+- *The main prompt, in the hero:* the prompt tells the agent to download `https://github.com/six20am/workspace-blueprint/archive/refs/heads/main.zip`, unzip it into a folder of its own (not the shared root of its file area), read `ADAPT.md` and follow it, asking the reader the four questions when it says to. **Untested on a real service**; the page must say so.
 - Each prompt is shown in a box with a Copy button. The Copy button is microcopy.
 
 **Your first week (asks that work today, each backed by a shipped skill).** Paste a YouTube link and ask for the transcript (`video-watcher`). Drop a PDF, Word or Excel file in the folder and ask what it says (`markitdown`). Ask what people have said about a topic in the last 30 days (`last30days`). Give it a website and ask for every photo on it (`client-asset-harvester`). Paste three emails you wrote and ask it to learn your voice (`voice-extractor`). Hand it three clips and ask for one video with a fade at the end (`media-tools`). Ask for something it has no tool for and watch it say so and offer to build one (`gap-finder`). How to ask: say the outcome you want, name the file or link, say where the result should land. "Not sure" and "what can you do with this" are both fine openers.
@@ -62,30 +62,29 @@ Free. A zip file. Inside it, a setup that installs the tools, installs Claude Co
 - No em dashes.
 - Grade 8 or lower.
 - No invented numbers, testimonials, logos or names of users. There are none.
-- Never say "supercharge", "unlock", "seamless", "powerful". "AI agent" appears only in naming the other-agent path ("another AI agent").
+- Never say "supercharge", "unlock", "seamless", "powerful". Say "AI service" or "your AI", not "AI agent".
 - Name no AI vendor other than Claude.
 - Do not name the agency's clients or the two agency brands.
 - The download link is `https://github.com/six20am/workspace-blueprint/releases/latest/download/Six20AM-Workspace-Blueprint.zip`. The GitHub repo link is footer microcopy, not a second CTA.
 
 ## CTA
 
-One: **Download the zip**. Button label is microcopy; the copywriter may propose it. The same action repeats after how-it-works, after first-week, and at the close, and a phone-only sticky bar carries it once the hero scrolls away.
+One: **Copy the prompt**. The same action sits in the hero, the header, after how-it-works, after first-week and at the close, and a phone-only sticky bar carries it once the hero scrolls away. Download the zip appears once, inside the Claude Code section. The AI service path is untested, and the hero status table must say so.
 
 ## Sections, in order (the page framework for this piece)
 
 ```
-hero            headline, one line under it, the CTA, a small status table, and a sample folder tree (by stage, generic names, labeled as a sample) where three jobs each light the files the AI opens
+hero            headline, one line under it, the prompt in a box, the CTA, a small status table, and a sample folder tree (by stage, generic names, labeled as a sample) where three jobs each light the files the AI opens
 problem         the chat box forgets; your files are not in it
 what-you-get    three outcomes, one line each
-how-it-works    three steps: unzip, run setup, answer four questions
+how-it-works    three steps: copy the prompt, paste it into your AI, answer four questions; if the AI can only chat, use Claude Code
 can-do          one line introducing the skills; one schedule of skills by group, each group with a plain headline (from site/skills.json), columns skill, what it does, status; shipped and coming both generated at build time
-two-ways        Claude Code on your computer (the zip) as the main card; another AI agent as one line under it (adapts itself from ADAPT.md; untested)
-paste-this      the Claude Code prompt in a box with a Copy button; the other-agent prompt behind a "Have another AI agent?" disclosure, marked untested
+two-ways        Claude Code on your own computer: three zip steps, the zip button, the already-have-Claude-Code prompt
 first-week      seven asks that work today, and how to ask
-installed       what gets installed, size, privacy; the full tool list behind a disclosure, the sign-in list visible
+installed       what the zip installs, size, privacy; the full tool list behind a disclosure, the sign-in list visible
 stays-current   the update path in three sentences
-status          Windows tested, Mac untested, what is next (the first run on another AI agent, and the Mac installer test)
-faq             four questions: Do I need an account? Is it free? What does it send? Can I undo it?
+status          AI service untested, Windows tested, Mac untested, what is next (the first run on an AI service, and the Mac installer test)
+faq             five questions: Do I need an account? Is it free? Where do my files live? What does it send? Can I undo it?
 close           one line and the CTA again, then a short signed note from the maker, signed Six20AM
 footer          microcopy: Six20AM, the GitHub link for the repo, teaching-kit credit
 ```

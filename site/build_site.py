@@ -30,7 +30,7 @@ def inline(s):
     s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"\b(github\.com/[\w./-]*[\w/])", r'<a href="https://\1">\1</a>', s)
     s = s.replace("open an issue on GitHub", f'<a href="{REPO_URL}/issues">open an issue on GitHub</a>')  # both paths report to the core repo
-    s = s.replace("Post it to us on GitHub", f'Post it to us <a href="{REPO_URL}/issues">on GitHub</a>')
+    s = s.replace("tell us on GitHub", f'tell us <a href="{REPO_URL}/issues">on GitHub</a>')
     return s
 
 
@@ -57,7 +57,10 @@ def md_block(text, section):
             out.append(f"<h2>{inline(l[3:])}</h2>")
         elif re.fullmatch(r"\[(.+)\]", l):
             label = re.fullmatch(r"\[(.+)\]", l).group(1)
-            out.append(f'<p class="cta"><a class="button" href="{DOWNLOAD}">{esc(label)}</a></p>')
+            if label == "Copy the prompt":
+                out.append(f'<p class="cta"><button type="button" class="button" data-main>{esc(label)}</button></p>')
+            else:
+                out.append(f'<p class="cta"><a class="button" href="{DOWNLOAD}">{esc(label)}</a></p>')
         elif l.startswith("- "):
             items = []
             while i < len(lines) and lines[i].startswith("- "):
@@ -149,7 +152,7 @@ def pipe_rows(text):
 # so the names stay as they are). SIGNIN is the visible sign-in list; PLAIN is the full tool list.
 SIGNIN = {
     "Claude Code": "Claude Code (the AI itself)",
-    "NotebookLM": "NotebookLM (Google's research tool)",
+    "NotebookLM": "NotebookLM (a research tool)",
     "Agent Reach": "Agent Reach (reads posts behind logins)",
     "Connect image search": "Image search (free photo keys)",
     "Claude in Chrome": "Claude in Chrome (your own browser)",
@@ -230,11 +233,6 @@ def main():
                 text = re.sub(r"\s*Another \{\{coming\}\}[^.]*?where it's going\.", "", text)
             text = text.replace("{{coming}}", str(coming))
         body[sid] = md_block(text, sid)
-        if sid == "paste-this":
-            # the other-agent prompt sits behind a disclosure; the Claude Code one stays open
-            body[sid] = re.sub(r"<p><strong>Have another AI agent</strong></p>(.*)$", lambda m: '<details class="agent"><summary>Have another AI agent?</summary>' + m.group(1) + '</details>', body[sid], flags=re.S)
-        if sid == "two-ways":
-            body[sid] = body[sid].replace("<p>Have another AI agent ", '<p class="agentline">Have another AI agent ')
     body["can-do"] += f'\n<div class="schedule">{skills_html}</div>'
     tool_list = "".join(f"<li>{esc(n)}</li>" for n in tool_names)
     login_list = "".join(f"<li>{esc(n)}</li>" for n in logins)

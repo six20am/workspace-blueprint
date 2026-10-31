@@ -34,7 +34,7 @@
   ],
   "chrome-tools": [
    "Reading the web",
-   "Reads pages you are signed in to, in your own browser."
+   "On Claude Code, reads pages you are signed in to, in your own browser."
   ],
   "last30days": [
    "Reading the web",
@@ -42,7 +42,7 @@
   ],
   "video-watcher": [
    "Video and audio",
-   "A timestamped transcript of any video, made on your own computer. Optional shot-by-shot breakdown."
+   "A timestamped transcript of any video. Optional shot-by-shot breakdown."
   ],
   "channel-mine": [
    "Video and audio",
@@ -86,7 +86,7 @@
   ],
   "photo-organizer": [
    "Images",
-   "Renames your photos by the date taken, sets duplicates aside and sorts them by month. Nothing deleted, nothing uploaded."
+   "Renames your photos by the date taken, sets duplicates aside and sorts them by month. Nothing deleted."
   ],
   "deep-research": [
    "Research",
@@ -94,7 +94,7 @@
   ],
   "notebooklm-research": [
    "Research",
-   "Reads a pile of sources, even YouTube links, with Google's NotebookLM research tool."
+   "Reads a pile of sources, even YouTube links, with NotebookLM research tool."
   ],
   "meeting-prep": [
    "Research",

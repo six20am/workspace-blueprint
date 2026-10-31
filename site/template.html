@@ -53,8 +53,8 @@ header.top{position:sticky;top:0;z-index:30;display:flex;justify-content:space-b
 nav.menu{display:flex;align-items:center;gap:var(--s3)}
 nav.menu a{font:400 13px var(--mono);color:var(--fg2);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
 nav.menu a:hover{color:var(--fg)}
-nav.menu a.go{color:var(--fg);border:1px solid var(--amber);border-radius:var(--r);padding:0 14px}
-nav.menu a.go:hover{background:var(--amber);color:var(--on-amber)}
+nav.menu .go{font:500 13px var(--mono);color:var(--fg);background:transparent;border:1px solid var(--amber);border-radius:var(--r);padding:0 14px;min-height:44px;cursor:pointer}
+nav.menu .go:hover,nav.menu .go.done{background:var(--amber);color:var(--on-amber)}
 
 .eyebrow{font:500 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);margin:0 0 var(--s3)}
 .hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.9fr);gap:var(--s6);align-items:start;padding-block:var(--s5) var(--s5);position:relative}
@@ -63,14 +63,14 @@ nav.menu a.go:hover{background:var(--amber);color:var(--on-amber)}
 .hero p{color:var(--fg2);font-size:clamp(18px,1.7vw,20px);max-width:50ch}
 .hero p.eyebrow{font-size:12px;color:var(--fg3)}
 .cta{margin:var(--s4) 0 0}
-.button{display:inline-block;background:var(--amber);color:var(--on-amber);font:600 16px/1.2 var(--sans);padding:16px 28px;border-radius:var(--r);text-decoration:none;min-height:48px;transition:background .15s}
+.button{display:inline-block;background:var(--amber);color:var(--on-amber);font:600 16px/1.2 var(--sans);padding:16px 28px;border:0;border-radius:var(--r);text-decoration:none;min-height:48px;cursor:pointer;transition:background .15s}
 .button:hover{background:var(--amber-light)}
-.button:focus-visible,a:focus-visible,summary:focus-visible,.copy:focus-visible{outline:2px solid var(--amber-light);outline-offset:3px}
+.button:focus-visible,a:focus-visible,summary:focus-visible,.copy:focus-visible,nav.menu .go:focus-visible{outline:2px solid var(--amber-light);outline-offset:3px}
 
 table.state{border-collapse:collapse;width:100%;max-width:440px;margin-top:var(--s4);font-size:14px;line-height:1.4}
 table.state th,table.state td{padding:7px 0;border-top:1px solid var(--line);text-align:left;vertical-align:top}
 table.state tr:last-child th,table.state tr:last-child td{border-bottom:1px solid var(--line)}
-table.state th{font:400 12px/1.6 var(--mono);color:var(--fg3);width:96px;padding-right:var(--s2)}
+table.state th{font:400 12px/1.6 var(--mono);color:var(--fg3);width:176px;padding-right:var(--s2)}
 table.state td{color:var(--fg2)}
 
 .spec{min-width:0;margin:0}
@@ -108,10 +108,13 @@ ol.steps li::before{content:counter(step);position:absolute;left:0;top:10px;font
 ol.week{counter-reset:step;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--s5)}
 ol.week li{counter-increment:step;position:relative;padding:14px 0 14px 34px;font-size:16px}
 ol.week li::before{content:counter(step);position:absolute;left:0;top:15px;font:400 12px/1.65 var(--mono);color:var(--fg3)}
-.agentline{font-size:15px;color:var(--fg2);margin-top:var(--s3)}
 
 .prompt{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);margin:var(--s2) 0}
-#prompt:target .prompt:first-of-type{border-color:var(--amber)}
+.hero .prompt{margin:var(--s3) 0 0;max-width:560px}
+.hero .prompt pre{padding:var(--s2);font-size:13px}
+.hero .prompt .copy{display:none}
+.hero .cta{margin-top:var(--s2)}
+.body .prompt{margin-top:var(--s1)}
 .prompt pre{margin:0;padding:var(--s3) var(--s3) 68px;font:400 14px/1.7 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--fg)}
 .copy{position:absolute;right:var(--s2);bottom:var(--s2);min-height:44px;padding:6px 16px;border-radius:var(--r);border:1px solid var(--line2);background:transparent;color:var(--fg);font:500 13px var(--mono);cursor:pointer}
 .copy:hover{border-color:var(--amber)}
@@ -124,7 +127,7 @@ summary::-webkit-details-marker{display:none}
 summary::after{content:"+";margin-left:auto;font:400 18px var(--mono);color:var(--fg3)}
 details[open]>summary::after{content:"\2212"}
 details p{margin:0 0 var(--s3);color:var(--fg2)}
-details.agent,details.inst{margin-top:var(--s2)}
+details.inst{margin-top:var(--s2)}
 
 .schedule{margin-top:var(--s4)}
 .sched summary small{font:400 12px var(--mono);color:var(--fg3);margin-left:auto;white-space:nowrap}
@@ -191,7 +194,7 @@ footer a{color:var(--fg2)}
   .status{padding:var(--s3)}
   .sticky{display:block;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .2s}
   .sticky.on{transform:none}
-  .sticky .button{display:block;text-align:center}
+  .sticky .button{display:block;width:100%;text-align:center}
   body.pad{padding-bottom:80px}
 }
 @media (prefers-reduced-motion:reduce){
@@ -206,29 +209,30 @@ footer a{color:var(--fg2)}
 <header class="top">
   <a class="brand" href="#top"><img src="assets/six20am-logo-square-128.png" alt="Six20AM" width="32" height="32"><span>Workspace Blueprint</span></a>
   <nav class="menu" aria-label="On this page">
-    <a href="#setup">Setup</a>
+    <a class="wide" href="#setup">Setup</a>
     <a href="#skills">Skills</a>
+    <a class="wide" href="#claude-code">Claude Code</a>
     <a class="wide" href="#questions">Questions</a>
     <a class="wide" href="{{repo}}">GitHub</a>
-    <a class="go" href="#prompt">Get the prompt</a>
+    <button type="button" class="go" data-main>Copy the prompt</button>
   </nav>
 </header>
 
 <main id="top">
-<section class="hero">
+<section class="hero" id="prompt">
 <div>
-<p class="eyebrow">Free. Your computer. Your files.</p>
+<p class="eyebrow">Free. Your AI. Your files.</p>
 {{hero}}
 <table class="state"><tbody>{{hero-status}}</tbody></table>
 </div>
 <figure class="spec">
 <div class="tree" role="img" aria-label="A sample workspace folder. It holds a map file, a file that says what to read, intake, production and delivery folders, and a reference folder with a voice file.">
 <div class="ln root"><span>your-workspace/</span></div>
-<div class="ln p1 p2 p3" style="--n:0"><span>├── CLAUDE.md</span><i>the map</i></div>
-<div class="ln p1 p2 p3" style="--n:1"><span>├── CONTEXT.md</span><i>what to read</i></div>
+<div class="ln p1 p2 p3" style="--n:0"><span>├── MAP.md</span><i>the map</i></div>
+<div class="ln p1 p2 p3" style="--n:1"><span>├── ROUTER.md</span><i>what to read</i></div>
 <div class="ln p2" style="--n:2"><span>├── 01-intake/</span><i>what came in</i></div>
 <div class="ln"><span>├── 02-production/</span><i>the work</i></div>
-<div class="ln p1" style="--n:2"><span>│   └── CONTEXT.md</span><i>its rules</i></div>
+<div class="ln p1" style="--n:2"><span>│   └── NOTES.md</span><i>its rules</i></div>
 <div class="ln"><span>├── 03-delivery/</span><i>what went out</i></div>
 <div class="ln"><span>└── reference/</span></div>
 <div class="ln p3" style="--n:2"><span>    └── voice.md</span><i>how you sound</i></div>
@@ -255,12 +259,8 @@ footer a{color:var(--fg2)}
 {{can-do}}
 </div></section>
 
-<section class="row"><p class="rail">Where it runs</p><div class="body">
+<section class="row" id="claude-code"><p class="rail">Claude Code</p><div class="body">
 {{two-ways}}
-</div></section>
-
-<section class="row" id="prompt"><p class="rail">Paste-in</p><div class="body">
-{{paste-this}}
 </div></section>
 
 <section class="row"><p class="rail">First week</p><div class="body">
@@ -303,7 +303,7 @@ footer a{color:var(--fg2)}
 <p title="{{sha}}">Page built {{date}}. {{count}} skills listed, read from the skill files at build time.</p>
 </footer>
 </div>
-<div class="sticky" id="sticky"><a class="button" href="{{download}}">Download the zip</a></div>
+<div class="sticky" id="sticky"><button type="button" class="button" data-main>Copy the prompt</button></div>
 <script>
 (function(){
   var hero=document.querySelector('.hero .button'),bar=document.getElementById('sticky'),last=document.querySelector('.close .button');
@@ -313,6 +313,13 @@ footer a{color:var(--fg2)}
   new IntersectionObserver(function(e){heroSeen=e[0].isIntersecting;set()}).observe(hero);
   if(last)new IntersectionObserver(function(e){lastSeen=e[0].isIntersecting;set()}).observe(last);
 })();
+document.querySelectorAll('[data-main]').forEach(function(b){
+  var label=b.textContent,pre=document.querySelector('.hero .prompt pre');
+  function all(fn){document.querySelectorAll('[data-main]').forEach(fn)}
+  function done(){all(function(x){x.textContent='Copied. Now paste it';x.classList.add('done')});setTimeout(function(){all(function(x){x.textContent=label;x.classList.remove('done')})},2200)}
+  function fallback(){pre.scrollIntoView();var r=document.createRange();r.selectNodeContents(pre);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+  b.addEventListener('click',function(){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pre.textContent).then(done,fallback)}else{fallback()}});
+});
 document.querySelectorAll('[data-copy]').forEach(function(b){
   b.addEventListener('click',function(){
     var pre=b.parentNode.querySelector('pre'),t=pre.textContent;

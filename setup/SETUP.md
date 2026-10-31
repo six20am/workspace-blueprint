@@ -83,6 +83,7 @@ Do this without asking more questions. Tell them you are building and that it ta
 | voice memos, recordings on my phone, notes to self, thinking out loud | `voice-memo`, `waiting-on` |
 | backups, losing files, a drive, is my stuff safe | `backup`, `undo`, `weekly-brief` |
 | articles, links I mean to read, newsletters, read later | `reading-pile`, `web-read`, `summarize` |
+| ads, flyers, a sales page, headlines, a pitch | `copy-formulas`, `writer`, `social-copywriter` |
 | anything else | `summarize`, `writer` |
 
 A row for a skill that is not in the skills folder yet is still written; the skill lands with `update`.

@@ -14,6 +14,7 @@ The person says "write", "reply to this", "draft", "a note saying", "tell them",
 Route these elsewhere in one line, then stop:
 
 - Marketing copy and social posts: `social-copywriter`.
+- An ad, a flyer, a sales page or a pitch that has the facts but no shape: `copy-formulas` first, then write.
 - A resume, or a formal letter with stakes: `resume-and-letter`.
 
 ## Steps

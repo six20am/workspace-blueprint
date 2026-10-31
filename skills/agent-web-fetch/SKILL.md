@@ -109,8 +109,8 @@ Destination: `research/source-extracts/YYYY-MM-DD__<channel>__<topic-slug>.md`. 
 
 If the vendor skill is regenerated:
 
-1. Confirm the damage: `head .claude/skills/agent-reach/SKILL.md`. Chinese frontmatter, or China-market channels back in scope, means it was overwritten.
-2. The pre-rewrite original is at `SKILL.md.orig-zh.bak` beside it. Diff to see what changed.
+1. Confirm the damage: `head` on the SKILL.md in the agent-reach folder of the skills folder. Chinese frontmatter, or China-market channels back in scope, means it was overwritten.
+2. The original can be re-fetched with `agent-reach install` or from the vendor's repo. Diff to see what changed.
 3. Keep the gates here, in this file only. Do not write them back into the vendor file.
 4. Re-run `agent-reach doctor --json` and update the channel table above.
 

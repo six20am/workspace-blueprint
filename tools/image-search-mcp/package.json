@@ -2,7 +2,7 @@
   "name": "image-search-mcp",
   "version": "1.0.0",
   "private": true,
-  "description": "Unified MCP server for image discovery across Pexels, Unsplash and Pixabay: normalized results, correct licensing behaviour, zero dependencies.",
+  "description": "Unified MCP server for image discovery across Pexels, Unsplash and Pixabay: normalized results, correct licensing behavior, zero dependencies.",
   "type": "module",
   "bin": { "image-search-mcp": "./server.mjs" },
   "main": "server.mjs",

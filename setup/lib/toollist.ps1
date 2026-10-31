@@ -1,11 +1,30 @@
 # Loads and validates setup/tools.json. Never touches the machine.
 $script:SetupAreas = @('base', 'claude', 'plugins', 'tools', 'mcp', 'logins', 'programs')
 
+# The owner's own entries sit beside tools.json in tools.local.json: the same schema, appended after
+# the template's entries. The template never ships or overwrites that file.
 function Read-ToolList([string]$Path) {
     $raw = Get-Content -Path $Path -Raw -Encoding UTF8
     # 5.1 emits a JSON array as one object; foreach unrolls it on both 5.1 and 7.
     $parsed = ConvertFrom-Json -InputObject $raw
     $tools = @(foreach ($item in $parsed) { $item })
+    $localPath = Join-Path (Split-Path -Parent $Path) 'tools.local.json'
+    if (Test-Path -LiteralPath $localPath) {
+        $localParsed = ConvertFrom-Json -InputObject (Get-Content -LiteralPath $localPath -Raw -Encoding UTF8)
+        if (($localParsed -isnot [array]) -and ($null -ne $localParsed) -and ($localParsed.PSObject.Properties.Name -contains 'entries')) {
+            $localParsed = $localParsed.entries
+        }
+        $seen = @{}
+        foreach ($t in $tools) { $seen[[string]$t.id] = $true }
+        foreach ($item in $localParsed) {
+            if ($null -eq $item) { continue }
+            if ($seen.ContainsKey([string]$item.id)) {
+                throw "tools.local.json: the id '$($item.id)' is already used. Give your entry another id."
+            }
+            $seen[[string]$item.id] = $true
+            $tools += $item
+        }
+    }
     for ($i = 0; $i -lt $tools.Count; $i++) {
         foreach ($arr in 'needs', 'install', 'install_mac', 'install_linux') {
             if ($null -eq $tools[$i].$arr) { $tools[$i] = $tools[$i] | Add-Member -NotePropertyName $arr -NotePropertyValue @() -Force -PassThru }

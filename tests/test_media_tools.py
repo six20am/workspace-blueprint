@@ -75,7 +75,7 @@ class SafetyTests(unittest.TestCase):
             finally:
                 mod.find = saved
             self.assertEqual(code, 3, mod.__name__)
-            self.assertIn("Missing: %s. Run: python tools/doctor/doctor.py" % mod.PROGRAM, err.getvalue())
+            self.assertIn("Missing: %s. Run: python tools/doctor/doctor.py (python3 on Mac and Linux)" % mod.PROGRAM, err.getvalue())
 
     def test_refuses_existing_output(self):
         with tempfile.TemporaryDirectory() as d:

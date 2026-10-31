@@ -69,6 +69,22 @@ class OutboundCheckTests(unittest.TestCase):
             r = subprocess.run([sys.executable, CHECK_PY, good], capture_output=True, text=True)
             self.assertEqual(0, r.returncode)
 
+    def test_binary_file_exit_2(self):
+        with tempfile.TemporaryDirectory() as d:
+            samples = {
+                "letter.docx": b"PK\x03\x04 word/document.xml ssn 123-45-6789",
+                "letter.pdf": b"%PDF-1.7\n ssn 123-45-6789",
+                "blob.bin": b"hello\x00ssn 123-45-6789",
+            }
+            for name, data in samples.items():
+                p = os.path.join(d, name)
+                with open(p, "wb") as fh:
+                    fh.write(data)
+                r = subprocess.run([sys.executable, CHECK_PY, p], capture_output=True, text=True)
+                self.assertEqual(2, r.returncode, name)
+                self.assertIn("Not a text file. Scan the Markdown draft, or convert it first:", r.stdout)
+                self.assertIn("tools/markitdown/convert.py", r.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

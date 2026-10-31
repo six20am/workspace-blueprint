@@ -55,6 +55,17 @@ class ScanTest(unittest.TestCase):
         self.assertTrue(build.is_secret(".env"))
         self.assertFalse(build.is_secret("tools/x/accounts.example.json"))
 
+    def test_platform_vendor_names_are_problems(self):
+        self.assertIn("ghl", build.scan_text("set it up in GHL first", []))
+        self.assertIn("highlevel", build.scan_text("a HighLevel workflow", []))
+        self.assertEqual(build.scan_text("roughly halve it, then highlight the tab", []), [])
+
+    def test_html_and_csv_are_scanned(self):
+        self.assertTrue("x.html".endswith(build.TEXT))
+        self.assertTrue("x.csv".endswith(build.TEXT))
+        self.assertTrue("x.ts".endswith(build.TEXT))
+        self.assertTrue("x.tsx".endswith(build.TEXT))
+
     def test_hard_rules_heading_is_fine(self):
         self.assertEqual(build.scan_text("## 8. Hard rules\n- never guess", []), [])
 

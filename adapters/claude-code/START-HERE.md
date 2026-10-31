@@ -28,7 +28,7 @@ That is it. Claude builds the folders and tells you three things to try.
 
 ## What gets installed
 
-Free, standard tools: Git, Python, Node.js, ffmpeg, a web browser engine, Claude Code, and a set of tools for reading videos, web pages, social posts and documents. About 500 MB in all. Nothing is sent anywhere. Nothing signs in to anything for you. Anything that needs your sign-in is listed at the end for you to do yourself.
+Free, standard tools: Git, Python, Node.js, ffmpeg, a web browser engine, Claude Code, and a set of tools for reading videos, web pages, social posts and documents. Several hundred MB in all (LibreOffice alone is 300 MB and more). Nothing is sent anywhere. Nothing signs in to anything for you. Anything that needs your sign-in is listed at the end for you to do yourself.
 
 ## If something goes wrong
 

@@ -24,7 +24,7 @@ import sysconfig
 import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DOCTOR = "python tools/doctor/doctor.py"
+DOCTOR = "python tools/doctor/doctor.py (python3 on Mac and Linux)"
 TIMEOUT = 600
 IMAGES = (".jpg", ".jpeg", ".png", ".tif", ".tiff", ".heic")
 DATES_HEADER = "# Dates that matter\n\nWritten by paperwork, one line each: `YYYY-MM-DD | what | from <file>`.\n\n"

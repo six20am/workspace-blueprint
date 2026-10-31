@@ -11,6 +11,7 @@ It reads `setup/adapter.json` (no file means claude-code), then runs the platfor
 check-then-install mode: `setup/setup.ps1 -Yes -NoLaunch` on Windows, `setup/runner.py --doctor
 --no-launch --adapter <adapter>` on a Mac or Linux. Every entry in `setup/tools.json` is checked
 first, so a present tool is never touched and a re-run picks up where the last one stopped.
+Entries the owner added in `setup/tools.local.json` are checked too, after the template's.
 
 Then it reads `setup/setup-report.md` and prints:
 

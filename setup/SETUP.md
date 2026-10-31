@@ -59,7 +59,7 @@ Do this without asking more questions. Tell them you are building and that it ta
 
 A row for a skill that is not in the skills folder yet is still written; the skill lands with `update`.
 
-9. **History.** Run `python tools/undo/undo.py init`. From now on, save after every task that changes files (the `undo` skill).
+9. **History.** Run `python tools/undo/undo.py init` (python3 on Mac and Linux). From now on, save after every task that changes files (the `undo` skill).
 
 ## 3. Fix
 
@@ -69,6 +69,8 @@ If they said "now" in step 0, work through the failed tools one at a time. For e
 - Mac: `bash setup/setup.sh --only <id> --no-launch`
 
 On the neutral path: `bash setup/setup.sh --only <id> --no-launch`.
+
+A tool the person added themselves lives in `setup/tools.local.json` (theirs; an update never touches it), and `-Only <id>` finds it there too.
 
 Do not run the install commands from `tools.json` by hand; they use helpers that exist only inside the installer. Each run rewrites `setup/setup-report.md`, so read it again afterwards rather than editing it. Say whether it worked. If it fails twice, tell the person what you tried in one line and move on.
 

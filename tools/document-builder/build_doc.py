@@ -21,7 +21,7 @@ import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 FORMATS = ("docx", "pdf", "pptx", "html", "odt")
-DOCTOR = "python tools/doctor/doctor.py"
+DOCTOR = "python tools/doctor/doctor.py (python3 on Mac and Linux)"
 TIMEOUT = 300
 
 

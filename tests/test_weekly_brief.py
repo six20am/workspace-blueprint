@@ -1,4 +1,4 @@
-import datetime, os, shutil, sys, tempfile, time, unittest
+import contextlib, datetime, io, os, shutil, sys, tempfile, time, unittest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "tools", "weekly-brief"))
 import brief
 
@@ -100,11 +100,13 @@ class WeeklyBriefTests(unittest.TestCase):
         self.assertEqual(brief.output_path(self.ws.root, TODAY, "x.md"), "x.md")
         saved, brief.ROOT = brief.ROOT, self.ws.root
         try:
-            rc = brief.main(["--today", "2026-10-31"])
+            with contextlib.redirect_stdout(io.StringIO()) as out:
+                rc = brief.main(["--today", "2026-10-31"])
         finally:
             brief.ROOT = saved
         self.assertEqual(rc, 0)
         self.assertTrue(os.path.isfile(os.path.join(self.ws.root, "weekly-brief-2026-10-31.md")))
+        self.assertIn("weekly-brief-2026-10-31.md", out.getvalue())
 
     def test_cap_at_40_files(self):
         data = dict(self.data, came_in=["f%02d.md" % i for i in range(45)])

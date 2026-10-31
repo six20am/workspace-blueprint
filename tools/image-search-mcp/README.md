@@ -1,6 +1,6 @@
 # image-search-mcp
 
-One MCP server for free stock photo search across Pexels, Unsplash and Pixabay. Normalised results, licence recorded per image, no dependencies (Node 18+).
+One MCP server for free stock photo search across Pexels, Unsplash and Pixabay. Normalized results, license recorded per image, no dependencies (Node 18+).
 
 ## Keys
 
@@ -25,7 +25,7 @@ claude mcp add image-search -- node "<workspace>/tools/image-search-mcp/server.m
 ## Tools
 
 - `list_sources`: which sources have keys, their rate limits, the cache folder.
-- `search_images`: query, orientation, size, source filter. Returns normalised results with a licence block per image.
-- `download_image`: saves the file and writes its licence line beside it.
+- `search_images`: query, orientation, size, source filter. Returns normalized results with a license block per image.
+- `download_image`: saves the file and writes its license line beside it.
 
 Always download, never hotlink. Cache lives at `~/.cache/image-search-mcp` (`IMAGE_MCP_CACHE_DIR` to move it).

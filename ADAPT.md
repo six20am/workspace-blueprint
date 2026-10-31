@@ -35,7 +35,7 @@ If any of the three is missing, stop and tell the person which one, in one line.
 | Shell | bash. |
 | How the map loads | Nothing loads it on its own. The standing rule from step 5 does, once a fresh conversation proves it (step 7). |
 | Installer | `bash setup/setup.sh --no-launch`. After a reset of your computer, run `python3 tools/doctor/doctor.py`. |
-| Updates | `python3 tools/update/update.py`, then `python3 tools/doctor/doctor.py`. |
+| Updates | `python3 tools/update/update.py`. It runs the doctor itself after the files land. |
 | Cost view | None. |
 | Shell output trimming | Call `rtk <command>` yourself for long output. There is no hook to install. |
 

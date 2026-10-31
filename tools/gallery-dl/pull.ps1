@@ -6,7 +6,7 @@
   Points gallery-dl's output and its download archive at the folder you name, so a second run
   skips what the first one already fetched.
 
-  Behaviour (throttling, filename template, directory layout) comes from the global config at
+  Behavior (throttling, filename template, directory layout) comes from the global config at
   %APPDATA%\gallery-dl\config.json. This script only decides WHERE output lands.
 
   Credentials are never stored. Cookie auth is passed at runtime only.

@@ -22,7 +22,7 @@ Route these elsewhere in one line, then stop:
 2. Ask only for what is missing, at most three questions, from this list: who it is for, the one point, the ask or next step, anything that must or must not be said. If the person already gave an answer, do not ask again.
 3. Draft in the voice, in the shape from `forms.md` that fits the job.
 4. Read it once as the reader would. Can they get it in one pass? If not, cut or reorder until they can.
-5. If the draft is leaving the workspace, run `python tools/outbound-check/check.py <file>` (python3 on Mac and Linux) on it and show the person any finding. Fix what they approve.
+5. If the draft is leaving the workspace, run `python tools/outbound-check/check.py <file>` (python3 on Mac and Linux) on the Markdown or text draft, not a built docx or pdf, and show the person any finding. Fix what they approve.
 6. Hand the draft over in the chat and say where it is saved. Never send, post or email it.
 
 ## Where drafts go

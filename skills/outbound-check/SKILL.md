@@ -15,6 +15,8 @@ python tools/outbound-check/check.py <file>   # python3 on Mac and Linux
 
 Use `-` for the file to scan standard input. Run it from the workspace folder. It prints one line per finding, `line N: <kind>: <masked sample>`, and exits 1 when it found anything, 0 when clean. The sample shows only the first two and last two characters.
 
+Scan the Markdown or text draft, not the built docx or pdf. A Word, PDF or other binary file is refused with `Not a text file.` and exit 2; scan its draft, or convert it with the markitdown skill first.
+
 ## What each kind means
 
 - `secret`: a key, token, password or private key.

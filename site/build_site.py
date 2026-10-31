@@ -158,7 +158,7 @@ SIGNIN = {
     "Claude in Chrome": "Claude in Chrome (your own browser)",
 }
 PLAIN = {
-    "rtk hook": "Command-output trimmer, hooked into Claude Code",
+    "RTK hook": "Command-output trimmer, hooked into Claude Code",
     "rtk": "Command-output trimmer",
     "Defuddle": "Web page cleaner",
     "Trafilatura": "Web page cleaner (Python)",
@@ -170,7 +170,7 @@ PLAIN = {
 
 
 def mapped(name, table):
-    for key, plain in table.items():  # longest keys first where one starts another ("rtk hook" before "rtk")
+    for key, plain in table.items():  # longest keys first where one starts another ("RTK hook" before "rtk")
         if name == key or name.startswith(key + " "):
             return plain
     return None

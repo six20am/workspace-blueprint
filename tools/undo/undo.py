@@ -5,11 +5,11 @@ Usage:
   python tools/undo/undo.py save "<what>"   save everything that changed
   python tools/undo/undo.py list            the last ten saves
   python tools/undo/undo.py undo            step back one save, keeping the history
+  python tools/undo/undo.py redo            take back the last undo
 
 Never pushes anywhere and never deletes the .git folder.
 """
 import os
-import shutil
 import subprocess
 import sys
 
@@ -30,7 +30,7 @@ def run_git(args, cwd=ROOT, check=True):
         r = subprocess.run(["git"] + list(args), cwd=cwd, capture_output=True, text=True,
                            encoding="utf-8", errors="replace")
     except FileNotFoundError:
-        fail("git is not installed. Run the doctor: python tools/doctor/doctor.py")
+        fail("git is not installed. Run the doctor: python tools/doctor/doctor.py (python3 on Mac and Linux)")
     if check and r.returncode != 0:
         msg = " ".join((r.stderr or r.stdout or "git failed").split())
         fail("git %s failed: %s" % (args[0], msg))
@@ -102,6 +102,26 @@ def merge_gitignore():
 
 def is_dirty():
     return run_git(["status", "--porcelain"]).stdout.strip() != ""
+
+
+def dirty_files():
+    """The paths git status lists as changed or new."""
+    out = run_git(["status", "--porcelain"]).stdout
+    files = []
+    for line in out.splitlines():
+        if len(line) > 3:
+            path = line[3:].strip()
+            if " -> " in path:
+                path = path.split(" -> ", 1)[1]
+            files.append(path.strip('"'))
+    return files
+
+
+def refuse_if_dirty(action):
+    """Never take unsaved work: stop and say which files need a save first."""
+    if is_dirty():
+        print("Unsaved changes in: %s" % ", ".join(dirty_files()))
+        fail('Save them first (python tools/undo/undo.py save "...") or set them aside, then %s.' % action)
 
 
 def commit_count():
@@ -181,11 +201,7 @@ def undo_target():
         if not record:
             continue
         sha, parents, subject, body = (record.split("\x1f") + ["", "", ""])[:4]
-        reverted = None
-        for line in body.splitlines():
-            line = line.strip()
-            if line.startswith("This reverts commit ") and line.endswith("."):
-                reverted = line[len("This reverts commit "):-1].strip()
+        reverted = reverted_sha(body)
         if sha in undone:
             continue
         if reverted:
@@ -197,10 +213,19 @@ def undo_target():
     return None
 
 
+def reverted_sha(body):
+    """The commit a revert commit's body names, or None for an ordinary save."""
+    found = None
+    for line in body.splitlines():
+        line = line.strip()
+        if line.startswith("This reverts commit ") and line.endswith("."):
+            found = line[len("This reverts commit "):-1].strip()
+    return found
+
+
 def cmd_undo():
     require_history()
-    if is_dirty():
-        commit_all("before undo")
+    refuse_if_dirty("undo")
     if commit_count() < 2:
         fail("Nothing to undo yet.")
     target = undo_target()
@@ -214,6 +239,31 @@ def cmd_undo():
         fail("Could not undo %s cleanly: %s" % (message, " ".join((r.stderr or r.stdout).split())))
     files = run_git(["show", "--stat", "--format=", "HEAD"]).stdout.rstrip()
     print("Undid: %s" % message)
+    if files:
+        print(files)
+
+
+def cmd_redo():
+    """Take back the most recent undo by reverting it. Only an undo can be redone."""
+    require_history()
+    refuse_if_dirty("redo")
+    if commit_count() < 2:
+        fail("Nothing to redo: the last save is not an undo.")
+    body = run_git(["log", "-1", "--format=%b", "HEAD"]).stdout
+    target = reverted_sha(body)
+    if not target:
+        fail("Nothing to redo: the last save is not an undo.")
+    target_body = run_git(["log", "-1", "--format=%b", target], check=False).stdout
+    if reverted_sha(target_body):
+        fail("Nothing to redo: the last undo was already taken back.")
+    message = run_git(["log", "-1", "--format=%s", target], check=False).stdout.strip()
+    r = run_git(["revert", "--no-edit", "HEAD"], check=False)
+    if r.returncode != 0:
+        if run_git(["revert", "--abort"], check=False).returncode != 0:
+            print("History is mid-redo; run: git revert --abort")
+        fail("Could not redo cleanly: %s" % " ".join((r.stderr or r.stdout).split()))
+    files = run_git(["show", "--stat", "--format=", "HEAD"]).stdout.rstrip()
+    print("Redid: %s" % message)
     if files:
         print(files)
 
@@ -233,8 +283,10 @@ def main(argv):
         cmd_list()
     elif cmd == "undo":
         cmd_undo()
+    elif cmd == "redo":
+        cmd_redo()
     else:
-        fail("Unknown command: %s. Use init, save, list or undo." % cmd)
+        fail("Unknown command: %s. Use init, save, list, undo or redo." % cmd)
 
 
 if __name__ == "__main__":

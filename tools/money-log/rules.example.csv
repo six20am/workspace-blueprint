@@ -1,0 +1,29 @@
+match,category,subcategory
+monthly maintenance,Fees,Bank fee
+overdraft,Fees,Bank fee
+transfer fee,Fees,Bank fee
+gas station,Gas,
+fuel,Gas,
+grocery,Groceries,
+supermarket,Groceries,
+coffee,Food & Dining,Coffee
+cafe,Food & Dining,Coffee
+pizza,Restaurants,
+restaurant,Restaurants,
+streaming,Subscriptions,
+subscription,Subscriptions,
+fitness,Health & Fitness,Gym
+gym,Health & Fitness,Gym
+pharmacy,Health,
+electric,Utilities,Electric
+city water,Utilities,Water
+internet,Utilities,Internet
+wireless,Utilities,Phone
+insurance,Insurance,
+rent payment,Housing,Rent
+mortgage,Housing,Mortgage
+hardware,Home,
+rideshare,Transportation,
+parking,Transportation,
+airline,Travel,
+hotel,Travel,

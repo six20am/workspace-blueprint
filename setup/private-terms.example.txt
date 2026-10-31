@@ -1,0 +1,5 @@
+# Copy this file to setup/private-terms.txt and fill it in. That file stays on this machine.
+# name: Jane Example
+# address: 12 Example Street
+# term: example.com
+# A term: line is a domain that is the owner's own. Email addresses at it are not reported.

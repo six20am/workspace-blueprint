@@ -10,7 +10,7 @@ Visits an existing website, crawls in-domain pages, downloads every image found 
 ## INVOKE
 
 ```
-node .claude/skills/client-asset-harvester/harvest.js --url <site-url> [--out <folder>] [flags]
+node skills/client-asset-harvester/harvest.js --url <site-url> [--out <folder>] [flags]
 ```
 
 Optional flags:
@@ -30,7 +30,7 @@ If it fails validation, halt and report.
 
 ## ONE-TIME SETUP (first run only)
 
-1. `cd .claude/skills/client-asset-harvester && npm install`
+1. `cd skills/client-asset-harvester && npm install`
 2. `npx playwright install chromium`
 
 The skill checks both before crawling and prints the install command if missing.

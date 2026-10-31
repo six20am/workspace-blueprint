@@ -5,7 +5,7 @@ description: "Reads public web pages that normal fetching refuses: 403 errors, p
 
 # scrapling
 
-The installer connects Scrapling to Claude as an MCP server. Order of tries:
+The installer connects Scrapling as an MCP server where the platform has MCP; otherwise call scrapling from the shell. Order of tries:
 
 1. `WebFetch` first. It is fastest.
 2. If it fails or comes back empty, `stealthy_fetch` from the scrapling tools.

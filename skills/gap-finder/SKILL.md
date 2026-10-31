@@ -9,8 +9,8 @@ description: "Notices when a task has no tool or skill, says so, and offers to b
 
 Before starting any task, check two places:
 
-1. The routing tables: `CONTEXT.md` at the top level and the `CONTEXT.md` of the workspace the task belongs to.
-2. The skills: the `description:` line of every `.claude/skills/*/SKILL.md`.
+1. The routing tables: the top-level router file and the router file of the section the task belongs to.
+2. The skills: the `description:` line of every `<skills folder>/*/SKILL.md`.
 
 If neither names a tool, a skill or a process for this kind of task, this skill fires. If one does, use it and stop reading.
 
@@ -29,8 +29,8 @@ Before you say that line, read `setup/gap-log.md`. If the same kind of task appe
 ### Build
 
 1. Run the interview in `build-interview.md`. Four questions, one at a time.
-2. Write `.claude/skills/<name>/SKILL.md` with: frontmatter (`name`, `description` under 250 characters), when it fires, inputs needed, the steps, what it must never do, and where output goes.
-3. Add one row to the right workspace `CONTEXT.md`'s "where tools plug in" table: the trigger and the skill name.
+2. Write `<skills folder>/<name>/SKILL.md` with: frontmatter (`name`, `description` under 250 characters), when it fires, inputs needed, the steps, what it must never do, and where output goes.
+3. Add one row to the router file for the section's "where tools plug in" table: the trigger and the skill name.
 4. Run the task with the new skill. Show the result.
 5. Log it: append `YYYY-MM-DD | <task in a few words> | built` to `setup/gap-log.md`.
 
@@ -50,5 +50,5 @@ Before you say that line, read `setup/gap-log.md`. If the same kind of task appe
 
 - Build without the person saying yes.
 - Install anything that `tool-vetting` did not mark ADOPT.
-- Edit `CLAUDE.md`, or any `CONTEXT.md` beyond adding the one routing row.
+- Edit the map file, or any router file beyond adding the one routing row.
 - Type a credential.

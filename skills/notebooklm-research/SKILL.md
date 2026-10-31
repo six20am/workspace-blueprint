@@ -98,5 +98,5 @@ Multi-video notebooks: `-s/--source` scopes generation to specific sources, so o
 
 Upstream: a pasted YouTube link (auto-routed); `deep-research` when a source needs synthesis.
 Downstream: `research/source-extracts/`, every extract written; then whatever consumes it, always as a source and never as verified fact; `workspace-diff` when the source is about how to work.
-Sibling: `.claude/skills/notebooklm/` (vendor, does the work); `agent-web-fetch` (the same routing-layer pattern, for gated web).
+Sibling: the vendor notebooklm skill, installed by notebooklm skill install (does the work); `agent-web-fetch` (the same routing-layer pattern, for gated web).
 Handoff: extracted findings plus a provenance line (URL, notebook ID, date, and which route produced the transcript).

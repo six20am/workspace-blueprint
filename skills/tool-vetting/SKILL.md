@@ -38,10 +38,10 @@ Pick the repo whose description matches the pitch, not the one with the most sta
 Grep before reading anything new:
 
 ```bash
-grep -rliE "<repo-name>|<owner>/<repo>" research/ setup/gap-log.md .claude/skills/ setup/tools.json
+grep -rliE "<repo-name>|<owner>/<repo>" research/ setup/gap-log.md skills/ setup/tools.json
 ```
 
-Also check whether it is already installed: `claude plugin list`, `claude mcp list`, `~/.claude/plugins/cache/`, and `.claude/skills/`. An installed tool's verdict is about its update path, not its install. If a verdict exists, this run extends it: say what it concluded, then test whether its reason still holds today. A stale reason (stars grew, a blocker was fixed, a tool now exists that did not) is itself a finding.
+Also check whether it is already installed: the platform's plugin cache and plugin list, if it has them, and the skills folder. An installed tool's verdict is about its update path, not its install. If a verdict exists, this run extends it: say what it concluded, then test whether its reason still holds today. A stale reason (stars grew, a blocker was fixed, a tool now exists that did not) is itself a finding.
 
 ### 4. Metadata
 
@@ -83,7 +83,7 @@ Use `--no-llm` for a quick static pass on a large batch. Findings are advisory; 
 For each tool, name:
 
 1. **The one job it would do here**, in plain words, not the pitch's.
-2. **What does that job today.** Read `setup/tools.json` and the `description:` lines in `.claude/skills/*/SKILL.md`. Cite the path. Never from memory.
+2. **What does that job today.** Read `setup/tools.json` and the `description:` lines in the skills folder (`*/SKILL.md`). Cite the path. Never from memory.
 3. **The deciding question** for that job. For browser tools: logged-in or public? For anything touching a live account: does it write, and who approves it? For anything with a cost: who pays, and is it metered?
 4. **The verdict:**
 

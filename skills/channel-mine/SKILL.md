@@ -128,7 +128,7 @@ deliverable until the end.
 
 This is the step that makes the difference, and the one a naive summary skips. For each
 substantive finding, ask whether it **confirms, updates or contradicts** something already in
-memory or the workspace's `CONTEXT.md` files.
+memory or the workspace's router files.
 
 The highest-value output of a channel mine is rarely a new idea. It is a specific answer to
 something we previously recorded as unknown, or evidence that a constraint we routed around has

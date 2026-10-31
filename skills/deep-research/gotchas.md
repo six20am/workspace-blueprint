@@ -24,7 +24,7 @@ Last updated: 2026-03-31
   be flagged as "from training knowledge, not verified by current search."
 
 - **Scope creep mid-research.** User adds sub-questions after Phase 2 has started.
-  Claude tacks on additional searches without re-mapping the territory, producing
+  The assistant tacks on additional searches without re-mapping the territory, producing
   inconsistent depth across angles. Fix: If scope expands, restart Phase 1 before
   continuing.
 

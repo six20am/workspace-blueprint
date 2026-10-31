@@ -1,6 +1,6 @@
 ---
 name: workspace-diff
-description: "Compares an outside source about how to work (a NotebookLM notebook, course, toolkit, blueprint) against this workspace and returns a claim-by-claim diff: ALREADY / GAP / CONFLICT / AHEAD / N/A, plus a scored, ranked change list. Diagnose-only: writes nothing to CLAUDE.md or any CONTEXT.md without approval. Use when asked to compare a course, notebook or blueprint against the workspace, mine a source for improvements, or check what a new method would change."
+description: "Compares an outside source about how to work (a NotebookLM notebook, course, toolkit, blueprint) against this workspace and returns a claim-by-claim diff: ALREADY / GAP / CONFLICT / AHEAD / N/A, plus a scored, ranked change list. Diagnose-only: writes nothing to the map file or any router file without approval. Use when asked to compare a course, notebook or blueprint against the workspace, mine a source for improvements, or check what a new method would change."
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
@@ -65,7 +65,7 @@ Save to `research/source-extracts/<source-slug>.md` with a provenance line at th
 
 ### 4. Compare
 
-For each claim, read only the files it plausibly touches: start from `CLAUDE.md`, follow the routing to the workspace `CONTEXT.md` that owns the claim's area, then the one or two reference docs or skills that would carry the practice. Assign one verdict:
+For each claim, read only the files it plausibly touches: start from the map file, follow the routing to the router file that owns the claim's area, then the one or two reference docs or skills that would carry the practice. Assign one verdict:
 
 | Verdict | Test |
 |---|---|
@@ -108,12 +108,12 @@ Write `research/workspace-diffs/<source-slug>.md`:
 ALREADY n · GAP n · CONFLICT n · AHEAD n · N/A n
 ```
 
-Then **stop**. Present the ranked list and ask which to apply. Do not edit `CLAUDE.md`, any `CONTEXT.md`, or any skill before approval.
+Then **stop**. Present the ranked list and ask which to apply. Do not edit the map file, any router file, or any skill before approval.
 
 ### 7. Apply (only after approval)
 
 - Applied changes **cite** the extract; never restate it (no rule in two places).
-- After any `CONTEXT.md` edit, re-read it and confirm every path it names still exists.
+- After any router file edit, re-read it and confirm every path it names still exists.
 - A change that adds a new capability is a `gap-finder` build, not an edit to a router.
 
 ## OUTPUT FORMAT

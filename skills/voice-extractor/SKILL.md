@@ -1,6 +1,6 @@
 ---
 name: voice-extractor
-description: "Extracts a replicable voice profile from writing samples. Produces a style guide Claude can use to write in that voice. Use when: /voice-extractor is invoked."
+description: "Extracts a replicable voice profile from writing samples. Produces a style guide the assistant can use to write in that voice. Use when: /voice-extractor is invoked."
 ---
 
 # Voice Extractor

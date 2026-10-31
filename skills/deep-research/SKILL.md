@@ -28,13 +28,13 @@ REQUIRED: Purpose: what decision or action will this research inform? This shape
 depth, framing, and the action layer at the end.
 
 OPTIONAL: Scope constraints: time period, geography, niche, platform, or angle to
-focus on. Default: no constraint, Claude infers from topic.
+focus on. Default: no constraint, the assistant infers from topic.
 
 OPTIONAL: Output size: BRIEF (1-2 page summary), STANDARD (full structured report),
 or RAW (findings only, no synthesis). Default: STANDARD.
 
 OPTIONAL: Specific sub-questions: if the user already knows what they want answered,
-list them. Claude will add any missing angles.
+list them. The assistant will add any missing angles.
 
 If topic or purpose is missing, ask for both before proceeding. Do not start research
 with incomplete inputs.
@@ -190,7 +190,7 @@ Typical patterns:
 Cache every paid response to `research/cache/dataforseo/<topic>/` so nothing is fetched twice.
 
 On hallucination risk: Do not synthesize conclusions that are not directly supported
-by at least one search result. If Claude's training knowledge is filling a gap where
+by at least one search result. If the assistant's training knowledge is filling a gap where
 no search result was found, flag it explicitly as "from training knowledge, not verified."
 
 On scope creep: If the research question expands mid-process (the user adds more angles),

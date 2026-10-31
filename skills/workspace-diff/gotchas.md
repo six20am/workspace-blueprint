@@ -40,7 +40,7 @@ practice, the verdict is `GAP` and the citation was a hallucination.
 **Grep proves absence better than reading proves it.** For a `GAP`, a negative
 `grep -rl` across the plausible directories is stronger evidence than "I didn't see it."
 The pilot's headline finding (no `PROGRESS.md` pattern) rests on a zero-hit grep across
-every folder that holds rules: `CLAUDE.md`, the `CONTEXT.md` files and `.claude/skills/`.
+every folder that holds rules: the map file, the router files and the skills folder.
 
 **Zero CONFLICT and zero AHEAD means the run failed.** Not "the source agreed with us" , 
 it means the pass imported instead of comparing. Ask explicitly, per claim: *does anything

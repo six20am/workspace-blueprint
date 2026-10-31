@@ -27,4 +27,4 @@ Run this when the person asks to update, asks what is new, or when `setup/versio
 
 - Run the update without saying first what it touches.
 - Edit `tools/update/update.py` to add or remove paths. That list is the template's contract with the owner.
-- Touch `CLAUDE.md`, any `CONTEXT.md` or `voice.md` as part of an update. If a new skill needs a routing row, say so and add the one row with the person's yes.
+- Touch the map file, any router file or `voice.md` as part of an update. If a new skill needs a routing row, say so and add the one row with the person's yes.

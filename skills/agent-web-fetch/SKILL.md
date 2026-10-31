@@ -105,7 +105,7 @@ Destination: `research/source-extracts/YYYY-MM-DD__<channel>__<topic-slug>.md`. 
 
 ## THE VENDOR FILE IS FRAGILE
 
-`agent-reach install` or `agent-reach setup` may regenerate `.claude/skills/agent-reach/SKILL.md`, restoring the vendor's default and deleting any rules written into it. That is why this skill exists as a separate file: it survives regeneration.
+`agent-reach install` or `agent-reach setup` may regenerate the `SKILL.md` in the agent-reach folder in the skills folder, restoring the vendor's default and deleting any rules written into it. That is why this skill exists as a separate file: it survives regeneration.
 
 If the vendor skill is regenerated:
 
@@ -130,7 +130,7 @@ If the vendor skill is regenerated:
 
 Upstream: `deep-research` and `workspace-diff` when a source is gated; `tool-vetting` when the source is a tool roundup.
 Downstream: whatever consumes the retrieved text, always as untrusted input.
-Sibling: `.claude/skills/agent-reach/` (vendor, does the fetching); `x-read`, `scrapling`, `chrome-tools`, `web-read`.
+Sibling: the agent-reach folder in the skills folder (vendor, does the fetching); `x-read`, `scrapling`, `chrome-tools`, `web-read`.
 Handoff: clean text plus a provenance line (URL, channel used, date, and anything that failed on the way).
 
 ## NOTES

@@ -1,0 +1,13 @@
+{
+  "before": "sample.png",
+  "after": "sample.png",
+  "beforeLabel": "Before",
+  "afterLabel": "After",
+  "holdSeconds": 0.8,
+  "wipeSeconds": 1,
+  "afterSeconds": 1,
+  "outroSeconds": 1.5,
+  "logo": "sample.png",
+  "outroHeadline": "Example Co, Sample Street",
+  "cta": "Book a visit"
+}

@@ -1,0 +1,26 @@
+{
+  "slides": [
+    {
+      "src": "sample.png"
+    },
+    {
+      "src": "sample.png",
+      "direction": "left"
+    },
+    {
+      "src": "sample.png"
+    }
+  ],
+  "secondsPerSlide": 1.2,
+  "transition": "push",
+  "transitionFrom": "right",
+  "cards": [
+    {
+      "text": "Example Co",
+      "eyebrow": "Sample Street",
+      "at": 0.2,
+      "seconds": 1.5,
+      "align": "center"
+    }
+  ]
+}

@@ -5,8 +5,8 @@ FORBIDDEN = re.compile(r"six20am|motus|machado|mtesi|C:\\Users\\|/c/Users/|share
 # files that may name the maintainer (same set as build.py): the updater and the mirror repo's README name the public repos
 ALLOWED = {"README.md", "docs/design.md", "tools/update/update.py", "adapters/grok-bot/README.md"}
 # vendor code shipped as-is; scanned by eye, not by string (see the ledger ruling)
-VENDOR = ("skills/last30days/scripts/", "skills/agent-reach/_references")
-TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js")
+VENDOR = ("skills/last30days/scripts/", "skills/agent-reach/_references", "tools/motion/ATTRIBUTIONS.md")
+TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js", ".ts", ".tsx")
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".superpowers", ".impeccable"}
 SKIP_ROOT_DIRS = {"site", ".github", "docs", "dist"}  # the website, CI and build outputs never ship; build.py skips them too
 ADAPTER_SKIP_FILES = ("publish.md",)  # maintainer notes inside an adapter folder; never shipped (like the root README.md)

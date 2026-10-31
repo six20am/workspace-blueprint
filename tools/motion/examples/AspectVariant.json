@@ -1,0 +1,5 @@
+{
+  "src": "sample.png",
+  "fit": "blur-extend",
+  "focal": "center"
+}

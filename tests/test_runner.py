@@ -1,6 +1,6 @@
 import contextlib, io, json, os, sys, tempfile, unittest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "setup"))
-import mac_runner
+import runner
 
 
 def tool(id, needs=(), install=("ok",), login=None):
@@ -34,7 +34,7 @@ class RunToolsTest(unittest.TestCase):
 
     def status(self, tools, **kw):
         with contextlib.redirect_stdout(io.StringIO()):
-            res = mac_runner.run_tools(tools, self.m.run, self.m.check, **kw)
+            res = runner.run_tools(tools, self.m.run, self.m.check, **kw)
         return {r["id"]: r for r in res}
 
     def test_present_runs_nothing(self):
@@ -88,10 +88,10 @@ class RunToolsTest(unittest.TestCase):
 class SelectTest(unittest.TestCase):
     def test_only_pulls_the_tool_and_its_needs_in_order(self):
         tools = [tool("claude"), tool("plugin", needs=["claude"]), tool("node"), tool("mcp", needs=["node", "claude"])]
-        self.assertEqual([t["id"] for t in mac_runner.select_tools(tools, "mcp")], ["node", "claude", "mcp"])
-        self.assertEqual([t["id"] for t in mac_runner.select_tools(tools, None)], ["claude", "plugin", "node", "mcp"])
+        self.assertEqual([t["id"] for t in runner.select_tools(tools, "mcp")], ["node", "claude", "mcp"])
+        self.assertEqual([t["id"] for t in runner.select_tools(tools, None)], ["claude", "plugin", "node", "mcp"])
         with self.assertRaises(SystemExit), contextlib.redirect_stdout(io.StringIO()):
-            mac_runner.select_tools(tools, "nope")
+            runner.select_tools(tools, "nope")
 
 
 class ReportTest(unittest.TestCase):
@@ -104,7 +104,7 @@ class ReportTest(unittest.TestCase):
         ]
         with tempfile.TemporaryDirectory() as d:
             p = os.path.join(d, "setup-report.md")
-            mac_runner.write_report(results, p, "mac")
+            runner.write_report(results, p, "mac")
             with open(p, encoding="utf-8") as fh:
                 text = fh.read()
         for heading in ("# Setup report", "## Needs attention", "## Sign in yourself", "## Installed now", "## Already present"):
@@ -116,8 +116,8 @@ class ReportTest(unittest.TestCase):
     def test_report_overwrites(self):
         with tempfile.TemporaryDirectory() as d:
             p = os.path.join(d, "setup-report.md")
-            mac_runner.write_report([{"id": "a", "name": "A", "area": "base", "status": "failed", "detail": "x", "login": None}], p, "mac")
-            mac_runner.write_report([], p, "mac")
+            runner.write_report([{"id": "a", "name": "A", "area": "base", "status": "failed", "detail": "x", "login": None}], p, "mac")
+            runner.write_report([], p, "mac")
             with open(p, encoding="utf-8") as fh:
                 self.assertNotIn("Needs attention", fh.read())
 
@@ -125,12 +125,87 @@ class ReportTest(unittest.TestCase):
 class LoadTest(unittest.TestCase):
     def test_loads_real_manifest_and_root_with_space(self):
         here = os.path.dirname(__file__)
-        tools = mac_runner.load_tools(os.path.join(here, "..", "setup", "tools.json"))
+        tools = runner.load_tools(os.path.join(here, "..", "setup", "tools.json"))
         self.assertGreaterEqual(len(tools), 20)
         with tempfile.TemporaryDirectory() as d:
             root = os.path.join(d, "My Stuff")
             os.makedirs(root)
-            self.assertEqual(mac_runner.shell_quote(root), "'" + root + "'")
+            self.assertEqual(runner.shell_quote(root), "'" + root + "'")
+
+
+class PlatformTest(unittest.TestCase):
+    def setUp(self):
+        self.m = FakeMachine()
+
+    def run_quiet(self, tools, **kw):
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            res = runner.run_tools(tools, self.m.run, self.m.check, **kw)
+        return {r["id"]: r for r in res}, out.getvalue()
+
+    def test_linux_column_and_sudo_substitution(self):
+        t = {"id": "jq", "name": "jq", "area": "tools", "needs": [],
+             "install_mac": ["brew install jq"], "check_mac": "check:mac-jq",
+             "install_linux": ["$SUDO apt-get install -y jq", "mark:jq"], "check_linux": "check:jq"}
+        s, _ = self.run_quiet([t], platform="linux", sudo="sudo -n")
+        self.assertEqual(s["jq"]["status"], "installed")
+        self.assertEqual(self.m.ran, ["sudo -n apt-get install -y jq", "mark:jq"])
+        self.assertNotIn("brew install jq", self.m.ran)
+
+    def test_sudo_empty_removes_prefix(self):
+        t = {"id": "jq", "name": "jq", "area": "tools", "needs": [],
+             "install_linux": ["$SUDO apt-get install -y jq", "mark:jq"], "check_linux": "check:jq"}
+        self.run_quiet([t], platform="linux", sudo="")
+        self.assertEqual(self.m.ran, ["apt-get install -y jq", "mark:jq"])
+
+    def test_manual_when_platform_column_empty(self):
+        t = {"id": "maconly", "name": "maconly", "area": "tools", "needs": [],
+             "install_mac": ["mark:maconly"], "check_mac": "check:maconly"}
+        s, _ = self.run_quiet([t], platform="linux")
+        self.assertEqual(s["maconly"]["status"], "manual")
+        self.assertEqual(self.m.ran, [])
+
+    def test_doctor_mode_present_runs_nothing(self):
+        tools = [{"id": "git", "name": "git", "area": "base", "needs": [],
+                  "install_linux": ["mark:git"], "check_linux": "check:git"},
+                 {"id": "jq", "name": "jq", "area": "tools", "needs": [],
+                  "install_linux": ["mark:jq"], "check_linux": "check:jq"}]
+        s, out = self.run_quiet(tools, platform="linux", doctor=True)
+        self.assertEqual(s["git"]["status"], "present")
+        self.assertEqual(s["jq"]["status"], "installed")
+        self.assertEqual(self.m.ran, ["mark:jq"])
+        self.assertNotIn("git: already present", out)
+        self.assertIn("1 already present", out)
+        with tempfile.TemporaryDirectory() as d:
+            p = os.path.join(d, "setup-report.md")
+            runner.write_report(list(s.values()), p, "bot", doctor=True)
+            with open(p, encoding="utf-8") as fh:
+                self.assertTrue(fh.read().startswith("# Doctor report"))
+
+    def test_adapter_filter_skips_other_platform_entries(self):
+        tools = [tool("node"), dict(tool("claude"), adapter="claude-code"),
+                 dict(tool("ccusage", needs=["node"]), adapter="claude-code"),
+                 dict(tool("botonly"), adapter="grok-bot"),
+                 tool("mcp", needs=["node", "claude"])]
+        ids = [t["id"] for t in runner.select_tools(tools, None, adapter="grok-bot")]
+        self.assertEqual(ids, ["node", "botonly", "mcp"])
+        ids = [t["id"] for t in runner.select_tools(tools, "mcp", adapter="grok-bot")]
+        self.assertEqual(ids, ["node", "mcp"])
+        s, _ = self.run_quiet(runner.select_tools(tools, "mcp", adapter="grok-bot"), dry_run=True)
+        self.assertEqual(s["mcp"]["status"], "planned")
+        ids = [t["id"] for t in runner.select_tools(tools, None, adapter="claude-code")]
+        self.assertEqual(ids, ["node", "claude", "ccusage", "mcp"])
+        self.assertEqual(len(runner.select_tools(tools, None)), 5)
+        with self.assertRaises(SystemExit) as cm, contextlib.redirect_stdout(io.StringIO()) as out:
+            runner.select_tools(tools, "ccusage", adapter="grok-bot")
+        self.assertEqual(cm.exception.code, 1)
+        self.assertIn("no tool with id", out.getvalue())
+
+    def test_every_linux_install_has_a_linux_check(self):
+        here = os.path.dirname(__file__)
+        tools = runner.load_tools(os.path.join(here, "..", "setup", "tools.json"))
+        for t in tools:
+            if t["install_linux"]:
+                self.assertTrue(t["check_linux"], t["id"] + " has install_linux but no check_linux")
 
 
 if __name__ == "__main__":

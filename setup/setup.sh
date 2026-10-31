@@ -1,5 +1,5 @@
 #!/bin/bash
-# Mac installer. Gets Homebrew and Python in place, then hands over to mac_runner.py.
+# Mac installer. Gets Homebrew and Python in place, then hands over to runner.py.
 cd "$(dirname "$0")/.." || exit 1
 echo
 echo "Setting up on a Mac. Your Mac may ask for your password to install Homebrew."
@@ -16,4 +16,4 @@ if ! python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 12) else 1)' 
 fi
 export PATH="$HOME/.local/bin:$PATH"   # uv tool install puts commands here
 PY=python3; command -v python3.12 >/dev/null 2>&1 && PY=python3.12
-"$PY" setup/mac_runner.py "$@"
+"$PY" setup/runner.py --platform mac "$@"

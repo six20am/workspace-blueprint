@@ -76,7 +76,6 @@ CORE_OWNED = (
     "setup/setup.ps1",
     "setup/setup.sh",
     "setup/runner.py",
-    "setup/mac_runner.py",
     "setup/tools-reference",
 )
 # Core paths an adapter's output leaves out (same as the build): a Bot has no Windows installer.
@@ -370,11 +369,10 @@ def run_installer():
 
 
 def doctor_command(root):
-    """The Grok Bot's check-and-repair run, first one present: the doctor, the Linux runner, the Mac runner."""
+    """The Grok Bot's check-and-repair run, first one present: the doctor, then the setup runner in doctor mode."""
     candidates = (
         ("tools/doctor/doctor.py", []),
         ("setup/runner.py", ["--platform", "linux", "--doctor", "--no-launch"]),
-        ("setup/mac_runner.py", ["--no-launch"]),
     )
     for rel, args in candidates:
         path = os.path.join(root, *rel.split("/"))
@@ -386,7 +384,7 @@ def doctor_command(root):
 def run_doctor():
     cmd = doctor_command(ROOT)
     if cmd is None:
-        print("no doctor found: tools/doctor/doctor.py, setup/runner.py and setup/mac_runner.py are all missing")
+        print("no doctor found: tools/doctor/doctor.py and setup/runner.py are both missing")
         return 1
     try:
         return subprocess.call(cmd, cwd=ROOT)

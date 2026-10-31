@@ -130,7 +130,11 @@ summary::-webkit-details-marker{display:none}
 summary::after{content:"+";margin-left:auto;font:400 18px var(--mono);color:var(--fg3)}
 details[open]>summary::after{content:"\2212"}
 details p{margin:0 0 var(--s3);color:var(--fg2)}
-details.inst{margin-top:var(--s2)}
+ul.signin{font-size:15px;color:var(--fg2);columns:2;column-gap:var(--s4);padding-left:1.2em;margin:0 0 var(--s4)}
+ul.signin li{padding:4px 0;break-inside:avoid}
+.installed-head{margin-top:var(--s4)}
+.installed-list{margin-top:var(--s2)}
+.sched.tools td:last-child,.sched.tools th:last-child{width:150px;white-space:nowrap}
 
 .schedule{margin-top:var(--s4)}
 .sched summary small{font:400 12px var(--mono);color:var(--fg3);margin-left:auto;white-space:nowrap}
@@ -184,6 +188,8 @@ footer a{color:var(--fg2)}
   .ln{grid-template-columns:23ch minmax(0,1fr);padding-inline:4px}
   ol.week,.two{grid-template-columns:minmax(0,1fr)}
   .two{gap:var(--s3)}
+  ul.signin{columns:1}
+  .sched.tools td:last-child{position:static;white-space:normal;font-size:12px;color:var(--fg3)}
   ol.steps li{padding-left:56px}
   ol.steps li::before{font-size:40px;top:14px}
   .sched table,.sched tbody,.sched tr,.sched td{display:block;width:auto}
@@ -200,10 +206,50 @@ footer a{color:var(--fg2)}
   .sticky .button{display:block;width:100%;text-align:center}
   body.pad{padding-bottom:80px}
 }
+/* Motion. Small, quick, and all of it off under reduced motion. On load: the sunrise rule draws itself, the hero
+   rises line by line, the folder tree builds itself. On scroll: sections and list items rise as they come into
+   view and the big step numbers land with a bounce, as scroll-driven CSS animations, so nothing is ever hidden
+   behind a class a script must add; a browser without them simply shows the page. No reveal script. */
+@keyframes sunrise{from{background-size:0% 100%}to{background-size:100% 100%}}
+.hero::after,.close::before{background-repeat:no-repeat;background-size:100% 100%}
+.hero::after{animation:sunrise 1.6s cubic-bezier(.2,.7,.2,1) .2s both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero>div>*{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.hero>div>:nth-child(1){animation-delay:.05s}
+.hero>div>:nth-child(2){animation-delay:.15s}
+.hero>div>:nth-child(3){animation-delay:.3s}
+.hero>div>:nth-child(4){animation-delay:.42s}
+.hero>div>:nth-child(5){animation-delay:.54s}
+.hero>div>:nth-child(n+6){animation-delay:.66s}
+@keyframes grow{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.tree .ln{animation:grow .4s ease-out both;animation-delay:calc(.5s + var(--i,0)*.09s)}
+.tree .ln:nth-child(1){--i:0}.tree .ln:nth-child(2){--i:1}.tree .ln:nth-child(3){--i:2}
+.tree .ln:nth-child(4){--i:3}.tree .ln:nth-child(5){--i:4}.tree .ln:nth-child(6){--i:5}
+.tree .ln:nth-child(7){--i:6}.tree .ln:nth-child(8){--i:7}.tree .ln:nth-child(9){--i:8}
+.jobs,.spec .cap,.spec figcaption{animation:rise .5s ease-out 1.3s both}
+@keyframes land{0%{opacity:0;transform:translateY(-14px) scale(.7)}60%{opacity:1;transform:translateY(3px) scale(1.04)}100%{opacity:1;transform:none}}
+@supports (animation-timeline: view()){
+  section.row,section.close{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 35%}
+  section.row .body>ul>li,section.row .body>ol>li,.sched{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
+  ol.steps li::before{animation:land linear both;animation-timeline:view();animation-range:entry 10% entry 70%}
+  .close::before{animation:sunrise linear both;animation-timeline:view();animation-range:entry 0% entry 80%}
+}
+.brand img{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.brand:hover img{transform:rotate(360deg)}
+.button{position:relative;overflow:hidden;transition:background .15s,transform .15s}
+.button:hover{transform:translateY(-1px)}
+.button::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.35) 50%,transparent 65%);transform:translateX(-120%)}
+.button:hover::after{transform:translateX(120%);transition:transform .7s ease}
+details[open]>:not(summary){animation:rise .35s ease-out both}
+.sched summary::after{transition:transform .25s}
+.sched[open]>summary::after{transform:rotate(180deg)}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .button,.jobs label,.sticky{transition:none}
-  .spec:has(input:checked) .ln{animation:none}
+  .button,.jobs label,.sticky,.brand img,.sched summary::after{transition:none}
+  .spec:has(input:checked) .ln,.hero::after,.close::before,.hero>div>*,.tree .ln,.jobs,.spec .cap,.spec figcaption,
+  section.row,section.close,section.row .body>ul>li,section.row .body>ol>li,.sched,ol.steps li::before,details[open]>:not(summary){animation:none}
+  .brand:hover img,.button:hover{transform:none}
+  .button::after{display:none}
 }
 </style>
 </head>
@@ -277,10 +323,9 @@ footer a{color:var(--fg2)}
 
 <section class="row"><p class="rail">Installed</p><div class="body">
 {{installed}}
-<div class="two">
-  <div><h3>Needs your own sign-in</h3><ul>{{logins}}</ul></div>
-  <div><h3>Installed by setup</h3><details class="inst"><summary>See the full list</summary><ul>{{tools}}</ul></details></div>
-</div>
+<h3>Needs your own sign-in</h3><ul class="signin">{{logins}}</ul>
+<h3 class="installed-head">Everything setup installs, by what it is for</h3>
+<div class="schedule installed-list">{{tools}}</div>
 </div></section>
 
 <section class="row"><p class="rail">Updates</p><div class="body">

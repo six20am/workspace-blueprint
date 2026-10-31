@@ -205,6 +205,84 @@ def tools():
     return names, logins
 
 
+# The installed-tools table, grouped by what each thing is for. The first group is picked by id so the token and
+# cost tools are not lost among forty programs; the rest follow tools.json's `area`. Every row shows the name, what
+# it does in plain words, and where setup can install it (from which install columns the entry has).
+TOOL_GROUPS = [
+    ("Saves tokens and shows what the AI costs", {"rtk", "rtk-hook", "repomix", "ccusage", "codeburn"}, ()),
+    ("The basics every skill stands on", set(), ("base",)),
+    ("Claude Code and its plugins", set(), ("claude", "plugins")),
+    ("Readers and research tools", set(), ("tools",)),
+    ("Programs the skills call", set(), ("programs",)),
+    ("Connected to Claude", set(), ("mcp", "logins")),
+]
+# What a tool does, by id, where tools.json's name has no parenthetical or the parenthetical is for the installer
+PURPOSE = {
+    "git": "Keeps the undo history of your folder",
+    "uv": "Runs the Python tools",
+    "python": "Runs most of the scripts",
+    "node": "Runs the JavaScript tools",
+    "claude": "The AI itself, on your computer",
+    "plugin-superpowers": "Working habits for Claude Code: plan, test, review",
+    "plugin-frontend-design": "Design sense for web pages",
+    "notebooklm": "Reads a pile of sources, even videos, and answers with the line it came from",
+    "whisper-model": "The English speech model whisper.cpp uses",
+    "rtk": "Shortens command output before the AI reads it, so every step costs fewer tokens",
+    "rtk-hook": "Turns rtk on for every command Claude Code runs, in every project",
+    "repomix": "Packs a folder into one file so the AI reads it once, not file by file",
+    "ccusage": "Shows what each Claude Code session cost",
+    "codeburn": "Shows where the AI spending goes, by project and by day",
+    "mcp-scrapling": "Lets Claude call the blocked-page reader directly",
+    "mcp-chrome-devtools": "Lets Claude drive a browser to check a site",
+    "mcp-image-search": "Lets Claude search free stock photos",
+    "chrome-extension": "Claude works inside your own Chrome, signed in as you",
+}
+SHORT = {"rtk-hook": "rtk hook", "remotion-skills": "Remotion skills"}
+
+
+def tool_name(t):
+    if t["id"] in SHORT:
+        return SHORT[t["id"]]
+    name = re.sub(r"\s*\([^)]*\)$", "", t["name"])
+    if t.get("area") == "mcp":
+        name = re.sub(r"^Connect\s+", "", name)
+        name = re.sub(r"\s+to Claude$", "", name)
+        name = name[:1].upper() + name[1:]
+    return name
+
+
+def tool_purpose(t):
+    if t["id"] in PURPOSE:
+        return PURPOSE[t["id"]]
+    m = re.search(r"\(([^)]*)\)$", t["name"])
+    p = m.group(1) if m else ""
+    return p[:1].upper() + p[1:] if p else ""
+
+
+def runs_on(t):
+    on = [n for key, n in (("install", "Windows"), ("install_mac", "Mac"), ("install_linux", "Linux")) if t.get(key)]
+    return ", ".join(on) if on else "You install it"
+
+
+def tools_table():
+    data = json.load(open(os.path.join(ROOT, "setup", "tools.json"), encoding="utf-8"))
+    placed = set()
+    out = []
+    for title, ids, areas in TOOL_GROUPS:
+        rows = [t for t in data if t["id"] not in placed and (t["id"] in ids or (not ids and t.get("area") in areas))]
+        if not rows:
+            continue
+        placed |= {t["id"] for t in rows}
+        trs = "".join(f"<tr><td>{esc(tool_name(t))}</td><td>{esc(tool_purpose(t))}</td><td>{esc(runs_on(t))}</td></tr>" for t in rows)
+        out.append(f'<details class="sched tools"{" open" if not out else ""}><summary><span>{esc(title)}</span><small>{len(rows)}</small></summary>'
+                   f'<table><thead><tr><th scope="col">Tool</th><th scope="col">What it does</th><th scope="col">Setup installs it on</th></tr></thead>'
+                   f"<tbody>{trs}</tbody></table></details>")
+    left = [t["name"] for t in data if t["id"] not in placed]
+    if left:
+        raise SystemExit(f"tools.json entries with no group on the page: {left}")
+    return "\n".join(out)
+
+
 def version():
     try:
         sha = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, text=True).strip()
@@ -241,7 +319,7 @@ def main():
             text = re.sub(r"how to do [A-Za-z-]+ things", f"how to do {num_word(count).lower()} things", text)
         body[sid] = md_block(text, sid)
     body["can-do"] += f'\n<div class="schedule">{skills_html}</div>'
-    tool_list = "".join(f"<li>{esc(n)}</li>" for n in tool_names)
+    tool_list = tools_table()
     login_list = "".join(f"<li>{esc(n)}</li>" for n in logins)
 
     tpl = open(os.path.join(HERE, "template.html"), encoding="utf-8").read()

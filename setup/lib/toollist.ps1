@@ -30,7 +30,7 @@ function Test-ToolList([object[]]$Tools) {
         if ($t.area -and ($script:SetupAreas -notcontains $t.area)) { $errors.Add("$($t.id): unknown area '$($t.area)'") }
         if ((@($t.install_mac).Count -gt 0) -and [string]::IsNullOrWhiteSpace([string]$t.check_mac)) { $errors.Add("$($t.id): has install_mac but no check_mac") }
         if ((@($t.install_linux | Where-Object { $_ }).Count -gt 0) -and [string]::IsNullOrWhiteSpace([string]$t.check_linux)) { $errors.Add("$($t.id): has install_linux but no check_linux") }
-        if ($t.adapter -and (@('claude-code', 'grok-bot') -notcontains [string]$t.adapter)) { $errors.Add("$($t.id): unknown adapter '$($t.adapter)'") }
+        if ($t.adapter -and (@('claude-code', 'other') -notcontains [string]$t.adapter)) { $errors.Add("$($t.id): unknown adapter '$($t.adapter)'") }
     }
     foreach ($t in $Tools) {
         foreach ($n in @($t.needs)) {

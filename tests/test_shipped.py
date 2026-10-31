@@ -2,8 +2,8 @@ import os, re, unittest
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 FORBIDDEN = re.compile(r"six20am|motus|machado|mtesi|C:\\Users\\|/c/Users/|shared-core|shared-systems|work-log|Michael|\bGHL\b|HighLevel|Hard Rule \d|\b[0-9a-f]{32}\b", re.I)
-# files that may name the maintainer (same set as build.py): the updater and the mirror repo's README name the public repos
-ALLOWED = {"README.md", "docs/design.md", "tools/update/update.py", "adapters/grok-bot/README.md"}
+# files that may name the maintainer (same set as build.py): the updater and ADAPT.md carry the public repo's URL
+ALLOWED = {"README.md", "docs/design.md", "tools/update/update.py", "ADAPT.md"}
 # vendor code shipped as-is; scanned by eye, not by string (see the ledger ruling)
 VENDOR = ("skills/last30days/scripts/", "skills/agent-reach/_references")
 TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js")
@@ -40,8 +40,7 @@ class ShippedTest(unittest.TestCase):
     def test_required_files_exist(self):
         for f in ("adapters/claude-code/START-HERE.md", "adapters/claude-code/CLAUDE.md", "adapters/claude-code/AGENTS.md",
                   "adapters/claude-code/GEMINI.md", "adapters/claude-code/setup.cmd", "adapters/claude-code/setup.command",
-                  "adapters/claude-code/platform.md", "adapters/grok-bot/START-HERE.md", "adapters/grok-bot/README.md",
-                  "adapters/grok-bot/install.sh", "adapters/grok-bot/platform.md", "skills/INDEX.md",
+                  "adapters/claude-code/platform.md", "ADAPT.md", "skills/INDEX.md",
                   "setup/SETUP.md", "setup/filing-styles.md", "setup/gap-log.md", "setup/tools.json"):
             self.assertTrue(os.path.exists(os.path.join(ROOT, f)), f)
 
@@ -60,8 +59,7 @@ class ShippedTest(unittest.TestCase):
 
     def test_backticked_paths_resolve(self):
         for rel in ("adapters/claude-code/CLAUDE.md", "adapters/claude-code/AGENTS.md", "adapters/claude-code/GEMINI.md",
-                    "adapters/claude-code/START-HERE.md", "setup/SETUP.md", "adapters/grok-bot/START-HERE.md",
-                    "adapters/grok-bot/README.md"):
+                    "adapters/claude-code/START-HERE.md", "setup/SETUP.md", "ADAPT.md"):
             with open(os.path.join(ROOT, rel), encoding="utf-8") as fh:
                 text = fh.read()
             for path in re.findall(r"`((?:setup|_reference|skills|\.claude)/[A-Za-z0-9_./-]+)`", text):
@@ -97,6 +95,16 @@ class ShippedTest(unittest.TestCase):
             with open(p, encoding="utf-8", errors="replace") as fh:
                 m = PLATFORM.search(fh.read())
                 self.assertIsNone(m, "%s names a platform path %r" % (rel, m.group(0) if m else None))
+
+    def test_adapt_md_is_short_and_neutral(self):
+        with open(os.path.join(ROOT, "ADAPT.md"), encoding="utf-8") as fh:
+            text = fh.read()
+        self.assertLess(len(text.splitlines()), 70)
+        self.assertIn('{"adapter": "other", "skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"}', text)
+        for want in ("bash setup/setup.sh --no-launch", "python tools/doctor/doctor.py", "python tools/update/update.py",
+                     "setup/SETUP.md", "MAP.md", "ROUTER.md", "NOTES.md", "voice.md"):
+            self.assertIn(want, text)
+        self.assertNotRegex(text, re.compile(r"claude|gemini|codex|openai", re.I), "ADAPT.md names no vendor")
 
     def test_filing_styles_has_six(self):
         with open(os.path.join(ROOT, "setup/filing-styles.md"), encoding="utf-8") as fh:

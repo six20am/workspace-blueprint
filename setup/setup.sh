@@ -1,6 +1,19 @@
 #!/bin/bash
-# Mac installer. Gets Homebrew and Python in place, then hands over to runner.py.
+# Mac and Linux installer. On a Mac it gets Homebrew and Python in place; on Linux it makes sure
+# python3 is there (apt). Then it hands over to runner.py, which walks setup/tools.json.
 cd "$(dirname "$0")/.." || exit 1
+if [ "$(uname -s)" = "Linux" ]; then
+  echo
+  echo "Setting up on Linux."
+  echo
+  if ! command -v python3 >/dev/null 2>&1 && command -v apt-get >/dev/null 2>&1; then
+    if [ "$(id -u)" = "0" ]; then apt-get install -y python3; else sudo -n apt-get install -y python3; fi
+  fi
+  command -v python3 >/dev/null 2>&1 || { echo "python3 is missing and did not install"; exit 4; }
+  export PATH="$HOME/.local/bin:$PATH"   # uv tool install and pipx put commands here
+  python3 setup/runner.py --platform linux "$@"
+  exit $?
+fi
 echo
 echo "Setting up on a Mac. Your Mac may ask for your password to install Homebrew."
 echo "If it downloads Apple's command-line tools first, that alone can take ten minutes."

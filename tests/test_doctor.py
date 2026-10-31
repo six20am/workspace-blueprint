@@ -76,18 +76,18 @@ class CommandTests(unittest.TestCase):
         self.assertEqual(doctor.installer_command(root, "claude-code", True, True),
                          ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", win, "-Yes", "-NoLaunch", "-DryRun"])
         runner = os.path.join(root, "setup", "runner.py")
-        self.assertEqual(doctor.installer_command(root, "grok-bot", False, False),
-                         [sys.executable, runner, "--doctor", "--no-launch", "--adapter", "grok-bot"])
-        self.assertEqual(doctor.installer_command(root, "grok-bot", True, False),
-                         [sys.executable, runner, "--doctor", "--no-launch", "--adapter", "grok-bot", "--dry-run"])
+        self.assertEqual(doctor.installer_command(root, "other", False, False),
+                         [sys.executable, runner, "--doctor", "--no-launch", "--adapter", "other"])
+        self.assertEqual(doctor.installer_command(root, "other", True, False),
+                         [sys.executable, runner, "--doctor", "--no-launch", "--adapter", "other", "--dry-run"])
 
     def test_read_adapter_default(self):
         with tempfile.TemporaryDirectory() as d:
             self.assertEqual(doctor.read_adapter(d), "claude-code")
             os.makedirs(os.path.join(d, "setup"))
             with open(os.path.join(d, "setup", "adapter.json"), "w", encoding="utf-8") as fh:
-                fh.write('{"adapter": "grok-bot", "skills_dir": "skills"}')
-            self.assertEqual(doctor.read_adapter(d), "grok-bot")
+                fh.write('{"adapter": "other", "skills_dir": "skills"}')
+            self.assertEqual(doctor.read_adapter(d), "other")
 
 
 if __name__ == "__main__":

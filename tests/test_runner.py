@@ -184,19 +184,19 @@ class PlatformTest(unittest.TestCase):
     def test_adapter_filter_skips_other_platform_entries(self):
         tools = [tool("node"), dict(tool("claude"), adapter="claude-code"),
                  dict(tool("ccusage", needs=["node"]), adapter="claude-code"),
-                 dict(tool("botonly"), adapter="grok-bot"),
+                 dict(tool("botonly"), adapter="other"),
                  tool("mcp", needs=["node", "claude"])]
-        ids = [t["id"] for t in runner.select_tools(tools, None, adapter="grok-bot")]
+        ids = [t["id"] for t in runner.select_tools(tools, None, adapter="other")]
         self.assertEqual(ids, ["node", "botonly", "mcp"])
-        ids = [t["id"] for t in runner.select_tools(tools, "mcp", adapter="grok-bot")]
+        ids = [t["id"] for t in runner.select_tools(tools, "mcp", adapter="other")]
         self.assertEqual(ids, ["node", "mcp"])
-        s, _ = self.run_quiet(runner.select_tools(tools, "mcp", adapter="grok-bot"), dry_run=True)
+        s, _ = self.run_quiet(runner.select_tools(tools, "mcp", adapter="other"), dry_run=True)
         self.assertEqual(s["mcp"]["status"], "planned")
         ids = [t["id"] for t in runner.select_tools(tools, None, adapter="claude-code")]
         self.assertEqual(ids, ["node", "claude", "ccusage", "mcp"])
         self.assertEqual(len(runner.select_tools(tools, None)), 5)
         with self.assertRaises(SystemExit) as cm, contextlib.redirect_stdout(io.StringIO()) as out:
-            runner.select_tools(tools, "ccusage", adapter="grok-bot")
+            runner.select_tools(tools, "ccusage", adapter="other")
         self.assertEqual(cm.exception.code, 1)
         self.assertIn("no tool with id", out.getvalue())
 

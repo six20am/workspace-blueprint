@@ -68,7 +68,7 @@ If they said "now" in step 0, work through the failed tools one at a time. For e
 - Windows: `powershell -ExecutionPolicy Bypass -File setup/setup.ps1 -Only <id> -Yes -NoLaunch`
 - Mac: `bash setup/setup.sh --only <id> --no-launch`
 
-On a Grok Bot: `bash install.sh --only <id>`.
+On the neutral path: `bash setup/setup.sh --only <id> --no-launch`.
 
 Do not run the install commands from `tools.json` by hand; they use helpers that exist only inside the installer. Each run rewrites `setup/setup-report.md`, so read it again afterwards rather than editing it. Say whether it worked. If it fails twice, tell the person what you tried in one line and move on.
 

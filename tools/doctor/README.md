@@ -21,4 +21,4 @@ Failed: 0, nothing to fix
 ```
 
 followed by `Sign in yourself:` and one line per account the person connects by hand. Exit 0 when nothing failed, 2 when something did or the installer stopped before writing a report.
-`tools/update/update.py` runs it after a sync on a Grok Bot.
+`tools/update/update.py` runs it after a sync on the neutral path (`ADAPT.md`).

@@ -1,0 +1,39 @@
+{
+  "scenes": [
+    {
+      "title": "Three signs it is time to call",
+      "seconds": 2.5,
+      "layout": "cards",
+      "items": [
+        {
+          "label": "A drip you can hear",
+          "at": 0.3
+        },
+        {
+          "label": "A bill that jumped",
+          "at": 0.6,
+          "tone": "warn"
+        },
+        {
+          "label": "Water that runs cold",
+          "at": 0.9,
+          "tone": "dim"
+        }
+      ]
+    },
+    {
+      "title": "Call Example Co",
+      "seconds": 2,
+      "layout": "hero",
+      "strike": "Wait and hope",
+      "strikeAt": 0.2,
+      "items": [
+        {
+          "label": "Same-week visits",
+          "sub": "Sample Street and nearby",
+          "at": 0.6
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "layout": "slide-cover",
+  "images": [
+    "sample.png"
+  ],
+  "text": {
+    "headline": "Three things to check before you call"
+  },
+  "logo": "sample.png",
+  "counter": "1 / 5"
+}

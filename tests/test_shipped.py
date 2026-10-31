@@ -6,8 +6,12 @@ FORBIDDEN = re.compile(r"six20am|motus|machado|mtesi|C:\\Users\\|/c/Users/|share
 ALLOWED = {"README.md", "docs/design.md", "tools/update/update.py", "ADAPT.md"}
 # vendor code shipped as-is; scanned by eye, not by string (see the ledger ruling)
 VENDOR = ("skills/last30days/scripts/", "skills/agent-reach/_references")
-TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js")
-SKIP_DIRS = {".git", "node_modules", "__pycache__", ".superpowers", ".impeccable"}
+# verbatim third-party notices whose source URLs carry 32-character ids; every other forbidden string is still checked
+HEX_OK = {"tools/motion/ATTRIBUTIONS.md"}
+FORBIDDEN_NO_HEX = re.compile("|".join(p for p in FORBIDDEN.pattern.split("|") if "{32}" not in p), re.I)
+TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js", ".ts", ".tsx")
+SKIP_DIRS = {".git", "node_modules", "__pycache__", ".superpowers", ".impeccable", ".agents", ".remotion"}
+SKIP_PATHS = {"tools/motion/out"}  # render output; build.py skips it too
 SKIP_ROOT_DIRS = {"site", ".github", "docs", "dist"}  # the website, CI and build outputs never ship; build.py skips them too
 ADAPTER_SKIP_FILES = ("publish.md",)  # maintainer notes inside an adapter folder; never shipped (like the root README.md)
 PLATFORM = re.compile(r"\.claude/|\bCLAUDE\.md\b|\bCONTEXT\.md\b|claude mcp add|/workspace/<")
@@ -28,7 +32,9 @@ def is_adapter_note(rel):
 def shipped_files():
     for dirpath, dirs, files in os.walk(ROOT):
         at_root = os.path.abspath(dirpath) == os.path.abspath(ROOT)
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS and not (at_root and d in SKIP_ROOT_DIRS)]
+        here = rel_of(dirpath)
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS and not (at_root and d in SKIP_ROOT_DIRS)
+                   and (d if at_root else here + "/" + d) not in SKIP_PATHS]
         for f in files:
             p = os.path.join(dirpath, f)
             rel = rel_of(p)
@@ -54,7 +60,7 @@ class ShippedTest(unittest.TestCase):
             if rel in ALLOWED or rel.startswith("_reference") or rel.startswith(VENDOR):
                 continue
             with open(p, encoding="utf-8", errors="replace") as fh:
-                m = FORBIDDEN.search(fh.read())
+                m = (FORBIDDEN_NO_HEX if rel in HEX_OK else FORBIDDEN).search(fh.read())
                 self.assertIsNone(m, "%s contains %r" % (rel, m.group(0) if m else None))
 
     def test_backticked_paths_resolve(self):

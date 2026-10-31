@@ -9,3 +9,4 @@ site/dist/
 .impeccable/
 dist/
 setup/private-terms.txt
+.agents/

@@ -1,0 +1,23 @@
+{
+  "src": "sample.png",
+  "logo": "sample.png",
+  "name": "Example Co",
+  "introSeconds": 0.8,
+  "mainSeconds": 2.5,
+  "outroSeconds": 1.5,
+  "lowerThird": {
+    "name": "Sam Example",
+    "title": "Owner, Example Co",
+    "at": 0.3,
+    "seconds": 2
+  },
+  "cues": [
+    {
+      "from": 0.2,
+      "to": 2.2,
+      "text": "Come see us on Sample Street."
+    }
+  ],
+  "outroHeadline": "Open Saturday",
+  "cta": "Save the date"
+}

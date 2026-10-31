@@ -88,6 +88,29 @@ class BuildTest(unittest.TestCase):
                 self.assertIn("Top Folder/setup/version.json", names)
             self.assertIn("CLAUDE.md", report)
 
+    def test_zip_has_no_agent_skills_or_renders(self):
+        # skills a setup run installs and render leftovers sit in the working tree but never ship
+        with tempfile.TemporaryDirectory() as d:
+            repo = os.path.join(d, "repo")
+            make_repo(repo, {".agents/skills/remotion-x/SKILL.md": "# unlicensed\n",
+                             "tools/motion/out/x.mp4": "video\n",
+                             "tools/motion/.remotion/y": "staging\n",
+                             "tools/motion/src/a.tsx": "export const a = 1;\n"})
+            out = os.path.join(d, "X.zip")
+            build.build(repo, out, names=["zed"], top="T")
+            with zipfile.ZipFile(out) as z:
+                names = z.namelist()
+            self.assertFalse(any(".agents" in n or "remotion-x" in n for n in names), names)
+            self.assertNotIn("T/tools/motion/out/x.mp4", names)
+            self.assertFalse(any(".remotion" in n for n in names), names)
+            self.assertIn("T/tools/motion/src/a.tsx", names, "template source still ships")
+
+    def test_refuses_leak_in_tsx(self):
+        with tempfile.TemporaryDirectory() as d:
+            repo = os.path.join(d, "repo"); make_repo(repo, {"tools/motion/src/a.tsx": "// made for motus\n"})
+            with self.assertRaises(build.LeakError):
+                build.build(repo, os.path.join(d, "X.zip"), names=["zed"], top="T")
+
     def test_claude_zip_maps_skills_and_overlays_adapter(self):
         with tempfile.TemporaryDirectory() as d:
             repo = os.path.join(d, "repo"); make_repo(repo)

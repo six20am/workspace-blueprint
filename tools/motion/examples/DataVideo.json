@@ -1,0 +1,28 @@
+{
+  "title": "A year at Example Co",
+  "eyebrow": "By the numbers",
+  "name": "Example Co",
+  "rows": [
+    {
+      "label": "Jobs finished",
+      "value": 412
+    },
+    {
+      "label": "Repeat customers",
+      "value": 68,
+      "suffix": "%"
+    },
+    {
+      "label": "Five-star reviews",
+      "value": 96,
+      "suffix": "%"
+    }
+  ],
+  "decimals": 0,
+  "note": "Example data",
+  "secondsPerRow": 0.5,
+  "holdSeconds": 1,
+  "introSeconds": 0.8,
+  "outroSeconds": 1.2,
+  "cta": "Get a quote"
+}

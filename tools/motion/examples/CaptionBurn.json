@@ -1,0 +1,41 @@
+{
+  "src": "sample.png",
+  "wordsPerPage": 3,
+  "words": [
+    {
+      "text": "Welcome",
+      "startMs": 100,
+      "endMs": 500
+    },
+    {
+      "text": "to",
+      "startMs": 500,
+      "endMs": 650
+    },
+    {
+      "text": "Example",
+      "startMs": 650,
+      "endMs": 1100
+    },
+    {
+      "text": "Co",
+      "startMs": 1100,
+      "endMs": 1500
+    },
+    {
+      "text": "on",
+      "startMs": 1600,
+      "endMs": 1750
+    },
+    {
+      "text": "Sample",
+      "startMs": 1750,
+      "endMs": 2150
+    },
+    {
+      "text": "Street",
+      "startMs": 2150,
+      "endMs": 2600
+    }
+  ]
+}

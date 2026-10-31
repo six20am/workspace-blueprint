@@ -23,14 +23,17 @@ ADAPTERS = {
     "other": {"skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"},
 }
 BUILT = ("claude-code",)   # the adapters build() makes an output for
-SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", ".pytest_cache", ".superpowers", ".impeccable"}
+SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", ".pytest_cache", ".superpowers", ".impeccable",
+             ".agents", ".remotion"}  # .agents: skills a setup run installs (remotion-dev/skills has no license); .remotion: render staging
+# folders skipped by repo-relative path: render output left in a tool folder
+SKIP_PATHS = {"tools/motion/out"}
 # the repo's own test suite, design doc, website, CI, build outputs, and the adapter folders (overlaid per output); setup/tests ships
 SKIP_ROOT_DIRS = {"tests", "docs", "site", ".github", "dist", "adapters"}
 SKIP_FILES = {".git", "build.py", "setup-report.md", "update-report.md"}  # .git is a file in a submodule checkout
 SKIP_ROOT_FILES = {"README.md"}     # the GitHub readme; START-HERE.md is the product's front page. ADAPT.md ships
 GENERATED = ("setup/adapter.json", "setup/version.json")
-TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml")
-LF = (".sh", ".command", ".py", ".md", ".json", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml")
+TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml", ".ts", ".tsx")
+LF = (".sh", ".command", ".py", ".md", ".json", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml", ".ts", ".tsx")
 EXEC = (".command", ".sh")
 SECRET_RE = re.compile(r"(^|/)(\.env(\.[^/]*)?|accounts\.json|instances\.json|[^/]*secret[^/]*\.(json|env)|[^/]*\.pem|[^/]*\.key)$", re.I)
 SECRET_ALLOW = re.compile(r"\.example(\.json)?$", re.I)
@@ -150,7 +153,9 @@ def write_index(repo):
 def walk(base, skip_root_dirs=(), skip_root_files=()):
     for dirpath, dirs, fs in os.walk(base):
         at_root = os.path.abspath(dirpath) == os.path.abspath(base)
-        dirs[:] = sorted(d for d in dirs if d not in SKIP_DIRS and not (at_root and d in skip_root_dirs))
+        here = os.path.relpath(dirpath, base).replace("\\", "/")
+        dirs[:] = sorted(d for d in dirs if d not in SKIP_DIRS and not (at_root and d in skip_root_dirs)
+                         and (d if at_root else here + "/" + d) not in SKIP_PATHS)
         for f in sorted(fs):
             if f in SKIP_FILES or (at_root and f in skip_root_files):
                 continue

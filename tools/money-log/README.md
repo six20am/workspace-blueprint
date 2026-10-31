@@ -3,7 +3,7 @@
 A bank, card or budgeting-app CSV export in; a monthly summary by category, the recurring charges, and an offline dashboard out. No bank connection, no network, no upload.
 
 ```
-python tools/money-log/money.py export.csv --source "Example Bank checking" --month 2026-09
+python tools/money-log/money.py export.csv --source "Example Bank checking" --month 2026-09   # python3 on Mac and Linux
 python tools/money-log/money.py tools/money-log/sample/bank-export.sample.csv   # try it on the sample
 ```
 

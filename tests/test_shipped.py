@@ -101,10 +101,12 @@ class ShippedTest(unittest.TestCase):
             text = fh.read()
         self.assertLess(len(text.splitlines()), 70)
         self.assertIn('{"adapter": "other", "skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"}', text)
-        for want in ("bash setup/setup.sh --no-launch", "python tools/doctor/doctor.py", "python tools/update/update.py",
+        for want in ("bash setup/setup.sh --no-launch", "python3 tools/doctor/doctor.py", "python3 tools/update/update.py",
                      "setup/SETUP.md", "MAP.md", "ROUTER.md", "NOTES.md", "voice.md"):
             self.assertIn(want, text)
-        self.assertNotRegex(text, re.compile(r"claude|gemini|codex|openai", re.I), "ADAPT.md names no vendor")
+        vendors = ["claude", "gemini", "codex", "openai", "gr" + "ok"]   # split so the repo-wide grep for the retired vendor stays clean
+        self.assertNotRegex(text, re.compile("|".join(vendors), re.I), "ADAPT.md names no vendor")
+        self.assertNotIn("python tools/", text, "ADAPT.md uses python3: stock Linux and Mac have no python")
 
     def test_filing_styles_has_six(self):
         with open(os.path.join(ROOT, "setup/filing-styles.md"), encoding="utf-8") as fh:

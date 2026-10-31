@@ -10,7 +10,7 @@ Run this when the person asks what happened this week, says "catch me up", on a 
 ## The one command
 
 ```
-python tools/weekly-brief/brief.py
+python tools/weekly-brief/brief.py   # python3 on Mac and Linux
 ```
 
 Run it from the workspace folder. It looks at the last 7 days, ending today. Add `--days 14` for two weeks, or `--out <path>` to save it somewhere else. It prints the path of the brief it saved.

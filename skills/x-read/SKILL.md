@@ -8,7 +8,7 @@ description: "Reads public X (Twitter) posts by URL, many at once, with links ex
 Run, from the workspace root:
 
 ```bash
-PYTHONIOENCODING=utf-8 python tools/x-read/xread.py <url> [<url> ...]
+PYTHONIOENCODING=utf-8 python tools/x-read/xread.py <url> [<url> ...]   # python3 on Mac and Linux
 ```
 
 It prints, per post: author, date, engagement counts, full text with links expanded, and any quoted post. Text and media URLs only; a list inside an image still needs the image opened.

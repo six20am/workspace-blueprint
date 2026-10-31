@@ -1,7 +1,7 @@
 # Workspace Blueprint: Design
 
 **Date:** 2026-10-31
-**Status:** Phases 1 to 4 built; Phase 5 (neutral path) built 2026-10-31; a run on a real third-party agent is still to do
+**Status:** Phases 1 to 3 built; Phase 4 built except motion-video; Phase 5 (neutral path) built 2026-10-31; a run on a real third-party agent is still to do
 **Repos:** core `six20am/workspace-blueprint`, public. The vendor mirror repo was retired with Phase 5.
 **Companions:** `ADAPT.md` at the repo root (the neutral path, written for the agent).
 
@@ -63,27 +63,27 @@ Status key: **built** (in the box today), **adopt** (from a vetted MIT repo, wit
 |---|---|---|---|
 | web-read, x-read, scrapling, agent-reach, agent-web-fetch, chrome-tools, last30days | Reading the web | built | move; neutralize platform words |
 | video-watcher, channel-mine | Video and audio | built | move |
-| media-tools | Video and audio | trial | `kajisho5/ffmpeg-skill` + `imagemagick-skill` (MIT) if the npx installer, Python scripts and MCP are acceptable and `doctor` passes on clean Windows; else `n0an/ffmpeg-skill` recipes (MIT). ExifTool, SoX, HandBrakeCLI, MKVToolNix wrappers written new |
+| media-tools | Video and audio | built | `kajisho5/ffmpeg-skill` + `imagemagick-skill` (MIT) if the npx installer, Python scripts and MCP are acceptable and `doctor` passes on clean Windows; else `n0an/ffmpeg-skill` recipes (MIT). ExifTool, SoX, HandBrakeCLI, MKVToolNix wrappers written new |
 | markitdown | Documents | built | move |
-| summarize | Documents | new | nothing license-clean exists |
-| explain-this | Documents | new | mine `fayerman-source/deslop` rules and `anna128x/bureaucracy-decoder` output schema (both MIT) |
-| paperwork | Documents | trial | OCRmyPDF as the engine (MPL-2.0, called never vendored; Windows install note); naming from `vlow/pdf-processor` (MIT); date extraction new |
-| document-builder | Documents | new | over `pandoc` + `soffice --headless`; Anthropic document skills are proprietary and stay out |
+| summarize | Documents | built | nothing license-clean exists |
+| explain-this | Documents | built | mine `fayerman-source/deslop` rules and `anna128x/bureaucracy-decoder` output schema (both MIT) |
+| paperwork | Documents | built | OCRmyPDF as the engine (MPL-2.0, called never vendored; Windows install note); naming from `vlow/pdf-processor` (MIT); date extraction new |
+| document-builder | Documents | built | over `pandoc` + `soffice --headless`; Anthropic document skills are proprietary and stay out |
 | image-search, gallery-dl, loc-dl, client-asset-harvester | Images | built | move |
-| photo-organizer | Images | trial | `RanchoGao/photo-organizer` (MIT, stdlib); translate SKILL.md from Chinese, test Windows paths and HEIC/MOV |
+| photo-organizer | Images | built | `RanchoGao/photo-organizer` (MIT, stdlib); translate SKILL.md from Chinese, test Windows paths and HEIC/MOV |
 | deep-research, notebooklm-research | Research | built | move |
-| meeting-prep | Research | adopt | `analystacademy/claude-skills` (MIT); remove emoji headers, make calendar and mail optional |
-| writer | Writing | new | everyday writing in `voice.md` |
-| social-copywriter | Writing | adopt | `blacktwist/social-media-skills` post-writer and caption-writer (MIT); strip the BlackTwist publishing section and `tools/REGISTRY.md`; read `voice.md` not its context file; platform formats in a reference table |
-| resume-and-letter | Writing | adopt | `varunr89/resume-tailoring-skill` + `kevinryan-au/claude-cover-letter` (MIT); trim LinkedIn lookups and multi-job mode; replace the docx dependency with `document-builder`; formal letters new |
-| money-log | Everyday life | trial | `djspiceroute/money-map` (MIT, stdlib); sample run on Windows, drop the Plaid file, confirm the monthly summary shape |
-| trip-plan | Everyday life | adopt | `AdeDeepFishing/trip-itinerary-page` (MIT) for the output; confirmation reading new |
+| meeting-prep | Research | built | `analystacademy/claude-skills` (MIT); remove emoji headers, make calendar and mail optional |
+| writer | Writing | built | everyday writing in `voice.md` |
+| social-copywriter | Writing | built | `blacktwist/social-media-skills` post-writer and caption-writer (MIT); strip the BlackTwist publishing section and `tools/REGISTRY.md`; read `voice.md` not its context file; platform formats in a reference table |
+| resume-and-letter | Writing | built | `varunr89/resume-tailoring-skill` + `kevinryan-au/claude-cover-letter` (MIT); trim LinkedIn lookups and multi-job mode; replace the docx dependency with `document-builder`; formal letters new |
+| money-log | Everyday life | built | `djspiceroute/money-map` (MIT, stdlib); sample run on Windows, drop the Plaid file, confirm the monthly summary shape |
+| trip-plan | Everyday life | built | `AdeDeepFishing/trip-itinerary-page` (MIT) for the output; confirmation reading new |
 | voice-extractor, gap-finder, tool-vetting, workspace-diff, update | Care | built | move; `update` gains the neutral path |
-| workspace-audit | Care | built (second template) | move to core |
-| doctor | Care | new | check every tool and sign-in from `tools.json`, re-install only what is missing, report |
-| undo | Care | new | `git init` at setup with a `.gitignore` for secrets and large media; commit after each task; "undo what you just did" |
-| outbound-check | Care | new | before anything leaves: secrets, account numbers, other people's names, the owner's address; same idea as `build.py`'s leak scan |
-| weekly-brief | Care | new | what came in, went out, dates due (from `paperwork`), gap log, sign-ins needed |
+| workspace-audit | Care | built | move to core |
+| doctor | Care | built | check every tool and sign-in from `tools.json`, re-install only what is missing, report |
+| undo | Care | built | `git init` at setup with a `.gitignore` for secrets and large media; commit after each task; "undo what you just did" |
+| outbound-check | Care | built | before anything leaves: secrets, account numbers, other people's names, the owner's address; same idea as `build.py`'s leak scan |
+| weekly-brief | Care | built | what came in, went out, dates due (from `paperwork`), gap log, sign-ins needed |
 
 Held back, with the trigger that reopens each: `reminders` (a calendar connector, adapter-level), `form-filler` (no installed tool fills PDF forms reliably), `meal-plan` (`writer` covers it), trade packs (after ten real owners), `task-capture` (first thing `gap-finder` builds).
 
@@ -126,8 +126,8 @@ As built, "run `getting-started`" is "follow `setup/SETUP.md` from step 0": the 
 
 1. **Split.** (built 2026-10-31) Move the 21 skills to `skills/`, write `adapters/claude-code/` and a second, vendor-specific adapter (removed in Phase 5), update `build.py`, `update.py`, the tests and the workflow. The zip must still install and pass the Windows test. Ship nothing new in this phase.
 2. **Programs and care.** (built 2026-10-31) `tools.json` linux column and the eleven new programs; `doctor`, `undo`, `outbound-check`, `update` for the second path. Installer tested on Windows and on a Linux container.
-3. **Adopt and trial.** The five adopts and four trials, each behind its gate, each with `TEST.md`.
-4. **New skills.** (five of nine built 2026-10-31: summarize, explain-this, document-builder, writer, weekly-brief) The nine written fresh, each with `TEST.md`, plus `motion-video` (added 2026-10-31): scrub and copy the compositions, install Remotion in `tools/motion/`, render each template once on Windows as its test.
+3. **Adopt and trial.** (built 2026-10-31) The five adopts and four trials, each behind its gate, each with `TEST.md`.
+4. **New skills.** (the nine built 2026-10-31; motion-video still to do) The nine written fresh, each with `TEST.md`, plus `motion-video` (added 2026-10-31): scrub and copy the compositions, install Remotion in `tools/motion/`, render each template once on Windows as its test.
 5. **Neutral path.** (built 2026-10-31) Write `ADAPT.md`, remove the vendor adapter folder and the mirror push from `build.py` and the workflow, archive the retired mirror repo with a README pointing at the core, strip the vendor name from the site and the docs. A run on a real third-party agent is Michael's to do when he wants; the site marks the path untested until then.
 
 Each phase ends with the site rebuilt (the skills grid moves entries from coming to in the box on its own) and a commit.

@@ -10,7 +10,7 @@ Run this when the person asks for it, after the machine was reset or rebuilt, af
 ## The one command
 
 ```
-python tools/doctor/doctor.py
+python tools/doctor/doctor.py   # python3 on Mac and Linux
 ```
 
 Run it from the workspace folder; on Windows `python` works from there too. It runs the platform's installer in check-then-install mode, so anything already present is left alone. Add `--dry-run` to check without installing anything. A first run on a new machine can take 15 to 30 minutes; a re-run picks up where the last one stopped.

@@ -10,7 +10,7 @@ Run this before anything is emailed, posted, uploaded or handed to another perso
 ## The one command
 
 ```
-python tools/outbound-check/check.py <file>
+python tools/outbound-check/check.py <file>   # python3 on Mac and Linux
 ```
 
 Use `-` for the file to scan standard input. Run it from the workspace folder. It prints one line per finding, `line N: <kind>: <masked sample>`, and exits 1 when it found anything, 0 when clean. The sample shows only the first two and last two characters.

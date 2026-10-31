@@ -10,7 +10,7 @@ Setup does this. By hand:
 
 ```bash
 pip install "markitdown[all]"
-python tools/markitdown/self-test.py     # builds sample files and converts them; exits 0 on PASS
+python tools/markitdown/self-test.py     # builds sample files and converts them; exits 0 on PASS (python3 on Mac and Linux)
 ```
 
 ## Use

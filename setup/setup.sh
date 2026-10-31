@@ -7,7 +7,8 @@ if [ "$(uname -s)" = "Linux" ]; then
   echo "Setting up on Linux."
   echo
   if ! command -v python3 >/dev/null 2>&1 && command -v apt-get >/dev/null 2>&1; then
-    if [ "$(id -u)" = "0" ]; then apt-get install -y python3; else sudo -n apt-get install -y python3; fi
+    if [ "$(id -u)" = "0" ]; then SUDO=""; else SUDO="sudo -n"; fi
+    $SUDO apt-get update && $SUDO apt-get install -y python3
   fi
   command -v python3 >/dev/null 2>&1 || { echo "python3 is missing and did not install"; exit 4; }
   export PATH="$HOME/.local/bin:$PATH"   # uv tool install and pipx put commands here

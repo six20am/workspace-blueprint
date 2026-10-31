@@ -10,7 +10,7 @@ Fires when the person shares a scan, a phone photo or a PDF of mail, a bill, a n
 ## The one command
 
 ```
-python tools/paperwork/paperwork.py <file> [--dry-run] [--sender "<name>"] [--title "<title>"] [--into <folder>]
+python tools/paperwork/paperwork.py <file> [--dry-run] [--sender "<name>"] [--title "<title>"] [--into <folder>]   # python3 on Mac and Linux
 ```
 
 - `--dry-run` prints the planned name and the dates and changes nothing.

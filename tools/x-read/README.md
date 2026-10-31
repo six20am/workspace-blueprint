@@ -4,7 +4,7 @@ Reads public X (Twitter) posts through the FxTwitter public API (`api.fxtwitter.
 the MIT-licensed `FxEmbed/FxEmbed` project). No login, no install, no account at risk.
 
 ```
-PYTHONIOENCODING=utf-8 python tools/x-read/xread.py <x url> [<x url> ...]
+PYTHONIOENCODING=utf-8 python tools/x-read/xread.py <x url> [<x url> ...]   # python3 on Mac and Linux
 ```
 
 Prints, per post: author, timestamp, engagement counts, full text with links expanded, article

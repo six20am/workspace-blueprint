@@ -11,7 +11,7 @@ Run this when the person asks to update, asks what is new, or when `setup/versio
 
 1. Check first, change nothing:
    ```
-   python tools/update/update.py --check
+   python tools/update/update.py --check   # python3 on Mac and Linux
    ```
    Exit 0 means up to date; say so and stop. Exit 10 means an update exists. Exit 2 means github.com could not be reached; say so and stop.
 2. Tell the person in one line what will happen: skills and tools get replaced, their own files are not touched, anything they edited in a template file is backed up first.

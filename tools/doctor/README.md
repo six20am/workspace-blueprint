@@ -3,7 +3,7 @@
 Checks every tool and sign-in the workspace needs and re-installs only what is missing.
 
 ```
-python tools/doctor/doctor.py             # check, install what is missing, print the summary
+python tools/doctor/doctor.py             # check, install what is missing, print the summary (python3 on Mac and Linux)
 python tools/doctor/doctor.py --dry-run   # check only, install nothing
 ```
 

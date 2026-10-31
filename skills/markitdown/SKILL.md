@@ -8,7 +8,7 @@ description: "Converts Word, Excel, PowerPoint, PDF, HTML and Outlook files to M
 Run, from the workspace root:
 
 ```bash
-python tools/markitdown/convert.py "<file>"                      # writes <file>.md next to it
+python tools/markitdown/convert.py "<file>"                      # writes <file>.md next to it (python3 on Mac and Linux)
 python tools/markitdown/convert.py <folder>/ --out research/source-extracts/
 python tools/markitdown/self-test.py                             # checks the install
 ```

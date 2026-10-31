@@ -3,7 +3,7 @@
 Brings a workspace up to the latest Workspace Blueprint without touching the owner's files.
 
 ```
-python tools/update/update.py               # check, then update if newer
+python tools/update/update.py               # check, then update if newer (python3 on Mac and Linux)
 python tools/update/update.py --check       # report only; exit 10 means an update exists
 python tools/update/update.py --force       # update even when the version matches
 python tools/update/update.py --no-install  # copy files only, skip the installer or doctor

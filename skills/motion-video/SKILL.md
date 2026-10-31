@@ -51,7 +51,7 @@ Remotion is free for individuals, companies of three people or fewer, and non-pr
 
 ## Beyond these templates
 
-The official Remotion skills, installed at setup, cover anything these ten templates do not.
+The official Remotion skills, installed at setup, cover anything these ten templates do not; start with `remotion-best-practices`, their router skill, which points to the rest.
 
 ## Never
 

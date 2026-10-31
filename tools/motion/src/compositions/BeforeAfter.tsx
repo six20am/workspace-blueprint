@@ -121,7 +121,7 @@ export const BeforeAfter: React.FC<BeforeAfterProps> = (p) => {
             name={p.name ?? ""}
             headline={p.outroHeadline}
             cta={p.cta}
-            onAccent={p.onAccent ?? "#0b0b0b"}
+            onAccent={p.onAccent ?? b.onAccent}
           />
         </Sequence>
       ) : null}

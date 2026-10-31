@@ -4,7 +4,7 @@ Ten motion graphics templates over Remotion: title cards, captions, slideshows, 
 
 ## Install once
 
-Run `npm install` inside `tools/motion/`. It downloads several hundred MB (about 560 MB here), most of it a headless Chrome that draws the frames. Setup does this for you.
+Run `npm install` inside `tools/motion/`. It downloads several hundred MB (about 560 MB here): the packages, then the `postinstall` hook in `package.json` runs `remotion browser ensure`, which fetches the headless Chrome that draws the frames. Setup does this for you.
 
 ## The ten templates
 

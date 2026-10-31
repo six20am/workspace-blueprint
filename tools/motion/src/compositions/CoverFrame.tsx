@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Img, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { SAFE_ZONE_INSET_PCT, VERTICAL_UI_ZONE_PCT } from "../dimensions";
-import { type Brand, resolveBrand } from "../brand";
+import { fade, type Brand, resolveBrand } from "../brand";
 import { asset } from "../asset";
 import { useEntrance } from "../effects/transitions";
 
@@ -63,7 +63,7 @@ export const CoverFrame: React.FC<CoverFrameProps> = ({ src, headline, eyebrow, 
         />
       ) : (
         <AbsoluteFill
-          style={{ backgroundImage: `radial-gradient(ellipse at 30% 30%, ${b.accent}33 0%, transparent 60%)` }}
+          style={{ backgroundImage: `radial-gradient(ellipse at 30% 30%, ${fade(b.accent, 0.2)} 0%, transparent 60%)` }}
         />
       )}
 

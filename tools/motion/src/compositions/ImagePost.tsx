@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Img, cancelRender, useVideoConfig } from "remotion";
-import { resolveBrand, type Brand } from "../brand";
+import { darken, fade, resolveBrand, type Brand } from "../brand";
 import { asset } from "../asset";
 import { type FontFile, useFonts } from "../fonts";
 
@@ -102,7 +102,7 @@ const ToyBox: React.FC<Inner> = ({ images, text, b, u, onAccent, logo }) => {
           position: "relative",
           flex: 1,
           borderRadius: 34 * u,
-          background: `linear-gradient(160deg, ${b.accent} 0%, #c45f00 100%)`,
+          background: `linear-gradient(160deg, ${b.accent} 0%, ${darken(b.accent, 0.35)} 100%)`,
           boxShadow: `0 ${30 * u}px ${60 * u}px rgba(0,0,0,0.55)`,
           display: "flex",
           flexDirection: "column",
@@ -245,7 +245,7 @@ const Figurine: React.FC<Inner> = ({ images, text, b, u }) => (
           position: "absolute",
           left: 54 * u,
           bottom: 54 * u,
-          background: "rgba(11,11,11,0.86)",
+          background: fade(b.surface, 0.86),
           color: b.ink,
           fontFamily: b.captionFont,
           fontWeight: 700,
@@ -716,9 +716,9 @@ const Counter: React.FC<{ counter?: string; u: number; b: Brand }> = ({ counter,
         fontFamily: b.captionFont,
         fontWeight: 700,
         fontSize: 26 * u,
-        color: "rgba(245,243,240,0.9)",
-        background: "rgba(11,11,11,0.6)",
-        border: `${2 * u}px solid rgba(245,243,240,0.35)`,
+        color: fade(b.ink, 0.9),
+        background: fade(b.surface, 0.6),
+        border: `${2 * u}px solid ${fade(b.ink, 0.35)}`,
         padding: `${6 * u}px ${14 * u}px`,
         borderRadius: 999,
         letterSpacing: 2 * u,
@@ -755,7 +755,7 @@ const SlideCover: React.FC<Inner> = ({ images, text, b, u, logo, counter }) => {
           <AbsoluteFill
             style={{
               background:
-                "linear-gradient(180deg, rgba(11,11,11,0.55) 0%, rgba(11,11,11,0.1) 35%, rgba(11,11,11,0.92) 72%)",
+                `linear-gradient(180deg, ${fade(b.surface, 0.55)} 0%, ${fade(b.surface, 0.1)} 35%, ${fade(b.surface, 0.92)} 72%)`,
             }}
           />
         </>
@@ -867,7 +867,7 @@ const SlideOption: React.FC<Inner> = ({ images, text, b, u, onAccent, counter })
               fontSize: 38 * u,
               ...BALANCE,
               lineHeight: 1.3,
-              color: "rgba(245,243,240,0.82)",
+              color: fade(b.ink, 0.82),
             }}
           >
             {text.body}
@@ -929,7 +929,7 @@ const SlideReveal: React.FC<Inner> = ({ images, text, b, u, counter }) => {
             transform: "rotate(-8deg)",
             border: `${10 * u}px solid ${b.accent}`,
             color: b.accent,
-            background: "rgba(11,11,11,0.75)",
+            background: fade(b.surface, 0.75),
             fontFamily: b.headlineFont,
             fontWeight: 800,
             fontSize: 84 * u,
@@ -964,7 +964,7 @@ const SlideReveal: React.FC<Inner> = ({ images, text, b, u, counter }) => {
               fontSize: 36 * u,
               ...BALANCE,
               lineHeight: 1.3,
-              color: "rgba(245,243,240,0.82)",
+              color: fade(b.ink, 0.82),
             }}
           >
             {text.body}
@@ -1017,7 +1017,7 @@ const SlideText: React.FC<Inner> = ({ images, text, b, u, logo, counter, focal }
             fontSize: 42 * u,
             ...BALANCE,
             lineHeight: 1.35,
-            color: "rgba(245,243,240,0.85)",
+            color: fade(b.ink, 0.85),
             whiteSpace: "pre-line",
           }}
         >
@@ -1149,7 +1149,7 @@ export const ImagePost: React.FC<ImagePostProps> = (p) => {
         text={p.text}
         b={b}
         u={u}
-        onAccent={p.onAccent ?? "#0b0b0b"}
+        onAccent={p.onAccent ?? b.onAccent}
         logo={p.logo}
         counter={p.counter}
         focal={p.focal}

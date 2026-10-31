@@ -17,6 +17,8 @@ export type Brand = {
   eyebrowScale?: number;
   /** Background behind letterboxed content and on type-only frames. */
   surface: string;
+  /** Text color on the accent color, for buttons and badges. */
+  onAccent: string;
   /** Caption text color. */
   captionText: string;
   /** Plate behind burned-in captions. */
@@ -31,11 +33,20 @@ export const DEFAULT_BRAND: Brand = {
   ink: "#f4f5f7",
   accent: "#2bb5a8",
   surface: "#16191f",
+  onAccent: "#16191f",
   captionText: "#ffffff",
   captionPlate: "rgba(16, 18, 22, 0.82)",
   headlineFont: '"Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif',
   captionFont: '"Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif',
 };
+
+/** A color at a given opacity, 0 to 1. Works for any CSS color the person passes. */
+export const fade = (color: string, opacity: number) =>
+  `color-mix(in srgb, ${color} ${Math.round(opacity * 100)}%, transparent)`;
+
+/** A darker shade of a color: `amount` 0 to 1 of black mixed in. */
+export const darken = (color: string, amount: number) =>
+  `color-mix(in srgb, ${color} ${Math.round((1 - amount) * 100)}%, black)`;
 
 export const resolveBrand = (override?: Partial<Brand>): Brand => ({
   ...DEFAULT_BRAND,

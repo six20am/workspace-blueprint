@@ -11,7 +11,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import { FPS, VERTICAL_UI_ZONE_PCT, toFrames } from "../dimensions";
-import { type Brand, resolveBrand } from "../brand";
+import { type Brand, fade, resolveBrand } from "../brand";
 import { asset, isImage } from "../asset";
 import { type FontFile, useFonts } from "../fonts";
 import { Captions, type Cue, type Word } from "../captions";
@@ -171,7 +171,7 @@ export const Outro: React.FC<{
     <AbsoluteFill
       style={{
         backgroundColor: b.surface,
-        backgroundImage: `radial-gradient(ellipse at 50% 38%, ${b.accent}33 0%, transparent 60%)`,
+        backgroundImage: `radial-gradient(ellipse at 50% 38%, ${fade(b.accent, 0.2)} 0%, transparent 60%)`,
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
@@ -323,7 +323,7 @@ export const BrandedClip: React.FC<BrandedClipProps> = (p) => {
       </Sequence>
       {outro > 0 ? (
         <Sequence from={intro + main} durationInFrames={outro} name="outro">
-          <Outro logo={p.logo} b={b} name={name} headline={p.outroHeadline} cta={p.cta} onAccent={p.onAccent ?? "#0b0b0b"} />
+          <Outro logo={p.logo} b={b} name={name} headline={p.outroHeadline} cta={p.cta} onAccent={p.onAccent ?? b.onAccent} />
         </Sequence>
       ) : null}
       {p.music ? <Audio src={asset(p.music)} loop volume={bedVolume(p.musicVolume ?? 0.8, total, 45)} /> : null}

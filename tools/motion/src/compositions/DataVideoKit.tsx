@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Audio, Img, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { VERTICAL_UI_ZONE_PCT, toFrames } from "../dimensions";
-import { type Brand, resolveBrand } from "../brand";
+import { fade, type Brand, resolveBrand } from "../brand";
 import { asset } from "../asset";
 import { type FontFile, useFonts } from "../fonts";
 
@@ -91,8 +91,8 @@ export const Backdrop: React.FC<{ b: Brand }> = ({ b }) => {
       style={{
         backgroundColor: b.surface,
         backgroundImage: [
-          `radial-gradient(ellipse at ${x}% ${y}%, ${b.accent}2e 0%, transparent 55%)`,
-          `radial-gradient(ellipse at ${100 - x}% ${100 - y}%, ${b.accent}14 0%, transparent 50%)`,
+          `radial-gradient(ellipse at ${x}% ${y}%, ${fade(b.accent, 0.18)} 0%, transparent 55%)`,
+          `radial-gradient(ellipse at ${100 - x}% ${100 - y}%, ${fade(b.accent, 0.08)} 0%, transparent 50%)`,
         ].join(", "),
       }}
     />
@@ -184,7 +184,7 @@ export const EndCard: React.FC<{
     <AbsoluteFill
       style={{
         backgroundColor: b.surface,
-        backgroundImage: `radial-gradient(ellipse at 50% 38%, ${b.accent}33 0%, transparent 60%)`,
+        backgroundImage: `radial-gradient(ellipse at 50% 38%, ${fade(b.accent, 0.2)} 0%, transparent 60%)`,
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "column",
@@ -292,7 +292,7 @@ const Table: React.FC<{ p: DataVideoProps; b: Brand; onAccent: string }> = ({ p,
         );
       })}
       {p.note ? (
-        <div style={{ fontFamily: b.captionFont, color: `${b.ink}99`, fontSize: unit * 0.028, marginTop: unit * 0.01 }}>{p.note}</div>
+        <div style={{ fontFamily: b.captionFont, color: `${fade(b.ink, 0.6)}`, fontSize: unit * 0.028, marginTop: unit * 0.01 }}>{p.note}</div>
       ) : null}
     </AbsoluteFill>
   );
@@ -302,7 +302,7 @@ export const DataVideo: React.FC<DataVideoProps> = (p) => {
   const b = resolveBrand(p.brand);
   useFonts(p.fonts);
   const scenes = dataScenes(p);
-  const onAccent = p.onAccent ?? "#0b0b0b";
+  const onAccent = p.onAccent ?? b.onAccent;
   return (
     <AbsoluteFill>
       <Backdrop b={b} />

@@ -39,6 +39,9 @@ const die = (msg, code = 1) => {
   process.exit(code);
 };
 
+/** A mistake in the input: reported in one line, and the staging folder is still cleaned up. */
+class InputError extends Error {}
+
 const parseArgs = (argv) => {
   const flags = {};
   for (let i = 0; i < argv.length; i++) {
@@ -60,7 +63,7 @@ const stageFiles = (value, propsDir, publicDir, counter) => {
   if (typeof value === "string") {
     if (!MEDIA.test(value) || /^(https?:|data:)/i.test(value)) return value;
     const abs = path.isAbsolute(value) ? value : path.resolve(propsDir, value);
-    if (!fs.existsSync(abs)) die(`file named in the props not found: ${value} (looked at ${abs})`);
+    if (!fs.existsSync(abs)) throw new InputError(`file named in the props not found: ${value} (looked at ${abs})`);
     const name = `in-${counter.n++}${path.extname(abs).toLowerCase()}`;
     fs.copyFileSync(abs, path.join(publicDir, name));
     return name;
@@ -83,6 +86,15 @@ const main = async () => {
   if (!flags.props || flags.props === true) die("--props <file.json> is required");
   if (!flags.out || flags.out === true) die("--out <file> is required");
   if (flags.aspect && !ASPECTS.includes(flags.aspect)) die(`--aspect must be one of: ${ASPECTS.join(", ")}`);
+  // Every flag is checked before any file is staged, so a bad flag never leaves a staging folder behind.
+  const scale = flags.scale ? Number(flags.scale) : 1;
+  if (!(scale > 0 && scale <= 4)) die("--scale must be a number above 0 and at most 4");
+  let frames = null;
+  if (flags.frames !== undefined) {
+    const m = typeof flags.frames === "string" ? flags.frames.match(/^(\d+)-(\d+)$/) : null;
+    if (!m || Number(m[1]) > Number(m[2])) die("--frames must look like 0-59");
+    frames = [Number(m[1]), Number(m[2])];
+  }
 
   if (!fs.existsSync(path.join(ROOT, "node_modules", "remotion"))) {
     die("Remotion is not installed. Run `npm install` in tools/motion (several hundred MB), or run doctor.", 2);
@@ -114,8 +126,6 @@ const main = async () => {
     console.log(`Bundling templates...`);
     const serveUrl = await bundle({ entryPoint: ENTRY, publicDir, rootDir: ROOT });
     const composition = await selectComposition({ serveUrl, id, inputProps });
-    const scale = flags.scale ? Number(flags.scale) : 1;
-    if (!(scale > 0 && scale <= 4)) die("--scale must be a number above 0 and at most 4");
 
     if (STILL.test(out)) {
       const frame = Number.isInteger(inputProps.frame) ? inputProps.frame : composition.durationInFrames - 1;
@@ -123,12 +133,7 @@ const main = async () => {
     } else {
       const ext = path.extname(out).toLowerCase();
       const codec = ext === ".webm" ? "vp8" : ext === ".gif" ? "gif" : ext === ".mov" ? "prores" : "h264";
-      let frameRange = null;
-      if (typeof flags.frames === "string") {
-        const m = flags.frames.match(/^(\d+)-(\d+)$/);
-        if (!m) die("--frames must look like 0-59");
-        frameRange = [Number(m[1]), Math.min(Number(m[2]), composition.durationInFrames - 1)];
-      }
+      const frameRange = frames ? [Math.min(frames[0], composition.durationInFrames - 1), Math.min(frames[1], composition.durationInFrames - 1)] : null;
       let last = -1;
       await renderMedia({
         composition,
@@ -155,4 +160,4 @@ const main = async () => {
   }
 };
 
-main().catch((err) => die(err?.stack || String(err)));
+main().catch((err) => die(err instanceof InputError ? err.message : err?.stack || String(err)));

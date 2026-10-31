@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Audio, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { FPS, toFrames } from "../dimensions";
-import { type Brand, resolveBrand } from "../brand";
+import { fade, type Brand, resolveBrand } from "../brand";
 import { asset } from "../asset";
 import { Captions, type Cue, type Word } from "../captions";
 
@@ -62,7 +62,7 @@ const useEnter = (atFrame: number) => {
 const Card: React.FC<{ item: CardItem; big?: boolean; b: Brand }> = ({ item, big, b }) => {
   const u = useUnit();
   const style = useEnter(Math.round((item.at ?? 0) * FPS));
-  const color = item.tone === "warn" ? WARN : item.tone === "dim" ? `${b.ink}99` : b.accent;
+  const color = item.tone === "warn" ? WARN : item.tone === "dim" ? `${fade(b.ink, 0.6)}` : b.accent;
   return (
     <div
       style={{
@@ -83,7 +83,7 @@ const Card: React.FC<{ item: CardItem; big?: boolean; b: Brand }> = ({ item, big
         {item.label}
       </div>
       {item.sub ? (
-        <div style={{ color: `${b.ink}bb`, fontFamily: b.captionFont, fontSize: 34 * u, marginTop: 10 * u, lineHeight: 1.25 }}>
+        <div style={{ color: `${fade(b.ink, 0.73)}`, fontFamily: b.captionFont, fontSize: 34 * u, marginTop: 10 * u, lineHeight: 1.25 }}>
           {item.sub}
         </div>
       ) : null}
@@ -107,7 +107,7 @@ const Strike: React.FC<{ text: string; atFrame: number; b: Brand }> = ({ text, a
   const width = interpolate(frame, [atFrame, atFrame + 14], [0, 100], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   return (
     <div style={{ position: "relative", alignSelf: "flex-start", marginBottom: 30 * u }}>
-      <span style={{ color: `${b.ink}99`, fontFamily: b.headlineFont, fontSize: 60 * u, fontWeight: 600 }}>{text}</span>
+      <span style={{ color: `${fade(b.ink, 0.6)}`, fontFamily: b.headlineFont, fontSize: 60 * u, fontWeight: 600 }}>{text}</span>
       <div style={{ position: "absolute", left: 0, top: "52%", height: 7 * u, width: `${width}%`, background: WARN, borderRadius: 4 }} />
     </div>
   );
@@ -118,7 +118,7 @@ const Drift: React.FC<{ b: Brand }> = ({ b }) => {
   const frame = useCurrentFrame();
   const x = 50 + 42 * Math.sin(frame / 70);
   const y = 40 + 34 * Math.cos(frame / 95);
-  return <AbsoluteFill style={{ background: `radial-gradient(60% 60% at ${x}% ${y}%, ${b.accent}4d, transparent 70%)` }} />;
+  return <AbsoluteFill style={{ background: `radial-gradient(60% 60% at ${x}% ${y}%, ${fade(b.accent, 0.3)}, transparent 70%)` }} />;
 };
 
 const Breathe: React.FC<{ frames: number; children: React.ReactNode }> = ({ frames, children }) => {

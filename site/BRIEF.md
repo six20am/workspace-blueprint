@@ -51,7 +51,7 @@ Free. A zip file. Inside it, a setup that installs the tools, installs Claude Co
 
 **Paste-in prompts.** For a reader who already has the tool, the page gives one prompt to paste, and the agent fetches everything itself.
 
-- *Already have Claude Code:* the prompt tells Claude to clone `https://github.com/six20am/workspace-blueprint` into a folder named `Six20AM Workspace Blueprint` in Documents, then tells the reader to double-click `setup.cmd` (Windows) or `setup.command` (Mac) in that folder, because the installer puts in the tools and skips anything already present, and then to say "set this up". The repo's `CLAUDE.md` routes "set this up" to `setup/SETUP.md`.
+- *Already have Claude Code:* the prompt tells Claude to download the release zip (the Guardrails link) and unzip it into Documents, which gives a folder named `Six20AM Workspace Blueprint`. A clone of the repo does not work: `setup.cmd` and `CLAUDE.md` sit in `adapters/claude-code/` and reach the root only in the zip. The page then tells the reader to double-click `setup.cmd` (Windows) or `setup.command` (Mac) in that folder, because the installer puts in the tools and skips anything already present, and then to say "set this up". The repo's `CLAUDE.md` routes "set this up" to `setup/SETUP.md`.
 - *Have another AI agent:* the prompt tells the agent to download `https://github.com/six20am/workspace-blueprint/archive/refs/heads/main.zip`, unzip it into a folder of its own (not the shared root of its file area), read `ADAPT.md` and follow it, asking the reader the four questions when it says to. **Untested on a real third-party agent**; the page must say so.
 - Each prompt is shown in a box with a Copy button. The Copy button is microcopy.
 

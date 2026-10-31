@@ -199,9 +199,6 @@ def main():
                 text = re.sub(r"\s*Another \{\{coming\}\}[^.]*?where it's going\.", "", text)
             text = text.replace("{{coming}}", str(coming))
         body[sid] = md_block(text, sid)
-        if sid == "two-ways":
-            # the two bold-led paragraphs sit side by side
-            body[sid] = re.sub(r"(<p><strong>.*?</p>\s*<p><strong>.*?</p>)", r'<div class="paths">\1</div>', body[sid], flags=re.S)
         if sid == "paste-this":
             # the other-agent prompt sits behind a disclosure; the Claude Code one stays open
             body[sid] = re.sub(r"<p><strong>Have another AI agent</strong></p>(.*)$", lambda m: '<details class="agent"><summary>Have another AI agent?</summary>' + m.group(1) + '</details>', body[sid], flags=re.S)

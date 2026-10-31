@@ -48,7 +48,7 @@ You explain your business, paste in a file, get a decent answer, and the next da
 ## How it works
 
 1. **Unzip it.** Move the folder to Documents.
-2. **Run setup.** Double-click `setup.cmd` on Windows or `setup.command` on a Mac. A black window installs the tools and Claude Code. Fifteen to thirty minutes. Windows may ask "allow this app to make changes" a few times. Say yes.
+2. **Run setup.** Double-click `setup.cmd` on Windows or `setup.command` on a Mac. A black window installs the tools and Claude Code. Fifteen to thirty minutes. Windows may ask "allow this app to make changes" a few times. Say yes. A Mac refuses it the first time: open System Settings, then Privacy and Security, and click Open Anyway.
 3. **Answer four questions.** Claude opens and asks what you do, what work you want help with, how you like things filed, and how it should sound. "Not sure" is a fine answer. It builds the folders and tells you three things to try.
 
 [Download the zip]
@@ -63,20 +63,20 @@ It arrives knowing how to do thirty-eight things. It reads web pages, videos, do
 <!-- two-ways -->
 ## Where it runs
 
-**Claude Code, on your own computer.** This is the zip. Unzip it, double-click setup, answer four questions, and everything lives in a folder on your machine. Windows is tested. Mac is new and untested.
+**Claude Code, on your own computer.** This is the zip. Unzip it, double-click setup, answer four questions, and everything installs on your machine. Windows is tested. Mac is new and untested.
 
 Have another AI agent with its own computer and files? It can set this up for itself. The repo has a file that tells it how.
 
 <!-- paste-this -->
-## Already have one? Paste this
+## Already use an AI tool? Paste this
 
 If Claude Code or another AI agent is already running, you don't need the download. Paste the prompt and the agent goes and gets everything itself.
 
 **Already have Claude Code**
 ```prompt
-Clone https://github.com/six20am/workspace-blueprint into a folder called "Six20AM Workspace Blueprint" in my Documents folder, then tell me which file in it to double-click to run setup.
+Download https://github.com/six20am/workspace-blueprint/releases/latest/download/Six20AM-Workspace-Blueprint.zip and unzip it into my Documents folder. Then tell me which file in the new "Six20AM Workspace Blueprint" folder to double-click to run setup.
 ```
-When Claude says it's there, double-click `setup.cmd` on Windows or `setup.command` on a Mac. It skips anything you already have. When it finishes, type: set this up.
+When Claude says it's there, double-click `setup.cmd` on Windows or `setup.command` on a Mac. A Mac refuses it the first time: open System Settings, then Privacy and Security, and click Open Anyway. Setup skips anything you already have. When it finishes, type `set this up` in Claude.
 
 **Have another AI agent**
 ```prompt

@@ -47,7 +47,7 @@ You explain your business, paste in a file, get a decent answer, and the next da
 ## How it works
 
 1. **Unzip it.** Move the folder to Documents.
-2. **Run setup.** Double-click `setup.cmd` on Windows or `setup.command` on a Mac. A black window installs the tools and Claude Code. Fifteen to thirty minutes. Windows may ask "allow this app to make changes" a few times. Say yes.
+2. **Run setup.** Double-click `setup.cmd` on Windows or `setup.command` on a Mac. A black window installs the tools and Claude Code. Fifteen to thirty minutes. Windows may ask "allow this app to make changes" a few times. Say yes. A Mac refuses it the first time: open System Settings, then Privacy and Security, and click Open Anyway.
 3. **Answer four questions.** Claude opens and asks what you do, what work you want help with, how you like things filed, and how it should sound. "Not sure" is a fine answer. It builds the folders and tells you three things to try.
 
 [Download the zip]
@@ -62,26 +62,29 @@ It arrives knowing how to do twenty-one things. Most of them bring outside mater
 <!-- two-ways -->
 ## Where it runs
 
-**Claude Code, on your own computer.** This is the zip. Unzip it, double-click setup, answer four questions, and everything lives in a folder on your machine. Windows is tested. Mac is new and untested.
+**Claude Code, on your own computer.** This is the zip. Unzip it, double-click setup, answer four questions, and everything installs on your machine. Windows is tested. Mac is new and untested.
 
-Have a Grok Bot? Same method, nothing to install, because the bot already has a computer. The template isn't out yet. The repo is github.com/six20am/grokbot-blueprint.
+Use a different AI tool? If it has its own computer, it can read this blueprint and adapt it to its setup. We haven't tested that yet.
 
 <!-- paste-this -->
-## Already have one? Paste this
+## Already use an AI tool? Paste this
 
-If Claude Code or a Grok Bot is already running, you don't need the download. Paste the prompt and the agent goes and gets everything itself.
+If you already run Claude Code or another AI tool, you don't need to download anything yourself. Paste the prompt and it goes and gets everything itself.
 
 **Already have Claude Code**
 ```prompt
-Clone https://github.com/six20am/workspace-blueprint into a folder called "Six20AM Workspace Blueprint" in my Documents folder, then tell me which file in it to double-click to run setup.
+Download https://github.com/six20am/workspace-blueprint/releases/latest/download/Six20AM-Workspace-Blueprint.zip and unzip it into my Documents folder. Then tell me which file in the new "Six20AM Workspace Blueprint" folder to double-click to run setup.
 ```
-When Claude says it's there, double-click `setup.cmd` on Windows or `setup.command` on a Mac. It skips anything you already have. When it finishes, type: set this up.
+When Claude says it's there, double-click `setup.cmd` on Windows or `setup.command` on a Mac. A Mac refuses it the first time: open System Settings, then Privacy and Security, and click Open Anyway. Setup skips anything you already have. When it finishes, type `set this up` in Claude.
 
-**Have a Grok Bot**
+**Use a different AI tool**
+
+We haven't tested this path yet.
+
 ```prompt
-Download https://github.com/six20am/grokbot-blueprint/archive/refs/heads/main.zip and unzip it inside your own folder under /workspace. Read README.md and skills/getting-started/SKILL.md. Save each folder under skills/ as a skill, word for word, using the description at the top of its SKILL.md. Then run getting-started with me.
+Read https://github.com/six20am/workspace-blueprint, starting with README.md and setup/SETUP.md. Adapt this workspace blueprint to your own setup, then ask me the four setup questions and build my workspace.
 ```
-This path hasn't been tested on a real Grok Bot yet. If it stalls, open an issue on GitHub and paste what the bot said.
+If it stalls, open an issue on GitHub.
 
 <!-- first-week -->
 ## Your first week
@@ -143,7 +146,7 @@ One person makes this. The code is public, so you can read all of it before you 
 Six20AM
 
 <!-- footer -->
-Made by Six20AM. Source on GitHub: github.com/six20am/workspace-blueprint and github.com/six20am/grokbot-blueprint. The routing method comes from a teaching kit, used with its author's permission.
+Made by Six20AM. Source on GitHub: github.com/six20am/workspace-blueprint. The routing method comes from a teaching kit, used with its author's permission.
 
 <!-- page-level -->
 title: Workspace Blueprint: an AI that works out of your files

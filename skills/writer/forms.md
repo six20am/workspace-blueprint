@@ -5,31 +5,35 @@ Six shapes. Each lists the lines in order. Drop a line when the message does not
 ## A reply saying yes
 1. Opening: the yes, in the first words.
 2. Point: what you are agreeing to.
-3. Detail: the one thing they need to know (time, place, condition).
-4. Close: short and warm.
-Example: "Yes, count me in for Saturday. I can be there by 9. See you then."
+3. Detail: the time and place.
+4. Detail: any condition or thing you will bring.
+5. Ask: what you need from them, if anything.
+6. Close: short and warm.
+Example: "Yes, count me in for Saturday. I can be there by 9 and I will bring chairs. See you then."
 
 ## A reply saying no, kindly
-1. Opening: thanks for asking.
-2. Point: the no, plainly.
+1. Opening: the no, plainly, in the first sentence.
+2. Point: thanks for asking.
 3. Detail: one reason, no more.
 4. Ask: one alternative you can offer.
 5. Close: warm.
-Example: "Thanks for thinking of me. I can't make the 14th, I'm away that weekend. Could I help with the next one instead?"
+Example: "I can't make the 14th. Thanks for thinking of me. Could I take the 21st instead?"
 
 ## A request
 1. Opening: who you are, only if they do not know.
 2. Point: what you need.
-3. Detail: the one fact that makes it easy to say yes (date, size, why).
-4. Ask: the one thing you want them to do, and by when.
-5. Close: thanks.
+3. Detail: why you need it.
+4. Detail: the one fact that makes it easy to say yes (date, size, how long).
+5. Ask: the one thing you want them to do, and by when.
+6. Close: thanks.
 Example: "Could you send me the lease addendum by Friday? I need it for my renewal. Thank you."
 
 ## A thank-you
 1. Opening: thank you, first.
 2. Point: what they did.
 3. Detail: what it made possible, one specific thing.
-4. Close: one warm line.
+4. Detail: what you noticed that others might have missed.
+5. Close: one warm line.
 Example: "Thank you for staying late with Maya on Tuesday. She finally understands fractions. We are grateful."
 
 ## A complaint that asks for one specific fix
@@ -43,6 +47,7 @@ Example: "The heat has been out since Monday. I called twice. Please send someon
 ## A short update note
 1. Opening: the status in one line.
 2. Point: what changed since last time.
-3. Detail: what is still open.
-4. Ask or next step: what happens next, and who does it.
+3. Detail: what is done.
+4. Detail: what is still open.
+5. Next step: what happens next, and who does it.
 Example: "Done with the first draft. The budget page is still open. I will send it Friday."

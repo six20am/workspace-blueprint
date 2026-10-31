@@ -27,7 +27,7 @@ Route these elsewhere in one line, then stop:
 
 ## Where drafts go
 
-Next to the thing they answer. If there is no such file, use the folder the map file or the router file names for drafts. Name the file `<date>-<to>-<topic>-draft.md`, for example `2026-11-02-sam-saturday-shift-draft.md`.
+The folder the router file names for drafts, or next to the message it answers. Name the file `<date>-<to>-<topic>-draft.md`, for example `2026-11-02-sam-saturday-shift-draft.md`.
 
 ## Rules
 

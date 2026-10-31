@@ -29,10 +29,7 @@ def inline(s):
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"\b(github\.com/[\w./-]*[\w/])", r'<a href="https://\1">\1</a>', s)
-    if "what the bot said" in s:  # the Grok Bot path reports to its own repo
-        s = s.replace("open an issue on GitHub", '<a href="https://github.com/six20am/grokbot-blueprint/issues">open an issue on GitHub</a>')
-    else:
-        s = s.replace("open an issue on GitHub", f'<a href="{REPO_URL}/issues">open an issue on GitHub</a>')
+    s = s.replace("open an issue on GitHub", f'<a href="{REPO_URL}/issues">open an issue on GitHub</a>')  # both paths report to the core repo
     s = s.replace("Post it to us on GitHub", f'Post it to us <a href="{REPO_URL}/issues">on GitHub</a>')
     return s
 
@@ -206,15 +203,18 @@ def main():
             # the two bold-led paragraphs sit side by side
             body[sid] = re.sub(r"(<p><strong>.*?</p>\s*<p><strong>.*?</p>)", r'<div class="paths">\1</div>', body[sid], flags=re.S)
         if sid == "paste-this":
-            # the Grok Bot prompt sits behind a disclosure; the Claude Code one stays open
-            body[sid] = re.sub(r"<p><strong>Have a Grok Bot</strong></p>(.*)$", lambda m: '<details class="grok"><summary>Have a Grok Bot?</summary>' + m.group(1) + '</details>', body[sid], flags=re.S)
+            # the other-agent prompt sits behind a disclosure; the Claude Code one stays open
+            body[sid] = re.sub(r"<p><strong>Have another AI agent</strong></p>(.*)$", lambda m: '<details class="agent"><summary>Have another AI agent?</summary>' + m.group(1) + '</details>', body[sid], flags=re.S)
         if sid == "two-ways":
-            body[sid] = body[sid].replace("<p>Have a Grok Bot?", '<p class="grokline">Have a Grok Bot?')
+            body[sid] = body[sid].replace("<p>Have another AI agent ", '<p class="agentline">Have another AI agent ')
     body["can-do"] += f'\n<div class="schedule">{skills_html}</div>'
     tool_list = "".join(f"<li>{esc(n)}</li>" for n in tool_names)
     login_list = "".join(f"<li>{esc(n)}</li>" for n in logins)
 
     tpl = open(os.path.join(HERE, "template.html"), encoding="utf-8").read()
+    # template.html still names the dropped vendor path in two class names; map them to the neutral ones
+    # until the template's owner renames them (no-op once renamed)
+    tpl = tpl.replace(".grokline", ".agentline").replace("details.grok,", "details.agent,")
     out = tpl
     for k, v in body.items():
         out = out.replace("{{" + k + "}}", v)

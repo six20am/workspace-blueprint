@@ -22,7 +22,7 @@ Free. A zip file. Inside it, a setup that installs the tools, installs Claude Co
 
 **Setup.** Unzip, move the folder to Documents, double-click `setup.cmd` (Windows) or `setup.command` (Mac). Fifteen to thirty minutes, most of it installs, in a black window. Windows may ask "allow this app to make changes" a few times. When it finishes, Claude opens and asks four questions: what you do, what work you want help with, how you like things filed, how you want it to sound when it writes for you. "Not sure" is an acceptable answer to each; it picks something sensible. Then it builds the folders and names three things to try.
 
-**Status.** Setup writes `setup/setup-report.md` (what installed, what failed, what needs a sign-in); that file is what to attach to an issue. Windows installer tested on one machine. Mac installer is new and untested; the page must say so in those words or plainer. What is next: the Grok Bot template is being published; until it is out, the page says it is not out yet.
+**Status.** Setup writes `setup/setup-report.md` (what installed, what failed, what needs a sign-in); that file is what to attach to an issue. Windows installer tested on one machine. Mac installer is new and untested; the page must say so in those words or plainer. What is next: the first run on another AI agent, and the Mac installer test.
 
 **What gets built.** Folders in one of six filing styles (military, by stage, by client or project, PARA, numbered index, by date). Three routing files so the AI loads only what a task needs. A voice file so anything it writes sounds like the owner.
 
@@ -47,12 +47,12 @@ Free. A zip file. Inside it, a setup that installs the tools, installs Claude Co
 **Two ways to run it.** The page guides the reader to the right one.
 
 - *Claude Code, on your own computer.* The zip. Unzip, double-click setup, answer four questions. Everything installs on the reader's machine. Windows tested, Mac untested. This is the path the CTA sells.
-- *Grok Bot, on its cloud computer.* The same method rebuilt as a Grok Bot template, public repo `github.com/six20am/grokbot-blueprint`. Nothing to install: a Grok Bot already has a computer and a shell. The bot's first conversation runs the setup: four questions, builds its folder, saves a rule that loads the map and router before every task, then proves it on one real task in a new chat. Import is from a template link ("Add to Grok Bot") or in the app under Connect apps, Bot templates. **Status: the template is not published yet and has not been run with a new owner.** The page must say the template is not out yet and point to the repo as the only thing available today. No download, no date.
+- *Another AI agent with its own computer and files.* It adapts the blueprint itself from the neutral file `ADAPT.md` at the repo root: download the repo zip, unzip into its own folder, write a small adapter file, run `bash setup/setup.sh --no-launch`, save one standing rule, follow setup, run doctor. **Not yet run on a real third-party agent.** The page names no vendor.
 
 **Paste-in prompts.** For a reader who already has the tool, the page gives one prompt to paste, and the agent fetches everything itself.
 
 - *Already have Claude Code:* the prompt tells Claude to clone `https://github.com/six20am/workspace-blueprint` into a folder named `Six20AM Workspace Blueprint` in Documents, then tells the reader to double-click `setup.cmd` (Windows) or `setup.command` (Mac) in that folder, because the installer puts in the tools and skips anything already present, and then to say "set this up". The repo's `CLAUDE.md` routes "set this up" to `setup/SETUP.md`.
-- *Have a Grok Bot:* the prompt tells the bot to download `https://github.com/six20am/grokbot-blueprint/archive/refs/heads/main.zip`, unzip it inside its own folder under `/workspace`, read `README.md` and `skills/getting-started/SKILL.md`, save each folder under `skills/` as a skill with the description from the top of its `SKILL.md`, then run `getting-started`. **This path has not been tested on a real Grok Bot**, and whether the bot's computer can reach github.com is unverified. The page must say it is untested.
+- *Have another AI agent:* the prompt tells the agent to download `https://github.com/six20am/workspace-blueprint/archive/refs/heads/main.zip`, unzip it into a folder of its own (not the shared root of its file area), read `ADAPT.md` and follow it, asking the reader the four questions when it says to. **Untested on a real third-party agent**; the page must say so.
 - Each prompt is shown in a box with a Copy button. The Copy button is microcopy.
 
 **Your first week (asks that work today, each backed by a shipped skill).** Paste a YouTube link and ask for the transcript (`video-watcher`). Drop a PDF, Word or Excel file in the folder and ask what it says (`markitdown`). Ask what people have said about a topic in the last 30 days (`last30days`). Give it a website and ask for every photo on it (`client-asset-harvester`). Paste three emails you wrote and ask it to learn your voice (`voice-extractor`). Hand it three clips and ask for one video with a fade at the end (`media-tools`). Ask for something it has no tool for and watch it say so and offer to build one (`gap-finder`). How to ask: say the outcome you want, name the file or link, say where the result should land. "Not sure" and "what can you do with this" are both fine openers.
@@ -62,9 +62,9 @@ Free. A zip file. Inside it, a setup that installs the tools, installs Claude Co
 - No em dashes.
 - Grade 8 or lower.
 - No invented numbers, testimonials, logos or names of users. There are none.
-- Never say "AI agent", "supercharge", "unlock", "seamless", "powerful".
+- Never say "supercharge", "unlock", "seamless", "powerful". "AI agent" appears only in naming the other-agent path ("another AI agent").
+- Name no AI vendor other than Claude.
 - Do not name the agency's clients or the two agency brands.
-- Grok Bot: only the facts in "Two ways to run it". Never imply the template can be installed today.
 - The download link is `https://github.com/six20am/workspace-blueprint/releases/latest/download/Six20AM-Workspace-Blueprint.zip`. The GitHub repo link is footer microcopy, not a second CTA.
 
 ## CTA
@@ -79,13 +79,13 @@ problem         the chat box forgets; your files are not in it
 what-you-get    three outcomes, one line each
 how-it-works    three steps: unzip, run setup, answer four questions
 can-do          one line introducing the skills; one schedule of skills by group, each group with a plain headline (from site/skills.json), columns skill, what it does, status; shipped and coming both generated at build time
-two-ways        Claude Code on your computer (the zip) as the main card; Grok Bot as one line under it (template not out yet, repo today)
-paste-this      the Claude Code prompt in a box with a Copy button; the Grok Bot prompt behind a "Have a Grok Bot?" disclosure, marked untested
+two-ways        Claude Code on your computer (the zip) as the main card; another AI agent as one line under it (adapts itself from ADAPT.md; untested)
+paste-this      the Claude Code prompt in a box with a Copy button; the other-agent prompt behind a "Have another AI agent?" disclosure, marked untested
 first-week      seven asks that work today, and how to ask
 installed       what gets installed, size, privacy; the full tool list behind a disclosure, the sign-in list visible
 stays-current   the update path in three sentences
-status          Windows tested, Mac untested, what is next (the Grok Bot template, not out yet)
+status          Windows tested, Mac untested, what is next (the first run on another AI agent, and the Mac installer test)
 faq             four questions: Do I need an account? Is it free? What does it send? Can I undo it?
 close           one line and the CTA again, then a short signed note from the maker, signed Six20AM
-footer          microcopy: Six20AM, GitHub links for both repos, teaching-kit credit
+footer          microcopy: Six20AM, the GitHub link for the repo, teaching-kit credit
 ```

@@ -7,7 +7,7 @@ cta: Download the zip
 persona: none
 swipe: swipe_empty: web-page
 set_aside: none
-revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft; their fixes applied the same day (second commit)
+revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft; their fixes applied the same day (second commit); the vendor adapter replaced by the neutral ADAPT.md path (third commit)
 ```
 
 <!-- hero -->
@@ -65,12 +65,12 @@ It arrives knowing how to do thirty-eight things. It reads web pages, videos, do
 
 **Claude Code, on your own computer.** This is the zip. Unzip it, double-click setup, answer four questions, and everything lives in a folder on your machine. Windows is tested. Mac is new and untested.
 
-Have a Grok Bot? Same method, nothing to install, because the bot already has a computer. The template isn't out yet. The repo is github.com/six20am/grokbot-blueprint.
+Have another AI agent with its own computer and files? It can set this up for itself. The repo has a file that tells it how.
 
 <!-- paste-this -->
 ## Already have one? Paste this
 
-If Claude Code or a Grok Bot is already running, you don't need the download. Paste the prompt and the agent goes and gets everything itself.
+If Claude Code or another AI agent is already running, you don't need the download. Paste the prompt and the agent goes and gets everything itself.
 
 **Already have Claude Code**
 ```prompt
@@ -78,11 +78,11 @@ Clone https://github.com/six20am/workspace-blueprint into a folder called "Six20
 ```
 When Claude says it's there, double-click `setup.cmd` on Windows or `setup.command` on a Mac. It skips anything you already have. When it finishes, type: set this up.
 
-**Have a Grok Bot**
+**Have another AI agent**
 ```prompt
-Download https://github.com/six20am/grokbot-blueprint/archive/refs/heads/main.zip and unzip it inside your own folder under /workspace. Read README.md and skills/getting-started/SKILL.md. Save each folder under skills/ as a skill, word for word, using the description at the top of its SKILL.md. Then run getting-started with me.
+Download https://github.com/six20am/workspace-blueprint/archive/refs/heads/main.zip, unzip it into a folder of your own (not the shared root of your file area), read ADAPT.md in it, and follow it step by step. Ask me the four questions when it tells you to.
 ```
-This path hasn't been tested on a real Grok Bot yet. If it stalls, open an issue on GitHub and paste what the bot said.
+This path hasn't been run on a real third-party agent yet. If it stalls, open an issue on GitHub and paste what the agent said.
 
 <!-- first-week -->
 ## Your first week
@@ -114,7 +114,7 @@ New skills and tools land in the public repo as they're built. Double-click `upd
 <!-- status -->
 ## Where it stands
 
-The Windows installer has been tested on one machine. The Mac installer is new and hasn't been tested yet. If it stops, open an issue on GitHub and attach the setup report, the file named setup-report.md in the setup folder. Next up: the same setup for a Grok Bot, a hosted AI with its own computer. It isn't out yet.
+The Windows installer has been tested on one machine. The Mac installer is new and hasn't been tested yet. If it stops, open an issue on GitHub and attach the setup report, the file named setup-report.md in the setup folder. Next up: the first run on another AI agent, and the Mac installer test.
 
 <!-- faq -->
 ## Questions people ask
@@ -144,7 +144,7 @@ One person makes this. The code is public, so you can read all of it before you 
 Six20AM
 
 <!-- footer -->
-Made by Six20AM. Source on GitHub: github.com/six20am/workspace-blueprint and github.com/six20am/grokbot-blueprint. The routing method comes from a teaching kit, used with its author's permission.
+Made by Six20AM. Source on GitHub: github.com/six20am/workspace-blueprint. The routing method comes from a teaching kit, used with its author's permission.
 
 <!-- page-level -->
 title: Workspace Blueprint: an AI that works out of your files

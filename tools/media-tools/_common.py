@@ -7,7 +7,7 @@ import sys
 
 MISSING_EXIT = 3
 REFUSED_EXIT = 1
-DOCTOR = "python tools/doctor/doctor.py"
+DOCTOR = "python tools/doctor/doctor.py (python3 on Mac and Linux)"
 
 
 def winget_links():

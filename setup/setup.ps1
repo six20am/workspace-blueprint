@@ -17,15 +17,18 @@ $ProgressPreference = 'SilentlyContinue'   # the 5.1 progress bar makes big down
 $env:PIP_DISABLE_PIP_VERSION_CHECK = '1'   # the upgrade notice reads like a failure
 $root = Split-Path -Parent $PSScriptRoot
 Get-ChildItem -Path (Join-Path $PSScriptRoot 'lib') -Filter '*.ps1' | ForEach-Object { . $_.FullName }
+# an install the old updater touched finishes its move first, so the tool list below is the new one
+if (-not $DryRun -and -not $Validate) { [void](Invoke-LayoutFinish -Root $root) }
 
-$tools = @(Read-ToolList -Path (Join-Path $PSScriptRoot 'tools.json'))
+try { $tools = @(Read-ToolList -Path (Join-Path $PSScriptRoot 'tools.json')) }
+catch { Write-Host $_.Exception.Message -ForegroundColor Red; exit 1 }
 $errors = @(Test-ToolList -Tools $tools)
 if ($errors.Count -gt 0) { $errors | ForEach-Object { Write-Host "tools.json: $_" -ForegroundColor Red }; exit 1 }
 if ($Validate) { Write-Host "tools.json is valid: $($tools.Count) tools."; exit 0 }
 
 Write-Host ''
 Write-Host 'This sets up your workspace. It installs the tools Claude uses, then opens Claude.'
-Write-Host 'It takes 15 to 30 minutes. It downloads about 500 MB. It signs in to nothing.'
+Write-Host 'It takes 15 to 30 minutes. It downloads several hundred MB (LibreOffice alone is 300 MB and more). It signs in to nothing.'
 Write-Host 'If a tool fails, it is written down and setup keeps going. Claude will help with it after.'
 Write-Host 'Windows may ask "Do you want to allow this app to make changes?" a few times. Click Yes. Stay nearby for the first ten minutes.'
 Write-Host ''

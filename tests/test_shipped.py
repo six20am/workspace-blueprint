@@ -17,6 +17,7 @@ ADAPTER_SKIP_FILES = ("publish.md",)  # maintainer notes inside an adapter folde
 PLATFORM = re.compile(r"\.claude/|\bCLAUDE\.md\b|\bCONTEXT\.md\b|claude mcp add|/workspace/<")
 # backticked names an adapter root or the run time supplies; not files in this repo
 RUNTIME = {"setup/platform.md", "setup/adapter.json", "setup/version.json", "setup/setup-report.md", "setup/update-report.md",
+           "setup/tools.local.json",
            "install.sh", "setup.cmd", "setup.command", "update.cmd", "update.command", "CLAUDE.md", "CONTEXT.md", "voice.md"}
 
 

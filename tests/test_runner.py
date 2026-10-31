@@ -133,6 +133,49 @@ class LoadTest(unittest.TestCase):
             self.assertEqual(runner.shell_quote(root), "'" + root + "'")
 
 
+class LocalManifestTest(unittest.TestCase):
+    def test_local_manifest_merged_and_duplicates_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            main = os.path.join(d, "tools.json")
+            with open(main, "w", encoding="utf-8") as fh:
+                json.dump([tool("git"), tool("node")], fh)
+            # no local file: the template alone
+            self.assertEqual([t["id"] for t in runner.load_tools(main)], ["git", "node"])
+            local = os.path.join(d, "tools.local.json")
+            # the example's shape: a comment and an empty entries list
+            with open(local, "w", encoding="utf-8") as fh:
+                json.dump({"_comment": "mine", "entries": []}, fh)
+            self.assertEqual([t["id"] for t in runner.load_tools(main)], ["git", "node"])
+            with open(local, "w", encoding="utf-8") as fh:
+                json.dump({"_comment": "mine", "entries": [{"id": "mytool", "name": "My tool", "area": "tools",
+                                                            "check": "x", "check_mac": "check:mytool"}]}, fh)
+            tools = runner.load_tools(main)
+            self.assertEqual([t["id"] for t in tools], ["git", "node", "mytool"])
+            self.assertEqual(tools[2]["needs"], [])
+            self.assertEqual([t["id"] for t in runner.select_tools(tools, "mytool")], ["mytool"])
+            # a plain list works too
+            with open(local, "w", encoding="utf-8") as fh:
+                json.dump([tool("other")], fh)
+            self.assertEqual([t["id"] for t in runner.load_tools(main)], ["git", "node", "other"])
+            with open(local, "w", encoding="utf-8") as fh:
+                json.dump({"entries": [tool("node")]}, fh)
+            with self.assertRaises(ValueError) as cm:
+                runner.load_tools(main)
+            self.assertIn("tools.local.json", str(cm.exception))
+            self.assertIn("'node' is already used", str(cm.exception))
+            with open(local, "w", encoding="utf-8") as fh:
+                json.dump([tool("twice"), tool("twice")], fh)
+            with self.assertRaises(ValueError):
+                runner.load_tools(main)
+
+    def test_example_file_is_valid_and_empty(self):
+        here = os.path.dirname(__file__)
+        with open(os.path.join(here, "..", "setup", "tools.local.example.json"), encoding="utf-8") as fh:
+            data = json.load(fh)
+        self.assertEqual(data["entries"], [])
+        self.assertIn("_comment", data)
+
+
 class PlatformTest(unittest.TestCase):
     def setUp(self):
         self.m = FakeMachine()

@@ -196,12 +196,12 @@ class CliTests(unittest.TestCase):
             with Patch(ROOT=root, find_pdftotext=lambda: None):
                 code, out = run_main([src, "--dry-run"])
             self.assertEqual(code, 3)
-            self.assertIn("Missing: pdftotext. Run: python tools/doctor/doctor.py", out)
+            self.assertIn("Missing: pdftotext. Run: python tools/doctor/doctor.py (python3 on Mac and Linux)", out)
             with Patch(ROOT=root, find_pdftotext=lambda: "pdftotext", has_text=lambda pdf, prog=None: False,
                        find_ocrmypdf=lambda: None):
                 code, out = run_main([src])
             self.assertEqual(code, 3)
-            self.assertIn("Missing: ocrmypdf. Run: python tools/doctor/doctor.py", out)
+            self.assertIn("Missing: ocrmypdf. Run: python tools/doctor/doctor.py (python3 on Mac and Linux)", out)
             self.assertFalse(os.path.exists(os.path.join(root, "paperwork")))
 
     def test_ocr_and_image_commands(self):

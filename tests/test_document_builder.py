@@ -64,7 +64,7 @@ class MissingProgramTests(unittest.TestCase):
             finally:
                 build_doc.find_pandoc = original
         self.assertEqual(rc, 3)
-        self.assertIn("Missing: pandoc. Run: python tools/doctor/doctor.py", buf.getvalue())
+        self.assertIn("Missing: pandoc. Run: python tools/doctor/doctor.py (python3 on Mac and Linux)", buf.getvalue())
 
 
 class RealConversionTests(unittest.TestCase):

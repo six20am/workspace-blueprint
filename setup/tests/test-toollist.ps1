@@ -37,4 +37,19 @@ Assert-True (($errs -join '|') -match 'dependency cycle') 'cycle reported'
 Assert-True (($errs -join '|') -match 'install_mac but no check_mac') 'mac install without mac check reported'
 Assert-True (($errs -join '|') -match 'install_linux but no check_linux') 'linux install without linux check reported'
 Assert-True (($errs -join '|') -match "unknown adapter 'someone'") 'unknown adapter reported'
+# the owner's tools.local.json beside tools.json is appended after the template's entries
+[IO.File]::WriteAllText("$dir\tools.local.json", '{"_comment":"mine","entries":[]}')
+Assert-Equal (@(Read-ToolList -Path "$dir\tools.json").Count) 3 'an empty local list adds nothing'
+[IO.File]::WriteAllText("$dir\tools.local.json", '{"_comment":"mine","entries":[{"id":"mine","name":"My tool","area":"tools","check":"$true"}]}')
+$merged = @(Read-ToolList -Path "$dir\tools.json")
+Assert-Equal $merged.Count 4 'a local entry is merged'
+Assert-Equal $merged[3].id 'mine' 'the local entry comes after the template entries'
+Assert-Equal (@($merged[3].needs).Count) 0 'a local entry gets the same defaults'
+Assert-Equal (@(Test-ToolList -Tools $merged).Count) 0 'the merged list validates'
+[IO.File]::WriteAllText("$dir\tools.local.json", '[{"id":"mine2","name":"Mine","area":"tools","check":"$true"}]')
+Assert-Equal (@(Read-ToolList -Path "$dir\tools.json").Count) 4 'a plain list works too'
+[IO.File]::WriteAllText("$dir\tools.local.json", '{"entries":[{"id":"git","name":"Git again","area":"base","check":"$true"}]}')
+$dupMessage = ''
+try { Read-ToolList -Path "$dir\tools.json" | Out-Null } catch { $dupMessage = $_.Exception.Message }
+Assert-True ($dupMessage -match "tools.local.json: the id 'git' is already used") 'a duplicate local id is refused clearly'
 Remove-Item -Recurse -Force $dir

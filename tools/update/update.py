@@ -1,7 +1,7 @@
 """Brings a workspace up to the latest Workspace Blueprint without touching the owner's files.
 
     python tools/update/update.py            # check, then update if newer
-    python tools/update/update.py --check    # say whether an update exists, change nothing
+    python tools/update/update.py --check    # say whether an update exists and which tools it adds, change nothing
     python tools/update/update.py --force    # update even when the version matches
     python tools/update/update.py --no-install   # copy files only, skip the installer or doctor
 
@@ -29,8 +29,8 @@ built, one that does not exist upstream, is never touched.
 
 What it never reads or writes: the adapter's map and router files (CLAUDE.md and CONTEXT.md, or
 MAP.md, ROUTER.md and NOTES.md), voice.md, setup/adapter.json, setup/setup-report.md,
-setup/gap-log.md and setup/update-report.md (written only as this run's report), plus every
-folder the owner made.
+setup/gap-log.md, setup/tools.local.json (the owner's own tool entries) and setup/update-report.md
+(written only as this run's report), plus every folder the owner made.
 
 After the files land: claude-code runs the installer with the no-launch flag, which installs any
 tool new to setup/tools.json and skips everything already present. The neutral path runs the
@@ -72,6 +72,7 @@ CORE_OWNED = (
     "setup/lib",
     "setup/tests",
     "setup/tools.json",
+    "setup/tools.local.example.json",
     "setup/SETUP.md",
     "setup/filing-styles.md",
     "setup/setup.ps1",
@@ -86,7 +87,8 @@ ADAPTER_FOLDERS = ("claude-code",)
 ADAPTER_KEEP_OUT = ("publish.md", "platform.md")
 IGNORED_DIRS = ("__pycache__", "node_modules", ".git")
 # Never read or written, whatever the adapter. The map and router names are added per adapter.
-ALWAYS_NEVER = ("voice.md", "setup/adapter.json", "setup/setup-report.md", "setup/gap-log.md", "setup/update-report.md")
+ALWAYS_NEVER = ("voice.md", "setup/adapter.json", "setup/setup-report.md", "setup/gap-log.md", "setup/update-report.md",
+                "setup/tools.local.json")
 EXEC = (".sh", ".command")
 # setup/version.json carries "layout": 2 once this updater has synced the workspace at least once.
 LAYOUT = 2
@@ -109,6 +111,42 @@ def local_version():
 def remote_commit():
     data = json.loads(fetch(f"https://api.github.com/repos/{REPO}/commits/{BRANCH}", "application/vnd.github+json"))
     return data["sha"], data["commit"]["committer"]["date"][:10]
+
+
+def tool_names(data, adapter=None):
+    """[(id, name)] from a parsed tools.json list, in file order. Entries marked for another adapter are left out."""
+    out = []
+    if not isinstance(data, list):
+        return out
+    for t in data:
+        if not isinstance(t, dict) or not t.get("id"):
+            continue
+        if adapter and t.get("adapter") and t.get("adapter") != adapter:
+            continue
+        out.append((t["id"], t.get("name") or t["id"]))
+    return out
+
+
+def new_tools(local_data, upstream_data, adapter=None):
+    """[(id, name)] for every upstream tools.json entry whose id the local tools.json does not have."""
+    have = {i for i, _ in tool_names(local_data)}
+    return [(i, n) for i, n in tool_names(upstream_data, adapter) if i not in have]
+
+
+def local_tools(root):
+    try:
+        with open(os.path.join(root, "setup", "tools.json"), encoding="utf-8") as fh:
+            return json.load(fh)
+    except (OSError, ValueError):
+        return []
+
+
+def upstream_tools(commit):
+    """The upstream setup/tools.json at one commit, or None when it cannot be read."""
+    try:
+        return json.loads(fetch(f"https://raw.githubusercontent.com/{REPO}/{commit}/setup/tools.json"))
+    except Exception:  # network, missing file, bad JSON: the check still answers without the list
+        return None
 
 
 def download_tree():
@@ -287,6 +325,8 @@ def sync(src_root, root, adapter, backup_dir, log):
         for dirpath, dirnames, filenames in os.walk(dst_dir, topdown=False):
             if dirpath != dst_dir and not os.listdir(dirpath):
                 os.rmdir(dirpath)
+                inner = os.path.relpath(dirpath, dst_dir).replace(os.sep, "/")
+                log.append(f"removed  {folder_rel}/{inner}/")
     return added, changed, removed
 
 
@@ -436,6 +476,9 @@ def main():
             print("Update available (layout migration).")
         else:
             print(f"Update available: {(local.get('commit') or 'none')[:12]} -> {remote[:12]} ({date}).")
+        added = new_tools(local_tools(ROOT), upstream_tools(remote), read_adapter(ROOT)["adapter"])
+        if added:
+            print("New tools since your version: " + ", ".join(name for _, name in added))
         return 10
     if decision == "migrate":
         print("First update on the new layout; syncing everything.")

@@ -1,0 +1,4 @@
+{
+ "_comment": "Copy this file to setup/tools.local.json to add your own tools. Each entry in entries uses the same fields as setup/tools.json, for example: {\"id\": \"my-tool\", \"name\": \"My tool (what it does)\", \"area\": \"tools\", \"check\": \"Test-Command mytool\", \"install\": [\"winget install --id Example.MyTool -e --silent --accept-package-agreements --accept-source-agreements\"], \"check_mac\": \"command -v mytool\", \"install_mac\": [\"brew install mytool\"], \"check_linux\": \"command -v mytool\", \"install_linux\": [\"$SUDO apt-get install -y mytool\"]}. Updates never touch setup/tools.local.json; an id already in setup/tools.json is refused.",
+ "entries": []
+}

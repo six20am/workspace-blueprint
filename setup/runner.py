@@ -17,7 +17,10 @@ Flags:
   --adapter <name>      claude-code or other (default: setup/adapter.json, else claude-code);
                         tools.json entries marked for the other adapter are skipped
 
-Exit codes: 0 clean, 2 something failed (or Claude is missing), 4 no internet.
+The owner's own entries live in setup/tools.local.json (same schema; the template never touches it)
+and run after the template's.
+
+Exit codes: 0 clean, 1 a bad tool list, 2 something failed (or Claude is missing), 4 no internet.
 Standard library only."""
 import argparse
 import datetime
@@ -37,9 +40,34 @@ DEFAULT_ADAPTER = "claude-code"
 SUDO_TOKEN = re.compile(r"\$SUDO(?![A-Za-z0-9_])\s*")
 
 
+LOCAL_NAME = "tools.local.json"
+
+
+def local_entries(path):
+    """Entries from the owner's setup/tools.local.json: a list of entries, or an object whose "entries"
+    key holds the list (so the file can carry a "_comment"). Missing file: no entries."""
+    if not os.path.exists(path):
+        return []
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    if isinstance(data, dict):
+        data = data.get("entries") or []
+    if not isinstance(data, list) or not all(isinstance(t, dict) for t in data):
+        raise ValueError("%s: expected a list of tool entries" % LOCAL_NAME)
+    return data
+
+
 def load_tools(path):
+    """The template's tools.json, then the owner's tools.local.json beside it (same schema, appended
+    after the template entries). An id used twice is refused with ValueError."""
     with open(path, encoding="utf-8") as f:
         tools = json.load(f)
+    seen = {t.get("id") for t in tools}
+    for t in local_entries(os.path.join(os.path.dirname(os.path.abspath(path)), LOCAL_NAME)):
+        if t.get("id") in seen:
+            raise ValueError("%s: the id '%s' is already used. Give your entry another id." % (LOCAL_NAME, t.get("id")))
+        seen.add(t.get("id"))
+        tools.append(t)
     for t in tools:
         t.setdefault("needs", [])
         t.setdefault("install_mac", [])
@@ -218,12 +246,17 @@ def main(argv):
         print("\nChecking the workspace tools. Anything missing is installed again.\n")
     else:
         print("\nThis sets up your workspace. It installs the tools the workspace uses" + (", then opens Claude." if launches else "."))
-        print("It takes 15 to 30 minutes and downloads about 500 MB. It signs in to nothing.")
+        print("It takes 15 to 30 minutes and downloads several hundred MB (LibreOffice alone is 300 MB and more). It signs in to nothing.")
         print("If a tool fails, it is written down and setup keeps going.\n")
     if not online():
         print("No internet connection. Connect to the internet, then run setup again.")
         return 4
-    tools = select_tools(load_tools(os.path.join(setup_dir, "tools.json")), args.only, adapter=args.adapter)
+    try:
+        all_tools = load_tools(os.path.join(setup_dir, "tools.json"))
+    except ValueError as e:
+        print(e)
+        return 1
+    tools = select_tools(all_tools, args.only, adapter=args.adapter)
     sudo = sudo_prefix() if args.platform == "linux" else ""
     results = run_tools(tools, default_run, default_check, dry_run=args.dry_run, platform=args.platform,
                         doctor=args.doctor, sudo=sudo)

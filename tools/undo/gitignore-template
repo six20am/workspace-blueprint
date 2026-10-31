@@ -25,3 +25,26 @@ __pycache__/
 *.psd
 *.iso
 *.dmg
+
+# photos, scans and money records: large or private; undo history skips them
+*.jpg
+*.jpeg
+*.heic
+*.heif
+*.png
+*.gif
+*.webp
+*.tif
+*.tiff
+*.bmp
+*.dng
+*.cr2
+*.cr3
+*.nef
+*.arw
+*.raf
+*.raw
+*.orf
+*.rw2
+/paperwork/
+/money/

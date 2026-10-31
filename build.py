@@ -32,14 +32,17 @@ SKIP_ROOT_DIRS = {"tests", "docs", "site", ".github", "dist", "adapters"}
 SKIP_FILES = {".git", "build.py", "setup-report.md", "update-report.md"}  # .git is a file in a submodule checkout
 SKIP_ROOT_FILES = {"README.md"}     # the GitHub readme; START-HERE.md is the product's front page. ADAPT.md ships
 GENERATED = ("setup/adapter.json", "setup/version.json")
-TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml", ".ts", ".tsx")
+TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml", ".ts", ".tsx",
+        ".html", ".csv")
 LF = (".sh", ".command", ".py", ".md", ".json", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml", ".ts", ".tsx")
 EXEC = (".command", ".sh")
 SECRET_RE = re.compile(r"(^|/)(\.env(\.[^/]*)?|accounts\.json|instances\.json|[^/]*secret[^/]*\.(json|env)|[^/]*\.pem|[^/]*\.key)$", re.I)
 SECRET_ALLOW = re.compile(r"\.example(\.json)?$", re.I)
 FIXED = ["\u2014", "mtesi", "C:\\Users\\", "/c/Users/", "shared-core", "shared-systems", "work-log"]
 # the maintainer's own names, caught even when no parent-workspace names list exists (a public clone)
-FIXED_CI = ["six20am", "motus", "machado", "michael"]
+FIXED_CI = ["six20am", "motus", "machado", "michael", "ghl", "highlevel"]
+# short entries matched as whole words, so "roughly" and "highlight" never trip the scan
+WORD_ONLY = {"ghl"}
 HARD_RULE = re.compile(r"Hard Rule \d", re.I)     # a numbered rule from the parent workspace; a "Hard rules" heading is fine
 HEX_ID = re.compile(r"\b[0-9a-f]{32}\b")
 # files that may name the maintainer, keyed by repo-relative source path: the updater and ADAPT.md carry the public repo's URL
@@ -67,7 +70,12 @@ def scan_text(text, names):
         if s in text:
             problems.append(repr(s))
     for n in FIXED_CI + list(names):
-        if n and n.lower() in low:
+        if not n:
+            continue
+        if n in WORD_ONLY:
+            if re.search(r"\b" + re.escape(n) + r"\b", low):
+                problems.append(n)
+        elif n.lower() in low:
             problems.append(n)
     if HARD_RULE.search(text):
         problems.append("Hard Rule N")

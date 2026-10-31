@@ -5,7 +5,8 @@
     python tools/outbound-check/check.py -             # scan standard input
 
 Prints one line per finding, "line N: <kind>: <masked sample>", and exits 1 when there is any
-finding, 0 when there is none. It reads setup/private-terms.txt (the owner's own names, addresses
+finding, 0 when there is none. A binary file (Word, PDF, zip, anything with a NUL byte) is
+refused with exit 2: scan the Markdown draft instead. It reads setup/private-terms.txt (the owner's own names, addresses
 and email domains) from the workspace root when that file exists. It never edits what it scans.
 Standard library only.
 """
@@ -150,6 +151,17 @@ def scan(text, terms):
     return results
 
 
+NOT_TEXT = ('Not a text file. Scan the Markdown draft, or convert it first: '
+            'python tools/markitdown/convert.py "<file>"')
+
+
+def is_binary(path):
+    """True for a Word, Excel or zip file (PK), a PDF, or anything with a NUL byte in its first 4 KB."""
+    with open(path, "rb") as fh:
+        head = fh.read(4096)
+    return head[:8].startswith(b"PK") or head[:8].startswith(b"%PDF") or b"\x00" in head
+
+
 def main(argv):
     if len(argv) != 2:
         print("usage: check.py <file or ->", file=sys.stderr)
@@ -158,6 +170,9 @@ def main(argv):
         if argv[1] == "-":
             text = sys.stdin.read()
         else:
+            if is_binary(argv[1]):
+                print(NOT_TEXT)
+                return 2
             with open(argv[1], encoding="utf-8", errors="replace") as fh:
                 text = fh.read()
     except OSError as err:

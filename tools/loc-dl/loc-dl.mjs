@@ -7,7 +7,7 @@
  *
  * It downloads bytes AND records rights per item. The rights record is the point:
  * LoC digitizes material it does not own the rights to, so "it came from loc.gov"
- * is not a licence. Every item lands with its rights statement verbatim and
+ * is not a license. Every item lands with its rights statement verbatim and
  * `rights_reviewed: false` until a human clears it.
  *
  * Conventions:

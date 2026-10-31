@@ -189,6 +189,77 @@ class UpdateTest(unittest.TestCase):
         self.assertEqual(version["commit"], remote)
         self.assertEqual(update.needs_update(version, remote, False), "up-to-date")
 
+    def test_old_updater_then_new_run_migrates_skills(self):
+        # What the old updater did on an old install's first update: it copied tools/ and the installer
+        # files (setup/tools.json, setup/setup.ps1, setup/setup.sh, setup/SETUP.md), left .claude/skills
+        # alone, never copied setup/runner.py, and stamped version.json with the remote commit and no layout.
+        make_old_install(self.root)
+        remote = "e" * 40
+        put(self.src, "setup/setup.sh", "# mac and linux installer\n")
+        put(self.src, "setup/SETUP.md", "# Setup playbook\n")
+        put(self.src, "setup/runner.py", "# runner\n")
+        for rel in ("tools/update/update.py", "setup/tools.json", "setup/setup.ps1", "setup/setup.sh", "setup/SETUP.md"):
+            put(self.root, rel, read(self.src, rel))
+        put(self.root, "setup/version.json", json.dumps({"commit": remote, "date": "2026-10-31", "updated": "2026-10-31"}))
+        self.assertEqual(read(self.root, ".claude/skills/web-read/SKILL.md"), "web-read old\n")
+        self.assertFalse(exists(self.root, "setup/runner.py"))
+        # the new setup.sh then runs the new updater, which sees no layout and syncs everything
+        local = json.loads(read(self.root, "setup/version.json"))
+        self.assertEqual(update.needs_update(local, remote, False), "migrate")
+        log = []
+        update.apply_update(self.src, self.root, self.backup, log, remote, "2026-10-31")
+        self.assertEqual(read(self.root, ".claude/skills/web-read/SKILL.md"), "web-read new\n")
+        self.assertEqual(read(self.root, ".claude/skills/web-read/TEST.md"), "web-read test\n")
+        self.assertTrue(exists(self.root, ".claude/skills/INDEX.md"))
+        self.assertEqual(read(self.root, ".claude/skills/mine/SKILL.md"), "owner built\n")
+        self.assertTrue(exists(self.root, "setup/runner.py"), "the runner lands, so setup.sh can hand over to it")
+        self.assertEqual(json.loads(read(self.root, "setup/version.json"))["layout"], 2)
+        self.assertEqual(update.needs_update(json.loads(read(self.root, "setup/version.json")), remote, False), "up-to-date")
+
+    def test_installers_finish_the_layout_before_the_tool_walk(self):
+        here = os.path.join(os.path.dirname(__file__), "..", "setup")
+        with open(os.path.join(here, "setup.sh"), encoding="utf-8") as fh:
+            sh = fh.read()
+        self.assertIn("Finishing the move to the new layout...", sh)
+        self.assertIn("tools/update/update.py --no-install", sh)
+        for runner_call in ('python3 setup/runner.py --platform linux', '"$PY" setup/runner.py --platform mac'):
+            self.assertLess(sh.rindex("finish_layout", 0, sh.index(runner_call)), sh.index(runner_call))
+        self.assertIn("setup/mac_runner.py", sh)
+        with open(os.path.join(here, "lib", "layout.ps1"), encoding="utf-8") as fh:
+            ps = fh.read()
+        self.assertIn("Finishing the move to the new layout...", ps)
+        self.assertIn("--no-install", ps)
+
+    def test_owner_tool_list_is_never_touched(self):
+        put(self.src, "setup/tools.local.json", '{"entries": ["upstream"]}\n')
+        put(self.src, "setup/tools.local.example.json", '{"_comment": "example", "entries": []}\n')
+        put(self.root, "setup/tools.local.json", '{"entries": ["mine"]}\n')
+        update.sync(self.src, self.root, update.read_adapter(self.root), self.backup, [])
+        self.assertEqual(read(self.root, "setup/tools.local.json"), '{"entries": ["mine"]}\n')
+        self.assertTrue(exists(self.root, "setup/tools.local.example.json"))
+        self.assertIn("setup/tools.local.json", update.never_paths(update.ADAPTERS["claude-code"]))
+
+    def test_empty_folders_removed_are_logged(self):
+        put(self.root, "setup/adapter.json", json.dumps(OTHER_CFG))
+        put(self.root, "skills/web-read/SKILL.md", "web-read old\n")
+        put(self.root, "skills/web-read/old/helper.md", "stale\n")
+        (_, _, removed), log = self.sync(update.read_adapter(self.root))
+        self.assertEqual(removed, 1)
+        self.assertFalse(exists(self.root, "skills/web-read/old"))
+        self.assertIn("removed  skills/web-read/old/helper.md", log)
+        self.assertIn("removed  skills/web-read/old/", log)
+
+    def test_check_names_new_tools(self):
+        local = [{"id": "git", "name": "Git"}, {"id": "rtk", "name": "rtk"}]
+        upstream = local + [{"id": "rtk-hook", "name": "RTK hook for Claude Code", "adapter": "claude-code"},
+                            {"id": "jq", "name": "jq (reads and edits JSON)"}]
+        self.assertEqual(update.new_tools(local, upstream, "claude-code"),
+                         [("rtk-hook", "RTK hook for Claude Code"), ("jq", "jq (reads and edits JSON)")])
+        self.assertEqual(update.new_tools(local, upstream, "other"), [("jq", "jq (reads and edits JSON)")])
+        self.assertEqual(update.new_tools(local, local, "claude-code"), [])
+        self.assertEqual(update.new_tools(local, None, "claude-code"), [])
+        self.assertEqual(update.new_tools([], [{"id": "git", "name": "Git"}]), [("git", "Git")])
+
     def test_layout_2_and_matching_commit_is_up_to_date(self):
         remote = "b" * 40
         local = {"commit": remote, "date": "2026-10-31", "layout": 2}

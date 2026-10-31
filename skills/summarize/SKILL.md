@@ -9,7 +9,7 @@ Use this when the person asks for a summary, a brief, "what does this say", or "
 
 ## Inputs
 
-One file, a folder, a pasted thread, or a transcript. The brief is saved next to the source as `<source name>-brief.md`. If the router file says where briefs go, use that place instead. For a pasted thread with no file, save it next to the thing it answers, or at the top of the workspace folder if there is no such place.
+One file, a folder, a pasted thread, or a transcript. The brief is saved next to the source as `<source name>-brief.md`. If the router file says where briefs go, use that place instead. For a pasted thread or transcript with no file, save the brief in the folder the router file names for notes; if the router names none, ask the person where it goes.
 
 ## Steps
 

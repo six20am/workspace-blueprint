@@ -28,14 +28,15 @@ def inline(s):
     s = esc(s)
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
-    s = re.sub(r"\b(github\.com/[\w./-]*[\w/])", r'<a href="https://\1">\1</a>', s)
+    s = re.sub(r"\b((?:github|youtube)\.com/[\w./@-]*[\w/])", r'<a href="https://\1">\1</a>', s)
     s = s.replace("open an issue on GitHub", f'<a href="{REPO_URL}/issues">open an issue on GitHub</a>')  # both paths report to the core repo
     s = s.replace("tell us on GitHub", f'tell us <a href="{REPO_URL}/issues">on GitHub</a>')
     return s
 
 
-def md_block(text, section):
-    """A small Markdown subset: #/## headings, paragraphs, - lists, 1. lists, **Q** / answer pairs, [Button]."""
+def md_block(text, section, page="index"):
+    """A small Markdown subset: #/## headings, paragraphs, - lists, 1. lists, **Q** / answer pairs, [Button], > quote.
+    On a page other than index, "Copy the prompt" links back to the prompt instead of copying (the prompt is not there)."""
     out = []
     lines = [l.rstrip() for l in text.strip().splitlines()]
     i = 0
@@ -57,7 +58,9 @@ def md_block(text, section):
             out.append(f"<h2>{inline(l[3:])}</h2>")
         elif re.fullmatch(r"\[(.+)\]", l):
             label = re.fullmatch(r"\[(.+)\]", l).group(1)
-            if label == "Copy the prompt":
+            if label == "Copy the prompt" and page != "index":
+                out.append(f'<p class="cta"><a class="button" href="index.html#prompt">{esc(label)}</a></p>')
+            elif label == "Copy the prompt":
                 out.append(f'<p class="cta"><button type="button" class="button" data-main>{esc(label)}</button></p>')
             else:
                 out.append(f'<p class="cta"><a class="button" href="{DOWNLOAD}">{esc(label)}</a></p>')
@@ -65,8 +68,10 @@ def md_block(text, section):
             items = []
             while i < len(lines) and lines[i].startswith("- "):
                 items.append(f"<li>{inline(lines[i][2:])}</li>"); i += 1
-            cls = {"what-you-get": ' class="outcomes"', "why": ' class="why"'}.get(section, "")
+            cls = {"what-you-get": ' class="outcomes"', "why": ' class="why"'}.get(section, ' class="why"' if page != "index" else "")
             out.append(f"<ul{cls}>" + "".join(items) + "</ul>"); continue
+        elif l.startswith("> "):
+            out.append(f"<blockquote>{inline(l[2:])}</blockquote>")
         elif re.match(r"\d+\. ", l):
             items = []
             while i < len(lines) and re.match(r"\d+\. ", lines[i]):
@@ -84,8 +89,8 @@ def md_block(text, section):
     return "\n".join(out)
 
 
-def read_copy():
-    text = open(os.path.join(HERE, "copy.md"), encoding="utf-8").read()
+def read_copy(name="copy.md"):
+    text = open(os.path.join(HERE, name), encoding="utf-8").read()
     text = re.sub(r"^```.*?```\s*", "", text, flags=re.S)  # the writer's header block
     parts = re.split(r"<!--\s*([a-z-]+)\s*-->", text)
     sections = {}
@@ -255,6 +260,7 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, "index.html"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(out)
+    learn_page(tpl, sections.get("footer", ""), sha, date)
     assets = os.path.join(HERE, "assets")
     if os.path.isdir(assets):
         import shutil
@@ -262,6 +268,44 @@ def main():
     with open(os.path.join(OUT, "_headers"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("/*\n  X-Content-Type-Options: nosniff\n  X-Frame-Options: DENY\n  Referrer-Policy: strict-origin-when-cross-origin\n")
     print(f"wrote {OUT}/index.html: {count} skills, {len(tool_names)} tools, {sha} {date}")
+
+
+def learn_page(index_tpl, footer_md, sha, date):
+    """site/learn.md -> dist/learn.html. The page shares the main template's stylesheet. Each section in
+    learn.md may open with a `rail: Label` line, which becomes the left-hand rail; `intro` is the top block."""
+    path = os.path.join(HERE, "learn.md")
+    if not os.path.isfile(path):
+        return
+    sections = read_copy("learn.md")
+    page = sections.pop("page-level", "")
+    title = re.search(r"title:\s*(.+)", page).group(1).strip()
+    meta = re.search(r"meta:\s*(.+)", page).group(1).strip()
+    style = re.search(r"<style>.*?</style>", index_tpl, re.S).group(0)
+    parts = []
+    for sid, text in sections.items():
+        rail = ""
+        m = re.match(r"\s*rail:\s*(.+)", text)
+        if m:
+            rail = m.group(1).strip()
+            text = text[m.end():]
+        body = md_block(text, sid, page="learn")
+        if sid == "intro":
+            parts.append(f'<section class="intro" id="{sid}">{body}</section>')
+        elif sid == "close":
+            parts.append(f'<section class="close" id="{sid}">{body}</section>')
+        else:
+            parts.append(f'<section class="row" id="{esc(sid)}"><p class="rail">{esc(rail)}</p><div class="body">\n{body}\n</div></section>')
+    tpl = open(os.path.join(HERE, "learn-template.html"), encoding="utf-8").read()
+    out = (tpl.replace("{{style}}", style).replace("{{content}}", "\n\n".join(parts))
+              .replace("{{title}}", esc(title)).replace("{{meta}}", esc(meta))
+              .replace("{{footer}}", md_block(footer_md, "footer", page="learn"))
+              .replace("{{repo}}", REPO_URL).replace("{{sha}}", esc(sha)).replace("{{date}}", esc(date)))
+    left = re.findall(r"{{[a-z-]+}}", out)
+    if left:
+        raise SystemExit(f"learn: unfilled placeholders: {left}")
+    with open(os.path.join(OUT, "learn.html"), "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(out)
+    print(f"wrote {OUT}/learn.html: {len(parts)} sections")
 
 
 def num_word(n):

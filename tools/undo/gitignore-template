@@ -1,0 +1,27 @@
+# secrets
+.env
+.env.*
+*.pem
+*.key
+accounts.json
+setup/private-terms.txt
+
+# reports
+setup/setup-report.md
+setup/update-report.md
+setup/update-backup/
+
+# installs
+node_modules/
+__pycache__/
+
+# media
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.wav
+*.zip
+*.psd
+*.iso
+*.dmg

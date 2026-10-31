@@ -212,6 +212,10 @@
   "backup": [
    "Keeping the workspace honest",
    "Copies the whole workspace to a drive or synced folder you name, and the weekly brief says when it last ran. Never deletes."
+  ],
+  "reading-pile": [
+   "Reading the web",
+   "Links you save during the week become one short digest on the weekly brief: what each page says, and whether it is worth your time."
   ]
  },
  "headlines": {

@@ -23,6 +23,7 @@ Run it from the workspace folder. It looks at the last 7 days, ending today. Add
 - **In town this week**: the next 7 days from the newest file in `local-events/`, if the local-events skill has written one.
 - **Renewals coming up**: anything in `renewals.md` past its date or due within 30 days, "this week" on the ones inside 7, if the renewals skill keeps that file. Say what to do, not just the date.
 - **Waiting on, overdue**: the lines in `waiting-on.md` past their wait, with the days, if the waiting-on skill keeps that file. Offer the nudge draft for each; the person sends it.
+- **Reading pile**: links saved this week and not yet read, from `reading-pile.md`, if the reading-pile skill keeps it. Offer the digest once.
 - **Decided this week**: this week's lines in `decisions.md`, if the decision-log skill keeps it. Read them back as written; flag once if the week's work undoes an earlier one.
 - **Gaps logged**: this week's lines in `setup/gap-log.md`.
 - **Jobs that keep coming back**: the undo-history summaries from the last 90 days that repeat three or more times, with the count. This is the look-back: the work got done, now ask whether it should become a pipeline.

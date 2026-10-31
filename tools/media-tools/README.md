@@ -3,7 +3,7 @@
 Four small wrappers the `media-tools` skill calls. Each builds the command, finds the program on PATH or in its usual install folder (and the WinGet Links folder), and writes a new file beside the input. None of them edits an original or overwrites an existing file.
 
 ```
-python tools/media-tools/exif.py show|strip <file>
+python tools/media-tools/exif.py show|strip <file>   # python3 on Mac and Linux
 python tools/media-tools/audio.py trim|convert|normalize <file> [--start S --end S] [--to wav|mp3|flac]
 python tools/media-tools/transcode.py <in> [--preset "Fast 1080p30"] [--out <file>]
 python tools/media-tools/container.py info|mux <file> [--audio <file>] [--subs <file>]

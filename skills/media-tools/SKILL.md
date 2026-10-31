@@ -43,7 +43,7 @@ Use this when the person asks to convert, trim, resize, crop or compress a video
 Each one finds its program, builds the command, and writes a new file beside the input.
 
 ```
-python tools/media-tools/exif.py show <file>
+python tools/media-tools/exif.py show <file>   # python3 on Mac and Linux
 python tools/media-tools/exif.py strip <file>
 python tools/media-tools/audio.py trim <file> --start 5 --end 20
 python tools/media-tools/audio.py convert <file> --to mp3

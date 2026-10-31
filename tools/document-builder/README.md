@@ -3,7 +3,7 @@
 Turns a Markdown file into a Word, PDF, PowerPoint, HTML or OpenDocument file, or its first table into CSV.
 
 ```
-python tools/document-builder/build_doc.py notes.md --to docx            # notes.docx beside it
+python tools/document-builder/build_doc.py notes.md --to docx            # notes.docx beside it (python3 on Mac and Linux)
 python tools/document-builder/build_doc.py notes.md --to pdf --out report.pdf
 python tools/document-builder/build_doc.py notes.md --csv                # the first table as notes.csv
 ```

@@ -3,7 +3,7 @@
 Scans a file for things that should not leave the workspace, before it is emailed, posted, uploaded or handed to someone.
 
 ```
-python tools/outbound-check/check.py draft.txt   # scan a file
+python tools/outbound-check/check.py draft.txt   # scan a file (python3 on Mac and Linux)
 python tools/outbound-check/check.py -           # scan standard input
 ```
 

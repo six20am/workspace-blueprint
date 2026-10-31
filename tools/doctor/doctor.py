@@ -18,7 +18,7 @@ import sys
 import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-ADAPTERS = ("claude-code", "grok-bot")
+ADAPTERS = ("claude-code", "other")
 DEFAULT_ADAPTER = "claude-code"
 
 

@@ -4,7 +4,7 @@ Reads a scan, photo or PDF of a letter, bill or form, names it by date, sender a
 and pulls out the dates that matter.
 
 ```
-python tools/paperwork/paperwork.py scan.pdf --dry-run                  # show the plan, change nothing
+python tools/paperwork/paperwork.py scan.pdf --dry-run                  # show the plan, change nothing (python3 on Mac and Linux)
 python tools/paperwork/paperwork.py photo.jpg                           # file it under paperwork/<year>/
 python tools/paperwork/paperwork.py scan.pdf --sender "Northwind Power" --title "Bill"
 ```

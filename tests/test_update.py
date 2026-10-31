@@ -20,7 +20,7 @@ def exists(base, rel):
 
 
 def make_upstream(base):
-    """A raw repo tree as codeload delivers it: core skills, both adapter folders, core setup and tools."""
+    """A raw repo tree as codeload delivers it: core skills, the claude-code adapter folder, ADAPT.md, core setup and tools."""
     put(base, "skills/web-read/SKILL.md", "web-read new\n")
     put(base, "skills/web-read/TEST.md", "web-read test\n")
     put(base, "skills/summarize/SKILL.md", "summarize template\n")
@@ -30,11 +30,8 @@ def make_upstream(base):
     put(base, "adapters/claude-code/platform.md", "# Platform: Claude Code\n")
     put(base, "adapters/claude-code/publish.md", "maintainer notes\n")
     put(base, "adapters/claude-code/skills/.keep", "")
-    put(base, "adapters/grok-bot/README.md", "mirror front page\n")
-    put(base, "adapters/grok-bot/install.sh", "#!/bin/sh\n")
-    put(base, "adapters/grok-bot/platform.md", "# Platform: Grok Bot\n")
-    put(base, "adapters/grok-bot/publish.md", "maintainer notes\n")
-    put(base, "adapters/grok-bot/skills/getting-started/SKILL.md", "getting started\n")
+    put(base, "ADAPT.md", "# Adapt\n")
+    put(base, "README.md", "repo front page\n")
     put(base, "setup/tools.json", '{"tools": ["new"]}\n')
     put(base, "setup/setup.ps1", "# windows installer\n")
     put(base, "setup/lib/planner.ps1", "# planner\n")
@@ -53,7 +50,7 @@ def make_old_install(root):
     put(root, "voice.md", "owner voice\n")
 
 
-GROK_CFG = {"adapter": "grok-bot", "skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"}
+OTHER_CFG = {"adapter": "other", "skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"}
 
 
 class UpdateTest(unittest.TestCase):
@@ -110,51 +107,52 @@ class UpdateTest(unittest.TestCase):
         self.assertEqual(read(self.backup, ".claude/skills/summarize/SKILL.md"), "owner summarize\n")
         self.assertIn("changed  .claude/skills/summarize/SKILL.md", log)
 
-    def test_grok_layout_syncs_into_skills(self):
-        put(self.root, "setup/adapter.json", json.dumps(GROK_CFG))
+    def test_other_layout_syncs_into_skills(self):
+        put(self.root, "setup/adapter.json", json.dumps(OTHER_CFG))
         put(self.root, "skills/web-read/SKILL.md", "web-read old\n")
         put(self.root, "skills/web-read/old-helper.md", "stale\n")
         put(self.root, "skills/mine/SKILL.md", "owner built\n")
         adapter = update.read_adapter(self.root)
-        self.assertEqual(adapter["adapter"], "grok-bot")
+        self.assertEqual(adapter["adapter"], "other")
         (added, changed, removed), log = self.sync(adapter)
         r = self.root
         self.assertEqual(read(r, "skills/web-read/SKILL.md"), "web-read new\n")
-        self.assertEqual(read(r, "skills/getting-started/SKILL.md"), "getting started\n")
+        self.assertEqual(read(r, "skills/INDEX.md"), "# Skills index\n")
         self.assertEqual(read(r, "skills/mine/SKILL.md"), "owner built\n")
         self.assertFalse(exists(r, "skills/web-read/old-helper.md"))
         self.assertEqual(removed, 1)
-        self.assertEqual(read(r, "install.sh"), "#!/bin/sh\n")
-        self.assertEqual(read(r, "README.md"), "mirror front page\n")
-        self.assertEqual(read(r, "setup/platform.md"), "# Platform: Grok Bot\n")
+        self.assertEqual(read(r, "ADAPT.md"), "# Adapt\n", "ADAPT.md lands at the root")
+        self.assertEqual(read(r, "setup/tools.json"), '{"tools": ["new"]}\n')
+        self.assertEqual(read(r, "tools/update/update.py"), "# updater\n")
         self.assertFalse(exists(r, "CLAUDE.md"))
         self.assertFalse(exists(r, "setup.cmd"))
         self.assertFalse(exists(r, ".claude"))
         self.assertFalse(exists(r, "publish.md"))
-        self.assertFalse(exists(r, "setup/setup.ps1"))
-        self.assertFalse(exists(r, "setup/lib"))
-        self.assertFalse(exists(r, "setup/tests"))
-        self.assertEqual(json.loads(read(r, "setup/adapter.json")), GROK_CFG)
+        self.assertFalse(exists(r, "README.md"), "the repo readme never ships")
+        self.assertFalse(exists(r, "setup/platform.md"), "the neutral path has no adapter folder")
+        self.assertEqual(json.loads(read(r, "setup/adapter.json")), OTHER_CFG)
+        self.assertEqual(update.owned_pairs(adapter, self.src)[:2], [("skills", "skills"), ("ADAPT.md", "ADAPT.md")])
+        self.assertFalse(any(src.startswith("adapters/") for src, _ in update.owned_pairs(adapter, self.src)))
 
     def test_never_list_follows_the_adapter(self):
         for rel in ("MAP.md", "ROUTER.md", "CLAUDE.md", "CONTEXT.md", "voice.md"):
             put(self.src, rel, "upstream " + rel + "\n")
         for rel in ("MAP.md", "ROUTER.md", "voice.md", "setup/adapter.json"):
-            put(self.src, "adapters/grok-bot/" + rel, "upstream " + rel + "\n")
+            put(self.src, "adapters/other/" + rel, "upstream " + rel + "\n")
         for rel in ("CONTEXT.md", "voice.md", "setup/adapter.json"):
             put(self.src, "adapters/claude-code/" + rel, "upstream " + rel + "\n")
         put(self.src, "setup/adapter.json", "upstream adapter.json\n")
 
-        grok = os.path.join(self.tmp, "grok")
-        put(grok, "setup/adapter.json", json.dumps(GROK_CFG))
-        put(grok, "ROUTER.md", "owner router\n")
-        update.sync(self.src, grok, update.read_adapter(grok), os.path.join(grok, "bk"), [])
-        self.assertFalse(exists(grok, "MAP.md"))
-        self.assertEqual(read(grok, "ROUTER.md"), "owner router\n")
-        self.assertFalse(exists(grok, "voice.md"))
-        self.assertEqual(json.loads(read(grok, "setup/adapter.json")), GROK_CFG)
-        self.assertIn("MAP.md", update.never_paths(GROK_CFG))
-        self.assertIn("ROUTER.md", update.never_paths(GROK_CFG))
+        other = os.path.join(self.tmp, "other")
+        put(other, "setup/adapter.json", json.dumps(OTHER_CFG))
+        put(other, "ROUTER.md", "owner router\n")
+        update.sync(self.src, other, update.read_adapter(other), os.path.join(other, "bk"), [])
+        self.assertFalse(exists(other, "MAP.md"))
+        self.assertEqual(read(other, "ROUTER.md"), "owner router\n")
+        self.assertFalse(exists(other, "voice.md"))
+        self.assertEqual(json.loads(read(other, "setup/adapter.json")), OTHER_CFG)
+        for rel in ("MAP.md", "ROUTER.md", "NOTES.md", "voice.md", "setup/adapter.json", "setup/setup-report.md", "setup/update-report.md"):
+            self.assertIn(rel, update.never_paths(OTHER_CFG))
 
         claude = os.path.join(self.tmp, "claude")
         os.makedirs(claude)
@@ -201,9 +199,17 @@ class UpdateTest(unittest.TestCase):
         self.assertEqual(update.needs_update({"commit": None, "date": None}, remote, False), "migrate")
 
     def test_existing_adapter_json_is_never_overwritten(self):
-        put(self.root, "setup/adapter.json", json.dumps(GROK_CFG))
+        put(self.root, "setup/adapter.json", json.dumps(OTHER_CFG))
         update.apply_update(self.src, self.root, self.backup, [], "d" * 40, "2026-10-31")
-        self.assertEqual(json.loads(read(self.root, "setup/adapter.json")), GROK_CFG)
+        self.assertEqual(json.loads(read(self.root, "setup/adapter.json")), OTHER_CFG)
+
+    def test_other_runs_the_doctor_then_the_runner(self):
+        put(self.root, "tools/doctor/doctor.py", "# doctor\n")
+        put(self.root, "setup/runner.py", "# runner\n")
+        self.assertEqual(update.doctor_command(self.root)[1:], [os.path.join(self.root, "tools", "doctor", "doctor.py")])
+        os.remove(os.path.join(self.root, "tools", "doctor", "doctor.py"))
+        self.assertEqual(update.doctor_command(self.root)[1:],
+                         [os.path.join(self.root, "setup", "runner.py"), "--doctor", "--no-launch"])
 
 
 if __name__ == "__main__":

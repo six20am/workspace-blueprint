@@ -20,8 +20,8 @@ $noLinux = @($tools | Where-Object { (-not $_.adapter) -and (@($_.install).Count
 Assert-Equal (@($noLinux | ForEach-Object { $_.id }) -join ',') '' 'every shared tool with a Windows install also has a Linux install'
 $noLinuxCheck = @($tools | Where-Object { (@($_.install_linux).Count -gt 0) -and [string]::IsNullOrWhiteSpace([string]$_.check_linux) })
 Assert-Equal (@($noLinuxCheck | ForEach-Object { $_.id }) -join ',') '' 'every tool with a Linux install also has a Linux check'
-$badAdapter = @($tools | Where-Object { $_.adapter -and (@('claude-code', 'grok-bot') -notcontains $_.adapter) })
-Assert-Equal (@($badAdapter | ForEach-Object { $_.id }) -join ',') '' 'every adapter value is claude-code or grok-bot'
+$badAdapter = @($tools | Where-Object { $_.adapter -and (@('claude-code', 'other') -notcontains $_.adapter) })
+Assert-Equal (@($badAdapter | ForEach-Object { $_.id }) -join ',') '' 'every adapter value is claude-code or other'
 foreach ($id in 'claude', 'plugin-superpowers', 'mcp-scrapling', 'chrome-extension', 'rtk-hook', 'ccusage') {
     Assert-Equal (@($tools | Where-Object { $_.id -eq $id })[0].adapter) 'claude-code' "$id is Claude Code only"
 }

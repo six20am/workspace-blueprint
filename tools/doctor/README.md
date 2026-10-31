@@ -3,7 +3,7 @@
 Checks every tool and sign-in the workspace needs and re-installs only what is missing.
 
 ```
-python tools/doctor/doctor.py             # check, install what is missing, print the summary
+python tools/doctor/doctor.py             # check, install what is missing, print the summary (python3 on Mac and Linux)
 python tools/doctor/doctor.py --dry-run   # check only, install nothing
 ```
 
@@ -21,4 +21,4 @@ Failed: 0, nothing to fix
 ```
 
 followed by `Sign in yourself:` and one line per account the person connects by hand. Exit 0 when nothing failed, 2 when something did or the installer stopped before writing a report.
-`tools/update/update.py` runs it after a sync on a Grok Bot.
+`tools/update/update.py` runs it after a sync on the neutral path (`ADAPT.md`).

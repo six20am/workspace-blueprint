@@ -8,7 +8,7 @@ description: "Keeps a save history of the workspace folder so any change can be 
 ## After every task that changed files
 
 ```
-python tools/undo/undo.py save "<six-word summary of the task>"
+python tools/undo/undo.py save "<six-word summary of the task>"   # python3 on Mac and Linux
 ```
 
 Six words, plain: "renamed March invoices by date", "added voice notes to reference". "nothing to save" is fine; say nothing about it.

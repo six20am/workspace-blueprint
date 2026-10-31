@@ -14,7 +14,7 @@ Flags:
   --dry-run             check only; tools that would install are listed, nothing is installed
   --no-launch           do not open Claude at the end
   --doctor              check-and-repair run: same work, a quiet summary, report titled "Doctor report"
-  --adapter <name>      claude-code or grok-bot (default: setup/adapter.json, else claude-code);
+  --adapter <name>      claude-code or other (default: setup/adapter.json, else claude-code);
                         tools.json entries marked for the other adapter are skipped
 
 Exit codes: 0 clean, 2 something failed (or Claude is missing), 4 no internet.

@@ -3,7 +3,7 @@
 Version history for the workspace folder, so "undo what you just did" works.
 
 ```
-python tools/undo/undo.py init            # start history: git init, .gitignore, first save "workspace built"
+python tools/undo/undo.py init            # start history: git init, .gitignore, first save "workspace built" (python3 on Mac and Linux)
 python tools/undo/undo.py save "<what>"   # save everything that changed; prints the short id and message
 python tools/undo/undo.py list            # the last ten saves: id, date, message
 python tools/undo/undo.py undo            # step back one save and print the files that came back

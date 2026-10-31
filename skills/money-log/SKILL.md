@@ -20,7 +20,7 @@ Three months or more is best; recurring charges need charges in three different 
 ## The one command
 
 ```
-python tools/money-log/money.py <export.csv> --source "<bank or app name>" --month YYYY-MM
+python tools/money-log/money.py <export.csv> --source "<bank or app name>" --month YYYY-MM   # python3 on Mac and Linux
 ```
 
 Run it from the workspace folder. `--source` names the account (use the same name every time for the same account). `--month` is the month to summarize; leave it off for the latest month in the export. If it says it cannot tell what kind of export this is, it lists the shapes it knows; pick one with `--format <shape>`. Run doctor if `python` is missing.

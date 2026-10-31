@@ -3,7 +3,7 @@
 Writes a one-page brief of the week in this workspace.
 
 ```
-python tools/weekly-brief/brief.py                      # the last 7 days, ending today
+python tools/weekly-brief/brief.py                      # the last 7 days, ending today (python3 on Mac and Linux)
 python tools/weekly-brief/brief.py --days 14 --out x.md
 python tools/weekly-brief/brief.py --today 2026-10-31   # end the week on that date
 ```

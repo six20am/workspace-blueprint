@@ -6,7 +6,7 @@
     python tools/update/update.py --no-install   # copy files only, skip the installer or doctor
 
 Which platform: setup/adapter.json, written by the build and never overwritten here, names the
-adapter (claude-code or grok-bot) and where its skills live. A workspace built before adapters
+adapter (claude-code, or other for the neutral path in ADAPT.md) and where its skills live. A workspace built before adapters
 existed has no adapter.json and keeps its skills in .claude/skills; it is treated as claude-code,
 and after its first sync the claude-code adapter.json is created (never overwritten).
 
@@ -16,12 +16,12 @@ even when the commit matches; --check reports it as an update.
 
 What it replaces: the download is the raw repo, so this script applies the build's mapping itself
 (see owned_pairs). The repo's skills/ lands in the adapter's skills folder (.claude/skills or
-skills), and so does adapters/<adapter>/skills/. adapters/<adapter>/platform.md lands at
-setup/platform.md, and every other file directly in adapters/<adapter>/ lands at the same name at
-the top of the workspace (publish.md never ships). The core tools/, _reference/ and installer
-files under setup/ are copied too; a Grok Bot gets no Windows installer (setup.ps1, setup/lib/,
-setup/tests/). A template file the owner edited is backed up to setup/update-backup/<date>/
-before it is overwritten.
+skills). For claude-code, adapters/claude-code/skills/ lands there too,
+adapters/claude-code/platform.md lands at setup/platform.md, and every other file directly in
+adapters/claude-code/ lands at the same name at the top of the workspace (publish.md never
+ships). The neutral path has no adapter folder. The core tools/, _reference/, ADAPT.md and
+installer files under setup/ are copied for both. A template file the owner edited is backed up
+to setup/update-backup/<date>/ before it is overwritten.
 
 Stale files: inside a skill folder that exists upstream, a file upstream no longer has (an old
 helper, a leftover .bak) is backed up the same way and then removed. A skill folder the owner
@@ -33,8 +33,8 @@ setup/gap-log.md and setup/update-report.md (written only as this run's report),
 folder the owner made.
 
 After the files land: claude-code runs the installer with the no-launch flag, which installs any
-tool new to setup/tools.json and skips everything already present. grok-bot runs the doctor
-instead, because a reset of the Bot's computer can lose installed programs. It writes
+tool new to setup/tools.json and skips everything already present. The neutral path runs the
+doctor instead, because a reset of the agent's computer can lose installed programs. It writes
 setup/update-report.md.
 
 Standard library only. Needs a network connection to github.com.
@@ -61,11 +61,12 @@ REPORT = os.path.join(ROOT, "setup", "update-report.md")
 # The adapters the build knows, with the same fields it writes to setup/adapter.json.
 ADAPTERS = {
     "claude-code": {"adapter": "claude-code", "skills_dir": ".claude/skills", "map": "CLAUDE.md", "router": "CONTEXT.md", "notes": "CONTEXT.md"},
-    "grok-bot": {"adapter": "grok-bot", "skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"},
+    "other": {"adapter": "other", "skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"},
 }
 DEFAULT_ADAPTER = "claude-code"
 # Core paths the template owns, copied to the same place. Everything else belongs to the owner.
 CORE_OWNED = (
+    "ADAPT.md",
     "tools",
     "_reference",
     "setup/lib",
@@ -78,8 +79,8 @@ CORE_OWNED = (
     "setup/runner.py",
     "setup/tools-reference",
 )
-# Core paths an adapter's output leaves out (same as the build): a Bot has no Windows installer.
-ADAPTER_SKIP = {"grok-bot": ("setup/setup.ps1", "setup/lib", "setup/tests")}
+# Adapters with a folder under adapters/ that overlays the core. The neutral path has none.
+ADAPTER_FOLDERS = ("claude-code",)
 # Files in an adapter folder that never land at the top of the workspace: maintainer notes, and
 # platform.md, which lands at setup/platform.md instead.
 ADAPTER_KEEP_OUT = ("publish.md", "platform.md")
@@ -186,12 +187,14 @@ def never_paths(adapter):
 
 def owned_pairs(adapter, src_root):
     """[(src_rel, dst_rel)] from the raw repo tree to the owner's workspace, in copy order: core first,
-    then the adapter folder, so an adapter file wins over a core file at the same place (as in the build)."""
+    then the adapter folder, so an adapter file wins over a core file at the same place (as in the build).
+    The neutral path (other) has no adapter folder: the core alone."""
     name = adapter["adapter"]
     skills_dir = clean_rel(adapter["skills_dir"])
-    skip = ADAPTER_SKIP.get(name, ())
     pairs = [("skills", skills_dir)]
-    pairs += [(rel, rel) for rel in CORE_OWNED if rel not in skip]
+    pairs += [(rel, rel) for rel in CORE_OWNED]
+    if name not in ADAPTER_FOLDERS:
+        return pairs
     adir = f"adapters/{name}"
     pairs.append((f"{adir}/skills", skills_dir))
     pairs.append((f"{adir}/platform.md", "setup/platform.md"))
@@ -228,7 +231,10 @@ def stale(src_dir, dst_dir):
 def _skill_folders(src_root, adapter):
     """{skill folder name: [upstream folders]} for every skill folder in the core or the adapter."""
     found = {}
-    for base in (os.path.join(src_root, "skills"), os.path.join(src_root, "adapters", adapter["adapter"], "skills")):
+    bases = [os.path.join(src_root, "skills")]
+    if adapter["adapter"] in ADAPTER_FOLDERS:
+        bases.append(os.path.join(src_root, "adapters", adapter["adapter"], "skills"))
+    for base in bases:
         if not os.path.isdir(base):
             continue
         for d in sorted(os.listdir(base)):
@@ -369,10 +375,10 @@ def run_installer():
 
 
 def doctor_command(root):
-    """The Grok Bot's check-and-repair run, first one present: the doctor, then the setup runner in doctor mode."""
+    """The neutral path's check-and-repair run, first one present: the doctor, then the setup runner in doctor mode."""
     candidates = (
         ("tools/doctor/doctor.py", []),
-        ("setup/runner.py", ["--platform", "linux", "--doctor", "--no-launch"]),
+        ("setup/runner.py", ["--doctor", "--no-launch"]),
     )
     for rel, args in candidates:
         path = os.path.join(root, *rel.split("/"))
@@ -445,7 +451,7 @@ def main():
 
     if args.no_install:
         rc = None
-    elif adapter["adapter"] == "grok-bot":
+    elif adapter["adapter"] == "other":
         rc = run_doctor()
     else:
         rc = run_installer()

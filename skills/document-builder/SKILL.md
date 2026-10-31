@@ -13,7 +13,7 @@ Use this when the person wants a Word, PDF, PowerPoint, HTML or OpenDocument fil
 2. Run one command from the workspace folder:
 
 ```
-python tools/document-builder/build_doc.py notes.md --to docx
+python tools/document-builder/build_doc.py notes.md --to docx   # python3 on Mac and Linux
 ```
 
 Swap `docx` for the format they asked for. For a CSV: `python tools/document-builder/build_doc.py notes.md --csv` (the first table in the file).

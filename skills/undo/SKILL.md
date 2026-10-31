@@ -37,7 +37,7 @@ Read the last few saves back as a short list with the day, not the ids.
 
 ## What history skips
 
-Photos, RAW files, scans and the `paperwork/` and `money/` folders stay out of history because they are large or private, so undo cannot bring them back. Photo moves have their own undo file in photo-organizer.
+Photos, RAW files, scans and the `paperwork/`, `money/` and `taxes/` folders stay out of history because they are large or private, so undo cannot bring them back. Photo moves have their own undo file in photo-organizer.
 
 ## Never
 

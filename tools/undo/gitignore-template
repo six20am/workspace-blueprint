@@ -26,7 +26,7 @@ __pycache__/
 *.iso
 *.dmg
 
-# photos, scans and money records: large or private; undo history skips them
+# photos, scans, money records and tax papers: large or private; undo history skips them
 *.jpg
 *.jpeg
 *.heic
@@ -48,3 +48,4 @@ __pycache__/
 *.rw2
 /paperwork/
 /money/
+/taxes/

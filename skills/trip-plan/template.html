@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<!--
+  TRIP ITINERARY PAGE, starting template
+  ----------------------------------------
+  Read SKILL.md before editing this. Short version:
+  1. Set data-theme below to "kawaii-pink" or "neutral-modern"
+  2. Fill in the header (names, dates, chips)
+  3. Duplicate a <section class="day"> block per day of the trip
+  4. Set the countdown timestamps near the bottom. CHECK THE TIMEZONE AND
+     WHETHER ARRIVAL LANDS THE NEXT CALENDAR DAY before hardcoding these
+  5. Fill in the checklist + essentials panels
+  6. Essentials "Staying at": if it's a hotel/Airbnb, the name is fine to
+     write plainly, it's already a public business. Only redact when it's
+     someone's private home (see SKILL.md, the privacy pass).
+-->
+<html lang="en" data-theme="kawaii-pink">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[Traveler] × [Destination]</title>
+<style>
+  /* ============ THEME: kawaii-pink (default) ============ */
+  :root, [data-theme="kawaii-pink"]{
+    --paper:#FFF6F8; --card:#FFFFFF; --ink:#43323A; --ink-soft:#8A7078;
+    --accent:#EE4266; --accent-deep:#D22B50; --accent-pale:#FFD9E3; --accent-line:#FFC3D3;
+    --mint:#2FA79B; --amber:#FFB833; --sky:#5FA8E8; --grape:#9B72CF;
+    --radius:18px;
+    --font-display:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    --font-body:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  }
+  /* ============ THEME: neutral-modern ============ */
+  [data-theme="neutral-modern"]{
+    --paper:#F7F7F8; --card:#FFFFFF; --ink:#1F2328; --ink-soft:#6B7280;
+    --accent:#2563EB; --accent-deep:#1D4ED8; --accent-pale:#DBEAFE; --accent-line:#BFDBFE;
+    --mint:#0D9488; --amber:#D97706; --sky:#0284C7; --grape:#7C3AED;
+    --radius:14px;
+    --font-display:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    --font-body:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  }
+  /* Theme-only decorative touches. Add new ones the same way when you build
+     a new theme: an element hidden by default, shown only under that theme. */
+  .bow, .corner-orb{display:none;}
+  [data-theme="kawaii-pink"] .bow{display:inline-block;}
+  [data-theme="kawaii-pink"] .corner-orb{display:block;background:radial-gradient(circle at 35% 35%, #fff, var(--accent-pale)); opacity:.55;}
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *,*::before,*::after{animation:none!important;transition:none!important;}
+  }
+  body{
+    font-family:var(--font-body);
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.65;
+    padding-bottom:70px;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:0 16px;}
+
+  /* ---------- header ---------- */
+  header{
+    position:relative; overflow:hidden;
+    background:linear-gradient(180deg, var(--accent-deep) 0%, var(--accent) 100%);
+    color:#fff; padding:34px 16px 30px; text-align:center;
+  }
+  header::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background-image:radial-gradient(circle, rgba(255,255,255,.14) 0 2.5px, transparent 2.5px);
+    background-size:28px 28px;
+  }
+  header > *{ position:relative; z-index:1; }
+  .corner-orb{ position:absolute; top:-30px; right:-20px; width:120px;height:120px; border-radius:50%; z-index:0; }
+  .bow{ position:relative;width:64px;height:34px;margin-bottom:10px; }
+  .bow::before,.bow::after{ content:"";position:absolute;top:0;width:28px;height:30px;background:#fff;border-radius:50% 50% 45% 45%; }
+  .bow::before{left:0;transform:rotate(-24deg);}
+  .bow::after{right:0;transform:rotate(24deg);}
+  .bow span{ position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;background:#fff;border-radius:50%;z-index:2;box-shadow:0 0 0 3px var(--accent) inset; }
+  header h1{ font-family:var(--font-display); font-size:clamp(1.5rem,6vw,2.2rem); letter-spacing:.02em; }
+  [data-theme="kawaii-pink"] header h1{ text-shadow:2px 2px 0 var(--accent-deep); }
+  header .dates{font-weight:700;margin-top:10px;font-size:.95rem;opacity:.95;}
+  header .tagline{font-size:.8rem;margin-top:4px;opacity:.9;}
+
+  .chips{ display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap; }
+  .chip{ background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35); color:#fff; font-size:.72rem; font-weight:700; padding:5px 12px; border-radius:999px; }
+
+  .countdown-grid{ display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .cd-box{ background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3); border-radius:12px; padding:8px 14px; min-width:56px; }
+  .cd-num{ font-family:var(--font-display); font-size:1.3rem; font-weight:800; color:#fff; line-height:1; font-variant-numeric:tabular-nums; }
+  .cd-label{ font-size:.6rem; letter-spacing:.08em; color:rgba(255,255,255,.75); margin-top:3px; }
+  #countdown-msg{ display:none; margin-top:14px; font-weight:900; font-size:.9rem; color:#fff; background:rgba(255,255,255,.18); padding:6px 18px; border-radius:999px; }
+
+  .wave-divider{ line-height:0; margin-top:-2px; }
+  .wave-divider svg{ display:block; width:100%; height:36px; }
+  .wave-divider path{ fill:var(--paper); }
+
+  /* ---------- day rail (tabs) ---------- */
+  nav.rail{ position:sticky;top:0;z-index:50; background:var(--paper); border-bottom:2px dashed var(--accent-line); padding:10px 0; }
+  .rail-scroller{ display:flex;gap:8px;overflow-x:auto;padding:4px 16px; -webkit-overflow-scrolling:touch;scrollbar-width:none; max-width:680px;margin:0 auto; }
+  .rail-scroller::-webkit-scrollbar{display:none;}
+  .stop{
+    flex:0 0 auto;border:none;cursor:pointer; font-family:var(--font-body);font-weight:700;
+    background:#fff;color:var(--ink); border:2px solid var(--accent-line);
+    border-radius:14px;padding:6px 12px;font-size:.8rem;line-height:1.3;
+    text-align:center;transition:transform .12s ease, background .12s ease;
+  }
+  .stop small{display:block;font-size:.65rem;color:var(--ink-soft);font-weight:500;}
+  .stop:hover{transform:translateY(-2px);}
+  .stop:focus-visible{outline:3px solid var(--accent);outline-offset:2px;}
+  .stop.active{ background:var(--accent);border-color:var(--accent-deep);color:#fff; box-shadow:0 3px 0 var(--accent-deep); }
+  .stop.active small{color:rgba(255,255,255,.85);}
+  .stop.today-chip::after{ content:"TODAY";display:block;font-size:.55rem;font-weight:900; color:var(--amber);letter-spacing:.08em; }
+
+  /* ---------- day cards ---------- */
+  main{padding-top:26px;}
+  section.day{
+    background:var(--card); border:2px solid var(--accent-line); border-radius:var(--radius);
+    margin-bottom:26px; overflow:hidden; scroll-margin-top:86px;
+    box-shadow:0 4px 0 rgba(0,0,0,.05);
+  }
+  .day-head{ display:flex;align-items:center;gap:12px; padding:16px 18px; border-bottom:2px dashed var(--accent-line); }
+  .day-badge{
+    flex:0 0 auto;width:52px;height:52px;border-radius:50%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#fff;font-weight:900;line-height:1.05; border:3px solid rgba(255,255,255,.55);
+    box-shadow:0 0 0 3px currentColor;
+  }
+  .day-badge .d{font-size:1.15rem;}
+  .day-badge .m{font-size:.55rem;letter-spacing:.05em;}
+  .day-head h2{ font-family:var(--font-display); font-size:1.05rem;line-height:1.4; }
+  .day-head .sub{font-size:.78rem;color:var(--ink-soft);font-weight:500;}
+
+  .timeline{padding:14px 18px 18px;}
+  .item{ display:grid;grid-template-columns:64px 1fr;gap:10px; padding:10px 0; border-bottom:1px dotted var(--accent-line); }
+  .item:last-child{border-bottom:none;}
+  .time{ font-weight:900;font-size:.82rem;color:var(--accent-deep); padding-top:2px;white-space:nowrap; }
+  .what strong{font-size:.95rem;}
+  .what p{font-size:.84rem;color:var(--ink-soft);margin-top:2px;}
+
+  .tags{margin-top:5px;display:flex;flex-wrap:wrap;gap:5px;}
+  .tag{ font-size:.62rem;font-weight:900;letter-spacing:.05em; padding:2px 9px;border-radius:999px;color:#fff; }
+  .tag.free{background:var(--mint);}
+  .tag.book{background:var(--amber);color:#5b4200;}
+  .tag.price{background:var(--sky);}
+  .tag.highlight{background:var(--accent);}
+  .tag.transit{background:var(--grape);}
+  .tag.solo{background:color-mix(in srgb, var(--accent) 65%, white);}
+
+  .note{ margin:0 18px 18px;background:var(--accent-pale);border-radius:12px; padding:10px 14px;font-size:.8rem;font-weight:500; }
+  .note b{color:var(--accent-deep);}
+
+  /* ---------- info panels ---------- */
+  .panel{ background:var(--card);border:2px solid var(--accent-line);border-radius:var(--radius); padding:18px;margin-bottom:26px;box-shadow:0 4px 0 rgba(0,0,0,.05); }
+  .panel h3{ font-family:var(--font-display); font-size:1rem;margin-bottom:10px; color:var(--accent-deep); }
+  .check{list-style:none;}
+  .check li{ display:flex;gap:10px;align-items:flex-start; padding:7px 0;border-bottom:1px dotted var(--accent-line); font-size:.86rem; }
+  .check li:last-child{border-bottom:none;}
+  .check input{ accent-color:var(--accent);width:18px;height:18px;margin-top:3px;flex:0 0 auto; }
+  .check label{cursor:pointer;}
+  .check input:checked + label{color:var(--ink-soft);text-decoration:line-through;}
+  .panel p.small{font-size:.75rem;color:var(--ink-soft);margin-top:8px;}
+  .info-grid{display:grid;gap:8px;font-size:.85rem;}
+  .info-grid div{background:var(--paper);border-radius:10px;padding:9px 12px;}
+  .info-grid b{color:var(--accent-deep);}
+
+  footer{ text-align:center;font-size:.75rem;color:var(--ink-soft); padding:10px 16px 30px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="corner-orb" aria-hidden="true"></div>
+  <div class="bow" aria-hidden="true"><span></span></div>
+  <h1>[TRAVELER] × [DESTINATION]</h1>
+  <div class="tagline">[optional one-line tagline, first time visiting, a reunion, a birthday trip, etc.]</div>
+  <div class="dates">[YYYY.MM.DD] (Day) to [YYYY.MM.DD] (Day) · [N] nights</div>
+  <div class="chips">
+    <span class="chip">[N] nights</span>
+    <span class="chip">[N] days</span>
+  </div>
+  <div class="countdown-grid" id="countdown-grid">
+    <div class="cd-box"><div class="cd-num" id="cd-d">00</div><div class="cd-label">DAYS</div></div>
+    <div class="cd-box"><div class="cd-num" id="cd-h">00</div><div class="cd-label">HRS</div></div>
+    <div class="cd-box"><div class="cd-num" id="cd-m">00</div><div class="cd-label">MIN</div></div>
+    <div class="cd-box"><div class="cd-num" id="cd-s">00</div><div class="cd-label">SEC</div></div>
+  </div>
+  <div id="countdown-msg"></div>
+</header>
+<div class="wave-divider" aria-hidden="true"><svg viewBox="0 0 1440 48" preserveAspectRatio="none"><path d="M0,24 C240,48 480,0 720,16 C960,32 1200,48 1440,16 L1440,48 L0,48 Z"/></svg></div>
+
+<nav class="rail" aria-label="Days">
+  <div class="rail-scroller" id="rail"></div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ============================================================
+       ONE <section class="day"> PER DAY. Duplicate this block.
+       - data-date: ISO yyyy-mm-dd, used to build the nav + countdown
+       - data-title: short label shown in the tab (keep under ~16 chars)
+       - day-badge inline style: pick any of var(--accent)/var(--mint)/
+         var(--amber)/var(--sky)/var(--grape), background AND color the
+         same value gives the ring-outline look used here
+  ============================================================= -->
+
+  <section class="day" id="d1" data-date="2026-01-01" data-color="var(--accent)" data-title="Arrival">
+    <div class="day-head">
+      <div class="day-badge" style="background:var(--accent);color:var(--accent);"><span class="d">1</span><span class="m">[DAY]</span></div>
+      <div><h2>[Day 1 title, e.g. "Welcome!"]</h2><div class="sub">[one-line subtitle, key logistics for the day]</div></div>
+    </div>
+    <div class="timeline">
+      <div class="item"><div class="time">[time]</div><div class="what">
+        <strong>[Activity title]</strong>
+        <p>[One or two sentences, what it is, why it's worth it, anything time-sensitive.]</p>
+        <div class="tags"><span class="tag free">FREE</span></div>
+      </div></div>
+      <div class="item"><div class="time">[time]</div><div class="what">
+        <strong>[Activity title]</strong>
+        <p>[Description.]</p>
+        <div class="tags"><span class="tag book">BOOK AHEAD</span><span class="tag price">[$/¥/€ amount]</span></div>
+      </div></div>
+      <div class="item"><div class="time">[time]</div><div class="what">
+        <strong>[Activity title]</strong>
+        <p>[Description.]</p>
+        <div class="tags"><span class="tag transit">[transit note]</span></div>
+      </div></div>
+    </div>
+    <div class="note"><b>[Callout label]:</b> [a rule, reminder, or heads-up for this specific day.]</div>
+  </section>
+
+  <section class="day" id="d2" data-date="2026-01-02" data-color="var(--mint)" data-title="[Day 2 label]">
+    <div class="day-head">
+      <div class="day-badge" style="background:var(--mint);color:var(--mint);"><span class="d">2</span><span class="m">[DAY]</span></div>
+      <div><h2>[Day 2 title]</h2><div class="sub">[subtitle]</div></div>
+    </div>
+    <div class="timeline">
+      <div class="item"><div class="time">[time]</div><div class="what">
+        <strong>[Activity title]</strong>
+        <p>[Description.]</p>
+        <div class="tags"><span class="tag solo">SOLO OK</span></div>
+      </div></div>
+      <div class="item"><div class="time">[time]</div><div class="what">
+        <strong>[Activity title]</strong>
+        <p>[Description.]</p>
+        <div class="tags"><span class="tag highlight">[personal touch / inside joke]</span></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- add more <section class="day"> blocks for the rest of the trip -->
+
+  <!-- BOOKING / PREP CHECKLIST -->
+  <div class="panel">
+    <h3>Book / prep before the trip</h3>
+    <ul class="check" id="checklist">
+      <li><input type="checkbox" id="c1"><label for="c1">[Booking or prep task]</label></li>
+      <li><input type="checkbox" id="c2"><label for="c2">[Booking or prep task]</label></li>
+      <li><input type="checkbox" id="c3"><label for="c3">[Booking or prep task]</label></li>
+    </ul>
+    <p class="small">Checkboxes reset when the page reloads, they're just for tracking in the moment, there's no backend saving state.</p>
+  </div>
+
+  <!-- ESSENTIALS -->
+  <div class="panel">
+    <h3>Essentials</h3>
+    <div class="info-grid">
+      <div><b>Staying at:</b> [hotel/lodging name + neighborhood, if staying with someone privately instead, use something like "the address I sent you" rather than the real address]</div>
+      <div><b>If we get separated:</b> [a specific, easy-to-describe meeting point]</div>
+      <div><b>Emergency numbers:</b> [confirm the correct numbers for the destination country]</div>
+      <div><b>Weather plan:</b> [how the days adapt to heat/cold/rain]</div>
+      <div><b>Cash/cards:</b> [what's accepted where, ATM notes]</div>
+      <div><b>Transit stops running:</b> [last train/bus time if relevant]</div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  [Destination] [Year] · Plans change, check with the person who sent this page
+</footer>
+
+<script>
+(function(){
+  var days = Array.prototype.slice.call(document.querySelectorAll('section.day'));
+  var rail = document.getElementById('rail');
+  var todayStr = (function(){
+    var n = new Date();
+    return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
+  })();
+
+  // build tabs, with weekday computed from the date so it can't drift if you edit dates later
+  days.forEach(function(sec){
+    var d = sec.dataset.date.split('-');
+    var wd = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(sec.dataset.date + 'T00:00:00').getDay()];
+    var btn = document.createElement('button');
+    btn.className = 'stop';
+    btn.innerHTML = d[1] + '/' + d[2] + ' ' + wd + '<small>' + sec.dataset.title + '</small>';
+    btn.setAttribute('aria-label', 'Go to ' + sec.dataset.title);
+    if (sec.dataset.date === todayStr) btn.classList.add('today-chip');
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.stop').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      sec.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    rail.appendChild(btn);
+  });
+
+  // highlight tab for current scroll position, and keep it visible in the rail
+  var stops = Array.prototype.slice.call(rail.children);
+  var lastIdx = -1;
+  function syncActive(){
+    var idx = 0;
+    for (var i = 0; i < days.length; i++){
+      if (days[i].getBoundingClientRect().top < 140) idx = i;
+    }
+    if (idx === lastIdx) return;
+    lastIdx = idx;
+    stops.forEach(function(b, i){ b.classList.toggle('active', i === idx); });
+    // THE FIX: without this, the active tab can scroll off the edge of the
+    // horizontally-scrolling rail on longer trips and the user has to drag
+    // the tab strip manually to see which day is highlighted.
+    var btn = stops[idx];
+    var railRect = rail.getBoundingClientRect();
+    var btnRect = btn.getBoundingClientRect();
+    var target = rail.scrollLeft + (btnRect.left - railRect.left) - (railRect.width / 2) + (btnRect.width / 2);
+    rail.scrollTo({left: Math.max(0, target), behavior: 'smooth'});
+  }
+  window.addEventListener('scroll', syncActive, {passive:true});
+  syncActive();
+
+  // ===== LIVE COUNTDOWN, set these two lines for the actual trip =====
+  // Use ISO 8601 with the DESTINATION's UTC offset (not the traveler's home
+  // timezone). Double-check whether arrival lands the next calendar day ,
+  // see SKILL.md, this is the single most common mistake here.
+  var arrive = new Date('2026-01-01T15:00:00+00:00'); // EDIT ME
+  var depart = new Date('2026-01-08T18:00:00+00:00'); // EDIT ME
+  // =====================================================================
+
+  var cdGrid = document.getElementById('countdown-grid');
+  var cdMsg = document.getElementById('countdown-msg');
+  var scrolledToday = false;
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function tick(){
+    var now = new Date();
+    if (now < arrive){
+      var diff = arrive - now;
+      cdGrid.style.display = 'flex';
+      cdMsg.style.display = 'none';
+      document.getElementById('cd-d').textContent = pad(Math.floor(diff / 86400000));
+      document.getElementById('cd-h').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+      document.getElementById('cd-m').textContent = pad(Math.floor((diff % 3600000) / 60000));
+      document.getElementById('cd-s').textContent = pad(Math.floor((diff % 60000) / 1000));
+    } else if (now <= depart){
+      cdGrid.style.display = 'none';
+      cdMsg.style.display = 'inline-block';
+      var dayNum = Math.floor((now - new Date(days[0].dataset.date + 'T00:00:00')) / 86400000) + 1;
+      cdMsg.textContent = 'Day ' + dayNum + ' of the trip';
+      if (!scrolledToday){
+        scrolledToday = true;
+        var todaySec = days.filter(function(s){ return s.dataset.date === todayStr; })[0];
+        if (todaySec) setTimeout(function(){ todaySec.scrollIntoView({behavior:'smooth', block:'start'}); }, 400);
+      }
+    } else {
+      cdGrid.style.display = 'none';
+      cdMsg.style.display = 'inline-block';
+      cdMsg.textContent = 'Trip complete';
+    }
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>

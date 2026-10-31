@@ -52,6 +52,8 @@ Do this without asking more questions. Tell them you are building and that it ta
 | The person said | Rows to write |
 |---|---|
 | photos, images, pictures | `media-tools`, `photo-organizer`, `image-search` |
+| design, graphics, posts that look good | `design-inspiration`, `image-search`, `social-copywriter` |
+| a website, a web page, a landing page | `site-builder`, `writer`, `design-inspiration` |
 | books, invoices, receipts, bookkeeping, money | `money-log`, `paperwork`, `document-builder` |
 | writing, posts, newsletter, social | `writer`, `social-copywriter`, `voice-extractor` |
 | research, reports, competitors | `deep-research`, `summarize`, `meeting-prep` |

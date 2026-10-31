@@ -25,4 +25,4 @@ Assert-Equal (@($badAdapter | ForEach-Object { $_.id }) -join ',') '' 'every ada
 foreach ($id in 'claude', 'plugin-superpowers', 'mcp-scrapling', 'chrome-extension', 'rtk-hook', 'ccusage') {
     Assert-Equal (@($tools | Where-Object { $_.id -eq $id })[0].adapter) 'claude-code' "$id is Claude Code only"
 }
-Assert-Equal (@($tools | Where-Object { $_.area -eq 'programs' }).Count) 22 'the programs area has twenty-two entries'
+Assert-Equal (@($tools | Where-Object { $_.area -eq 'programs' }).Count) 23 'the programs area has twenty-three entries (wrangler added 2026-10-31)'

@@ -7,6 +7,7 @@
   "Images",
   "Research",
   "Writing",
+  "Design",
   "Everyday life",
   "Keeping the workspace honest",
   "More"
@@ -167,6 +168,14 @@
   "update": [
    "Keeping the workspace honest",
    "Pulls new skills and tools from the public download. Never touches your files."
+  ],
+  "design-inspiration": [
+   "Design",
+   "Where to look before designing a page, post or graphic, and how to turn what you saw into your own design."
+  ],
+  "site-builder": [
+   "Design",
+   "Builds a small website with Astro 7 and puts it live on Cloudflare Workers, after the words and the look exist."
   ]
  },
  "headlines": {
@@ -178,6 +187,7 @@
   "Keeping the workspace honest": "Keeps the workspace in order, and checks what goes out",
   "More": "Added since this page was written",
   "Writing": "Writes in your voice",
-  "Everyday life": "Handles the paperwork of life"
+  "Everyday life": "Handles the paperwork of life",
+  "Design": "Designs pages, posts and graphics, and builds websites"
  }
 }

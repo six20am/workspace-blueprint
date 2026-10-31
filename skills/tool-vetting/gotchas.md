@@ -18,7 +18,7 @@ Last updated: 2026-09-28
   as written, it would take over from the Chrome extension, Scrapling and `agent-web-fetch`.
   Fix: step 5's routing question, every time; never paste a vendor setup prompt into a session.
 - **Stale prior verdict repeated.** `docs/tooling-audit-evaluation.md` holds Caveman at "Trial,
-  blocked"; the repo has grown from 94k to 108k stars and its licence reads NOASSERTION. Fix:
+  blocked"; the repo has grown from 94k to 108k stars and its license reads NOASSERTION. Fix:
   step 3 re-tests the old reason, it does not quote it.
 - **A single fact answered, the question left open.** "Is Playwright self-improving?" got a
   true answer that skipped whether the alternative was better. Fix: every row ends in a verdict

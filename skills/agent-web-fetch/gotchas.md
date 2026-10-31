@@ -56,7 +56,7 @@ and a reason it needs the operator's explicit say-so rather than a quiet
 
 `SKILL.md` was rewritten to English with China-market channels dropped and the
 Our gates were added inline. Its own footer warns `install`/`setup` regenerates
-it. Backups exist (`SKILL.md.orig-zh.bak`, `_references-orig-zh-bak/`): the live
+it. A backup of the vendor references exists (`_references-orig-zh-bak/`): the live
 skill has **no `_references/` directory**, only the backup one, so a regeneration
 would also restore reference files that are currently absent.
 

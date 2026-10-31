@@ -1,6 +1,6 @@
 ---
 name: loc-dl
-description: "Downloads images from the Library of Congress with their rights statement attached. Use when real, licence-clean historical photos are needed."
+description: "Downloads images from the Library of Congress with their rights statement attached. Use when real, license-clean historical photos are needed."
 ---
 
 # loc-dl

@@ -499,7 +499,7 @@ function buildReview(manifest, logos, enriched) {
   lines.push("");
 
   lines.push(`## License caveats`);
-  lines.push(`Some images may be licensed stock from whoever built this site. That licence does not transfer to you. Check the rights before reusing any image that is not clearly the site owner's own photo.`);
+  lines.push(`Some images may be licensed stock from whoever built this site. That license does not transfer to you. Check the rights before reusing any image that is not clearly the site owner's own photo.`);
 
   lines.push(`## Next step`);
   lines.push(`When you plan images for a new page, read manifest.json first: reuse real photos of people, places and proof where you have them, and fill only the gaps with stock or generated images.`);

@@ -71,6 +71,17 @@ class ShippedTest(unittest.TestCase):
         for name in ("## Military", "## By stage", "## By client or project", "## PARA", "## Numbered index", "## By date"):
             self.assertIn(name, text)
 
+    def test_every_skill_has_a_test_task(self):
+        skills = os.path.join(ROOT, "skills")
+        for d in sorted(os.listdir(skills)):
+            if not os.path.isfile(os.path.join(skills, d, "SKILL.md")):
+                continue
+            t = os.path.join(skills, d, "TEST.md")
+            self.assertTrue(os.path.isfile(t), d + " has no TEST.md")
+            text = open(t, encoding="utf-8").read()
+            for h in ("## The ask", "## The input", "## Done looks like"):
+                self.assertIn(h, text, d + " TEST.md missing " + h)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,6 @@
 ---
 name: tool-vetting
-description: "Vets tools from a link, video, post or list: finds each real repo, reads its install path and licence, scans skills, names what does that job here today, returns ADOPT / EVALUATE / WATCH / MINE / ALREADY / SKIP. Read-only. Use when the person shares a tool, a tool roundup, or asks 'do I need this?'"
+description: "Vets tools from a link, video, post or list: finds each real repo, reads its install path and license, scans skills, names what does that job here today, returns ADOPT / EVALUATE / WATCH / MINE / ALREADY / SKIP. Read-only. Use when the person shares a tool, a tool roundup, or asks 'do I need this?'"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Skill
 ---
 
@@ -115,7 +115,7 @@ installed or run, except scans where noted.
 **Prior mentions:** <paths, or "none">
 
 ## Verdict in one table
-| # | Tool (pitch name, repo) | Stars / pushed | Licence | Verdict | One line |
+| # | Tool (pitch name, repo) | Stars / pushed | License | Verdict | One line |
 
 Counts: ADOPT n · EVALUATE n · WATCH n · MINE n · ALREADY n (AHEAD n) · SKIP n (CONFLICT n, N/A n)
 

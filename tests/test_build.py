@@ -207,6 +207,10 @@ class BuildTest(unittest.TestCase):
             with self.assertRaises(build.LeakError):
                 build.build(repo, os.path.join(d, "x.zip"), names=[], top="T")
 
+    def test_version_json_carries_layout(self):
+        repo = os.path.join(os.path.dirname(__file__), "..")
+        self.assertEqual(json.loads(build.version_json(repo))["layout"], 2)
+
 
 if __name__ == "__main__":
     unittest.main()

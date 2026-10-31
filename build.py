@@ -105,7 +105,7 @@ def version_json(repo):
         date = subprocess.check_output(["git", "log", "-1", "--format=%cs"], cwd=repo, text=True, stderr=subprocess.DEVNULL).strip()
     except Exception:
         sha, date = None, None
-    return '{\n "commit": %s,\n "date": %s,\n "updated": null\n}\n' % (
+    return '{\n "commit": %s,\n "date": %s,\n "updated": null,\n "layout": 2\n}\n' % (
         ('"%s"' % sha) if sha else "null", ('"%s"' % date) if date else "null")
 
 

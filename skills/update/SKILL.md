@@ -14,7 +14,7 @@ Run this when the person asks to update, asks what is new, or when `setup/versio
    python tools/update/update.py --check   # python3 on Mac and Linux
    ```
    Exit 0 means up to date; say so and stop. Exit 10 means an update exists. Exit 2 means github.com could not be reached; say so and stop.
-2. Tell the person in one line what will happen: skills and tools get replaced, their own files are not touched, anything they edited in a template file is backed up first. If the check printed `New tools since your version:`, read that list to them: the update installs those tools. When the RTK hook (`rtk-hook`) is among them, also say: "RTK adds a hook to your Claude Code settings that trims command output in every project, and a line to your global Claude instructions; `rtk init -g --uninstall` removes both." Wait for their yes before step 3.
+2. Tell the person in one line what will happen: skills and tools get replaced, their own files are not touched, anything they edited in a template file is backed up first. If the check printed `New tools since your version:`, read that list to them: the update installs those tools. When the RTK hook (`rtk-hook`) is among them, also say: "RTK adds a hook to the assistant's own global settings that trims command output in every project, and a line to its global instructions; `rtk init -g --uninstall` removes both." Wait for their yes before step 3.
 3. Run it:
    ```
    python tools/update/update.py

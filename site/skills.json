@@ -180,6 +180,10 @@
   "local-events": [
    "Everyday life",
    "Keeps a list of what is on in your town over the next two weeks, from the public calendars your city, library, parks and venues already publish."
+  ],
+  "make-a-pipeline": [
+   "Keeping the workspace honest",
+   "Turns one job you keep repeating into a small pipeline: stage folders, a one-screen contract each, and a check where you want to look."
   ]
  },
  "headlines": {

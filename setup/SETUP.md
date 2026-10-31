@@ -67,7 +67,8 @@ Do this without asking more questions. Tell them you are building and that it ta
 
 A row for a skill that is not in the skills folder yet is still written; the skill lands with `update`.
 
-9. **History.** Run `python tools/undo/undo.py init` (python3 on Mac and Linux). From now on, save after every task that changes files (the `undo` skill).
+9. **History.** Run `python tools/undo/undo.py init` (python3 on Mac and Linux). From now on, save after every task that changes files (the `undo` skill), with a six-word summary that names the job. Those summaries are how the workspace notices repeats.
+10. **The look-back rule, one line in the map file:** "After every task, save it with `undo`. On the weekly brief, read the jobs done three or more times in the last ninety days and offer `make-a-pipeline` for one of them." The brief lists them; the AI offers; the person decides.
 
 ## 3. Fix
 

@@ -56,6 +56,32 @@ def build():
     return ws
 
 
+class RepeatsTests(unittest.TestCase):
+    def test_groups_by_shared_words_and_counts(self):
+        saves = [
+            "wrote Monday update email to clients",
+            "renamed March invoices by date",
+            "Monday client update email drafted",
+            "sorted photos from the trip",
+            "sent Monday update email again",
+            "renamed April invoices by date",
+            "drafted the monday client update",
+        ]
+        hits = brief.repeats(saves)
+        self.assertEqual(hits, [(4, "wrote Monday update email to clients")])
+        self.assertEqual(brief.repeats(saves, minimum=2)[1], (2, "renamed March invoices by date"))
+
+    def test_short_or_filler_summaries_do_not_group(self):
+        self.assertEqual(brief.repeats(["fixed it", "fixed it", "fixed it"]), [])
+
+    def test_render_has_the_section(self):
+        data = {"came_in": [], "went_out": [], "dates_due": [], "gaps": [], "sign_ins": [],
+                "repeats": ["4 times: wrote Monday update email"], "window": (datetime.date(2026, 10, 25), datetime.date(2026, 10, 31))}
+        text = brief.render(data)
+        self.assertIn("## Jobs that keep coming back (last 90 days)", text)
+        self.assertIn("- 4 times: wrote Monday update email", text)
+
+
 class WeeklyBriefTests(unittest.TestCase):
     def setUp(self):
         self.ws = build()
@@ -86,7 +112,8 @@ class WeeklyBriefTests(unittest.TestCase):
         text = brief.render(self.data)
         self.assertTrue(text.startswith("# Week of 2026-10-25 to 2026-10-31\n"))
         heads = [l for l in text.splitlines() if l.startswith("## ")]
-        self.assertEqual(heads, ["## Came in", "## Went out", "## Dates coming up", "## Gaps logged", "## Sign-ins needed"])
+        self.assertEqual(heads, ["## Came in", "## Went out", "## Dates coming up", "## Gaps logged",
+                                 "## Jobs that keep coming back (last 90 days)", "## Sign-ins needed"])
         self.assertIn("- clients/acme/notes.md", text)
         self.assertIn("- 2026-11-10 | water bill due | from money/water.pdf", text)
         empty = dict(self.data, came_in=[], went_out=[], dates_due=[], gaps=[], sign_ins=[])

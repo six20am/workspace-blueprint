@@ -5,10 +5,11 @@
     python tools/weekly-brief/brief.py --days 14 --out x.md
     python tools/weekly-brief/brief.py --today 2026-10-31   # end the week on that date
 
-Five sections: files that came in (changed in the window), files that went out (the ones inside
+Six sections: files that came in (changed in the window), files that went out (the ones inside
 a delivery or sent folder), dates coming up in the next 14 days (from paperwork/dates.md), gaps
-logged (setup/gap-log.md) and sign-ins still needed (setup/setup-report.md). It reads only file
-dates, plus those three files and the router file. It saves weekly-brief-YYYY-MM-DD.md in the
+logged (setup/gap-log.md), jobs that keep coming back (undo-history summaries from the last 90
+days that repeat three or more times) and sign-ins still needed (setup/setup-report.md). It reads
+only file dates, those three files, the router file and the undo history's summaries. It saves weekly-brief-YYYY-MM-DD.md in the
 notes folder the router names, else the workspace folder, and prints the path. Standard library only.
 """
 import argparse
@@ -79,6 +80,59 @@ def _day_start(day):
     return datetime.datetime(day.year, day.month, day.day).timestamp()
 
 
+REPEAT_DAYS = 90
+REPEAT_MIN = 3
+STOP = {"a", "an", "the", "and", "or", "of", "to", "for", "in", "on", "at", "by", "with", "from", "into", "up",
+        "new", "old", "this", "that", "it", "its", "my", "our", "his", "her", "their", "some", "more", "again",
+        "added", "add", "made", "make", "did", "do", "done", "put", "got", "get", "set", "ran", "run", "saved",
+        "save", "wrote", "write", "sent", "send", "fixed", "fix", "updated", "update", "changed", "change",
+        "january", "february", "march", "april", "may", "june", "july", "august", "september", "october",
+        "november", "december"}
+
+
+def _words(summary):
+    """The content words of a six-word undo summary: lowercase, no numbers, no filler, no plurals."""
+    out = set()
+    for w in re.findall(r"[a-z]+", summary.lower()):
+        if w in STOP or len(w) < 3:
+            continue
+        out.add(w[:-1] if w.endswith("s") and len(w) > 4 else w)
+    return out
+
+
+def _history_summaries(root, since_days):
+    """The undo history's save summaries in the window, newest first. Empty when there is no history."""
+    if not os.path.isdir(os.path.join(root, ".git")):
+        return []
+    import subprocess
+    try:
+        r = subprocess.run(["git", "log", "--since=%d days ago" % since_days, "--format=%s"], cwd=root,
+                           capture_output=True, text=True, encoding="utf-8", errors="replace")
+    except OSError:
+        return []
+    return [l.strip() for l in r.stdout.splitlines() if l.strip()] if r.returncode == 0 else []
+
+
+def repeats(summaries, minimum=REPEAT_MIN):
+    """Groups save summaries that share two or more content words, and returns the groups seen `minimum`
+    or more times as (count, first summary) pairs, most repeated first. Greedy; good enough to notice."""
+    groups = []  # [words, count, label]
+    for s in summaries:
+        words = _words(s)
+        if len(words) < 2:
+            continue
+        for g in groups:
+            if len(words & g[0]) >= 2:
+                g[0] |= words
+                g[1] += 1
+                break
+        else:
+            groups.append([words, 1, s])
+    hits = [(g[1], g[2]) for g in groups if g[1] >= minimum]
+    hits.sort(key=lambda t: (-t[0], t[1]))
+    return hits
+
+
 def collect(root, today, days):
     start = today - datetime.timedelta(days=max(days, 1) - 1)
     lo, hi = _day_start(start), _day_start(today + datetime.timedelta(days=1))
@@ -111,6 +165,7 @@ def collect(root, today, days):
         "went_out": went_out,
         "dates_due": _dated_lines(os.path.join(root, "paperwork", "dates.md"), today, today + datetime.timedelta(days=DUE_DAYS)),
         "gaps": _dated_lines(os.path.join(root, "setup", "gap-log.md"), start, today),
+        "repeats": ["%d times: %s" % (n, label) for n, label in repeats(_history_summaries(root, REPEAT_DAYS))],
         "sign_ins": _sign_ins(os.path.join(root, "setup", "setup-report.md")),
         "window": (start, today),
     }
@@ -134,6 +189,7 @@ def render(data):
     lines += _section("Went out", data["went_out"], CAP)
     lines += _section("Dates coming up", data["dates_due"])
     lines += _section("Gaps logged", data["gaps"])
+    lines += _section("Jobs that keep coming back (last %d days)" % REPEAT_DAYS, data.get("repeats", []))
     lines += _section("Sign-ins needed", data["sign_ins"])
     return "\n".join(lines).rstrip("\n") + "\n"
 

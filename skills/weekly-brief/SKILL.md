@@ -22,6 +22,7 @@ Run it from the workspace folder. It looks at the last 7 days, ending today. Add
 - **Dates coming up**: the next 14 days from `paperwork/dates.md`, if the paperwork skill has written it.
 - **In town this week**: the next 7 days from the newest file in `local-events/`, if the local-events skill has written one.
 - **Gaps logged**: this week's lines in `setup/gap-log.md`.
+- **Jobs that keep coming back**: the undo-history summaries from the last 90 days that repeat three or more times, with the count. This is the look-back: the work got done, now ask whether it should become a pipeline.
 - **Sign-ins needed**: the accounts the last doctor run said the person connects by hand.
 
 It is saved as `weekly-brief-<date>.md` in the notes folder the router file names, or the workspace folder if it names none. Empty sections say "Nothing."
@@ -29,6 +30,8 @@ It is saved as `weekly-brief-<date>.md` in the notes folder the router file name
 ## What to say
 
 Read it back in five lines, one per section, in plain words: "Twelve files came in, mostly client notes." Name a date by what it is and when ("The water bill is due on the 10th"). Then offer to open any item.
+
+If a job repeated, say it once, plainly: "You've done the Monday update four times since August. Want me to set it up as a pipeline so it runs the same way each time?" One offer, for the most repeated job. A no is the answer until the next brief; do not raise it again that week.
 
 ## What it does not know
 

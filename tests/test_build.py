@@ -1,29 +1,39 @@
-import os, sys, tempfile, unittest, zipfile
+import json, os, sys, tempfile, unittest, zipfile
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import build
 
 
+def write(d, rel, text, newline=None):
+    p = os.path.join(d, rel)
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    with open(p, "w", encoding="utf-8", newline=newline) as fh:
+        fh.write(text)
+
+
 def make_repo(d, extra=None):
-    os.makedirs(os.path.join(d, "setup", "tests"))
-    os.makedirs(os.path.join(d, "tests"))
-    os.makedirs(os.path.join(d, ".git"))
-    open(os.path.join(d, "CLAUDE.md"), "w", encoding="utf-8").write("# map\n")
-    open(os.path.join(d, "setup.command"), "w", encoding="utf-8", newline="").write("#!/bin/bash\r\necho hi\r\n")
-    open(os.path.join(d, "setup", "setup.sh"), "w", encoding="utf-8").write("#!/bin/bash\n")
-    open(os.path.join(d, "setup", "tests", "test-x.ps1"), "w", encoding="utf-8").write("# ps test\n")
-    open(os.path.join(d, "setup", "setup-report.md"), "w", encoding="utf-8").write("left over\n")
-    open(os.path.join(d, "tests", "test_me.py"), "w", encoding="utf-8").write("# root test\n")
-    open(os.path.join(d, ".git", "HEAD"), "w").write("ref\n")
-    open(os.path.join(d, "build.py"), "w").write("# me\n")
-    open(os.path.join(d, "README.md"), "w", encoding="utf-8").write("# repo readme, names the maintainer\n")
-    os.makedirs(os.path.join(d, "docs"))
-    open(os.path.join(d, "docs", "design.md"), "w", encoding="utf-8").write("# design spec\n")
-    os.makedirs(os.path.join(d, "tools", "x"))
-    open(os.path.join(d, "tools", "x", "README.md"), "w", encoding="utf-8").write("# a tool readme, ships\n")
+    write(d, "skills/a/SKILL.md", '---\nname: a\ndescription: "Does A. Use when A."\n---\n# a\n')
+    write(d, "skills/a/TEST.md", "# test a\n")
+    write(d, "adapters/claude-code/CLAUDE.md", "# map\n")
+    write(d, "adapters/claude-code/setup.command", "#!/bin/bash\r\necho hi\r\n", newline="")
+    write(d, "adapters/claude-code/platform.md", "# claude code platform\n")
+    write(d, "adapters/grok-bot/README.md", "# grok readme, names the maintainer\n")
+    write(d, "adapters/grok-bot/install.sh", "#!/bin/bash\r\necho grok\r\n", newline="")
+    write(d, "adapters/grok-bot/platform.md", "# grok bot platform\n")
+    write(d, "adapters/grok-bot/skills/getting-started/SKILL.md", '---\nname: getting-started\ndescription: "Starts. Use first."\n---\n')
+    write(d, "setup/setup.ps1", "# windows installer\n")
+    write(d, "setup/setup.sh", "#!/bin/bash\n")
+    write(d, "setup/tests/test-x.ps1", "# ps test\n")
+    write(d, "setup/setup-report.md", "left over\n")
+    write(d, "tests/test_me.py", "# root test\n")
+    write(d, ".git/HEAD", "ref\n")
+    write(d, "tools/sub/.git", "gitdir: ../.git/modules/sub\n")   # a submodule checkout keeps .git as a file
+    write(d, ".pytest_cache/README.md", "cache\n")
+    write(d, "build.py", "# me\n")
+    write(d, "README.md", "# repo readme, names the maintainer\n")
+    write(d, "docs/design.md", "# design spec\n")
+    write(d, "tools/x/README.md", "# a tool readme, ships\n")
     for name, text in (extra or {}).items():
-        p = os.path.join(d, name)
-        os.makedirs(os.path.dirname(p), exist_ok=True)
-        open(p, "w", encoding="utf-8").write(text)
+        write(d, name, text)
 
 
 class ScanTest(unittest.TestCase):
@@ -44,6 +54,9 @@ class ScanTest(unittest.TestCase):
         self.assertTrue(build.is_secret(".env"))
         self.assertFalse(build.is_secret("tools/x/accounts.example.json"))
 
+    def test_hard_rules_heading_is_fine(self):
+        self.assertEqual(build.scan_text("## 8. Hard rules\n- never guess", []), [])
+
 
 class BuildTest(unittest.TestCase):
     def test_builds_zip_with_exec_bits_and_skips(self):
@@ -56,20 +69,81 @@ class BuildTest(unittest.TestCase):
                 self.assertIn("Top Folder/CLAUDE.md", names)
                 self.assertIn("Top Folder/setup.command", names)
                 self.assertIn("Top Folder/setup/tests/test-x.ps1", names)
+                self.assertIn("Top Folder/setup/setup.ps1", names)
                 self.assertNotIn("Top Folder/tests/test_me.py", names)
                 self.assertNotIn("Top Folder/setup/setup-report.md", names)
                 self.assertNotIn("Top Folder/build.py", names)
                 self.assertNotIn("Top Folder/README.md", names, "the repo readme is not part of the product")
                 self.assertNotIn("Top Folder/docs/design.md", names, "the design spec is not part of the product")
                 self.assertIn("Top Folder/tools/x/README.md", names, "tool readmes do ship")
-                self.assertFalse(any(".git/" in n for n in names))
+                self.assertFalse(any(n.endswith("/.git") or ".git/" in n or ".pytest_cache" in n for n in names))
                 mode = z.getinfo("Top Folder/setup.command").external_attr >> 16
                 self.assertEqual(mode & 0o111, 0o111)
                 self.assertEqual(z.getinfo("Top Folder/setup.command").create_system, 3, "Unix creator, or a Mac ignores the mode bits")
                 mode = z.getinfo("Top Folder/setup/setup.sh").external_attr >> 16
                 self.assertEqual(mode & 0o111, 0o111)
                 self.assertNotIn(b"\r\n", z.read("Top Folder/setup.command"))
+                self.assertIn("Top Folder/setup/version.json", names)
             self.assertIn("CLAUDE.md", report)
+
+    def test_claude_zip_maps_skills_and_overlays_adapter(self):
+        with tempfile.TemporaryDirectory() as d:
+            repo = os.path.join(d, "repo"); make_repo(repo)
+            out = os.path.join(d, "x.zip")
+            build.build(repo, out, names=[], adapter="claude-code", top="T")
+            with zipfile.ZipFile(out) as z:
+                names = z.namelist()
+                for want in ("T/.claude/skills/a/SKILL.md", "T/.claude/skills/a/TEST.md", "T/.claude/skills/INDEX.md",
+                             "T/CLAUDE.md", "T/setup.command", "T/setup/platform.md", "T/setup/adapter.json"):
+                    self.assertIn(want, names)
+                self.assertFalse(any(n.startswith("T/skills/") for n in names), "core skills/ must map to .claude/skills")
+                self.assertFalse(any("/adapters/" in n for n in names))
+                self.assertNotIn("T/install.sh", names)
+                self.assertFalse(any("getting-started" in n for n in names), "the grok adapter skill never reaches the zip")
+                self.assertEqual(z.read("T/setup/platform.md").decode(), "# claude code platform\n")
+                meta = json.loads(z.read("T/setup/adapter.json"))
+                self.assertEqual(meta["adapter"], "claude-code")
+                self.assertEqual(meta["skills_dir"], ".claude/skills")
+                self.assertEqual(meta["map"], "CLAUDE.md")
+
+    def test_grok_folder_keeps_skills_dir_and_adds_adapter_skill(self):
+        with tempfile.TemporaryDirectory() as d:
+            repo = os.path.join(d, "repo"); make_repo(repo)
+            out = os.path.join(d, "grok")
+            write(out, ".git/HEAD", "keep me\n")
+            write(out, "stale.md", "from a previous build\n")
+            build.build_folder(repo, out, names=[], adapter="grok-bot")
+            for want in ("skills/a/SKILL.md", "skills/getting-started/SKILL.md", "skills/INDEX.md", "install.sh",
+                         "README.md", "setup/setup.sh", "setup/platform.md", "setup/version.json", "tools/x/README.md"):
+                self.assertTrue(os.path.isfile(os.path.join(out, want)), want)
+            for gone in ("CLAUDE.md", "setup.command", "setup/setup.ps1", "setup/tests", ".claude", "adapters", "stale.md", "build.py"):
+                self.assertFalse(os.path.exists(os.path.join(out, gone)), gone)
+            self.assertTrue(os.path.isfile(os.path.join(out, ".git", "HEAD")), "the mirror's .git survives a rebuild")
+            with open(os.path.join(out, "README.md"), encoding="utf-8") as fh:
+                self.assertIn("grok readme", fh.read())
+            with open(os.path.join(out, "setup", "platform.md"), encoding="utf-8") as fh:
+                self.assertEqual(fh.read(), "# grok bot platform\n")
+            with open(os.path.join(out, "install.sh"), "rb") as fh:
+                self.assertNotIn(b"\r\n", fh.read())
+            with open(os.path.join(out, "setup", "adapter.json"), encoding="utf-8") as fh:
+                meta = json.load(fh)
+            self.assertEqual(meta["adapter"], "grok-bot")
+            self.assertEqual(meta["map"], "MAP.md")
+            self.assertEqual(meta["skills_dir"], "skills")
+
+    def test_index_lists_every_skill_one_line_each(self):
+        with tempfile.TemporaryDirectory() as d:
+            repo = os.path.join(d, "repo")
+            make_repo(repo, {"skills/b/SKILL.md": "---\nname: b\ndescription: >-\n  Folded text for B, e.g. this one.\n  Second sentence.\n---\n",
+                             "skills/c/SKILL.md": "---\nname: c\ndescription: >\n  Plain folded C\n  over two lines.\n\n  NOT for: anything.\n---\n"})
+            text = build.write_index(repo)
+            with open(os.path.join(repo, "skills", "INDEX.md"), encoding="utf-8") as fh:
+                self.assertEqual(fh.read(), text)
+            lines = [l for l in text.splitlines() if l.startswith("- `")]
+            self.assertEqual(lines, ["- `a`: Does A.",
+                                     "- `b`: Folded text for B, e.g. this one.",
+                                     "- `c`: Plain folded C over two lines."])
+            self.assertNotIn("getting-started", text, "adapter-only skills are not in the core index")
 
     def test_refuses_on_leak(self):
         with tempfile.TemporaryDirectory() as d:
@@ -79,6 +153,14 @@ class BuildTest(unittest.TestCase):
             self.assertIn("setup/SETUP.md", str(cm.exception).replace("\\", "/"))
             self.assertFalse(os.path.exists(os.path.join(d, "x.zip")))
 
+    def test_refuses_leak_in_own_adapter_only(self):
+        with tempfile.TemporaryDirectory() as d:
+            repo = os.path.join(d, "repo"); make_repo(repo, {"adapters/grok-bot/START-HERE.md": "call Zed first\n"})
+            build.build(repo, os.path.join(d, "x.zip"), names=["zed"], adapter="claude-code", top="T")
+            with self.assertRaises(build.LeakError) as cm:
+                build.build_folder(repo, os.path.join(d, "grok"), names=["zed"], adapter="grok-bot")
+            self.assertIn("adapters/grok-bot/START-HERE.md", str(cm.exception).replace("\\", "/"))
+
     def test_refuses_agency_name_with_empty_names_list(self):
         # a public clone has no parent workspace names list; the gate must still know the agency's own name
         for word in ("Six20AM", "motus", "Machado", "ask Michael", "Hard Rule 10"):
@@ -86,9 +168,6 @@ class BuildTest(unittest.TestCase):
                 repo = os.path.join(d, "repo"); make_repo(repo, {"setup/SETUP.md": "see %s here\n" % word})
                 with self.assertRaises(build.LeakError, msg=word):
                     build.build(repo, os.path.join(d, "x.zip"), names=[], top="T")
-
-    def test_hard_rules_heading_is_fine(self):
-        self.assertEqual(build.scan_text("## 8. Hard rules\n- never guess", []), [])
 
     def test_refuses_secret_file(self):
         with tempfile.TemporaryDirectory() as d:

@@ -1,22 +1,37 @@
 #!/usr/bin/env python3
-"""Builds the zip people download. Scans every text file first and refuses on any leak.
+"""Builds one output per adapter: the zip people download (Claude Code) and the folder mirrored
+to the Grok Bot repo. Writes skills/INDEX.md first, then scans every text file and refuses on any leak.
 Standard library only.
 
-    python build.py                       # writes ~/Downloads/Six20AM Workspace Blueprint.zip
-    python build.py --out <path.zip> --names <file>
+    python build.py                                    # both: the zip in ~/Downloads, the folder in dist/grokbot-blueprint
+    python build.py --adapter claude-code --out <path.zip>
+    python build.py --adapter grok-bot --grok-dir <dir> [--push]
+    python build.py [--adapter claude-code|grok-bot|all] [--out <zip>] [--grok-dir <dir>] [--push] [--names <file>]
 """
 import argparse
 import datetime
+import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 import zipfile
 
 TOP = "Six20AM Workspace Blueprint"
-SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", ".superpowers", ".impeccable"}
-SKIP_ROOT_DIRS = {"tests", "docs", "site", ".github"}  # the repo's own test suite, design doc, website and CI; setup/tests ships
-SKIP_FILES = {"build.py", "setup-report.md", "update-report.md"}
+ADAPTERS = {
+    "claude-code": {"skills_dir": ".claude/skills", "map": "CLAUDE.md", "router": "CONTEXT.md", "notes": "CONTEXT.md"},
+    "grok-bot": {"skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"},
+}
+# core paths an adapter leaves out: a Bot has no Windows installer
+ADAPTER_SKIP = {"grok-bot": ("setup/setup.ps1", "setup/lib/", "setup/tests/")}
+GROK_REPO = "github.com/six20am/grokbot-blueprint.git"
+SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", ".pytest_cache", ".superpowers", ".impeccable"}
+# the repo's own test suite, design doc, website, CI, build outputs, and the adapter folders (overlaid per output); setup/tests ships
+SKIP_ROOT_DIRS = {"tests", "docs", "site", ".github", "dist", "adapters"}
+SKIP_FILES = {".git", "build.py", "setup-report.md", "update-report.md"}  # .git is a file in a submodule checkout
 SKIP_ROOT_FILES = {"README.md"}     # the GitHub readme; START-HERE.md is the product's front page
+GENERATED = ("setup/adapter.json", "setup/version.json")
 TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml")
 LF = (".sh", ".command", ".py", ".md", ".json", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml")
 EXEC = (".command", ".sh")
@@ -27,9 +42,12 @@ FIXED = ["\u2014", "mtesi", "C:\\Users\\", "/c/Users/", "shared-core", "shared-s
 FIXED_CI = ["six20am", "motus", "machado", "michael"]
 HARD_RULE = re.compile(r"Hard Rule \d", re.I)     # a numbered rule from the parent workspace; a "Hard rules" heading is fine
 HEX_ID = re.compile(r"\b[0-9a-f]{32}\b")
-ALLOWED = {"README.md", "docs/design.md", "tools/update/update.py"}  # the updater has to name the public repo
+# files that may name the maintainer, keyed by repo-relative source path: the updater and the publish notes name the public repos
+ALLOWED = {"README.md", "docs/design.md", "tools/update/update.py",
+           "adapters/claude-code/publish.md", "adapters/grok-bot/publish.md", "adapters/grok-bot/README.md"}
 # vendor code shipped as-is; scanned by eye, not by string (same exemption as tests/test_shipped.py)
-VENDOR = (".claude/skills/last30days/scripts/", ".claude/skills/agent-reach/_references")
+VENDOR = ("skills/last30days/scripts/", "skills/agent-reach/_references")
+SENTENCE_END = re.compile(r"(?<!\be\.g)(?<!\bi\.e)(?<!\betc)\.(?=\s|$)")
 
 
 class LeakError(Exception):
@@ -71,32 +89,127 @@ def default_names(repo):
     return names
 
 
+def git_sha(repo):
+    try:
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True, stderr=subprocess.DEVNULL).strip()
+    except Exception:
+        return None
+
+
 def version_json(repo):
     try:
-        import subprocess
-        sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
-        date = subprocess.check_output(["git", "log", "-1", "--format=%cs"], cwd=repo, text=True).strip()
+        sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True, stderr=subprocess.DEVNULL).strip()
+        date = subprocess.check_output(["git", "log", "-1", "--format=%cs"], cwd=repo, text=True, stderr=subprocess.DEVNULL).strip()
     except Exception:
         sha, date = None, None
     return '{\n "commit": %s,\n "date": %s,\n "updated": null\n}\n' % (
         ('"%s"' % sha) if sha else "null", ('"%s"' % date) if date else "null")
 
 
-def files(repo):
-    for dirpath, dirs, fs in os.walk(repo):
-        at_root = os.path.abspath(dirpath) == os.path.abspath(repo)
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS and not (at_root and d in SKIP_ROOT_DIRS)]
+def adapter_json(adapter):
+    return json.dumps(dict({"adapter": adapter}, **ADAPTERS[adapter]), indent=1) + "\n"
+
+
+def first_sentence(skill_md):
+    """The first sentence of a SKILL.md description: a one-line quoted value or a folded/literal block (>, >-, |)."""
+    with open(skill_md, encoding="utf-8", errors="replace") as fh:
+        lines = fh.read().splitlines()
+    if not lines or lines[0].strip() != "---":
+        return ""
+    text = ""
+    for i in range(1, len(lines)):
+        line = lines[i]
+        if line.strip() == "---":
+            break
+        if not line.startswith("description:"):
+            continue
+        value = line[len("description:"):].strip()
+        if value[:1] in (">", "|"):
+            parts = []
+            for nxt in lines[i + 1:]:
+                if not nxt.strip() or not nxt[:1].isspace():
+                    break   # a blank line ends the first paragraph; an unindented line ends the block
+                parts.append(nxt.strip())
+            text = " ".join(parts)
+        else:
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+                value = value[1:-1]
+            text = value
+        break
+    text = " ".join(text.split())
+    m = SENTENCE_END.search(text)
+    return text[:m.end()] if m else text
+
+
+def write_index(repo):
+    """Writes skills/INDEX.md: one line per core skill, `- \\`name\\`: first sentence of its description`."""
+    skills = os.path.join(repo, "skills")
+    rows = []
+    for name in sorted(os.listdir(skills)) if os.path.isdir(skills) else []:
+        md = os.path.join(skills, name, "SKILL.md")
+        if os.path.isfile(md):
+            rows.append("- `%s`: %s" % (name, first_sentence(md)))
+    text = "# Skills index\n\nOne line per skill, from its description. Generated by the build; do not edit by hand.\n\n" + "\n".join(rows) + "\n"
+    os.makedirs(skills, exist_ok=True)
+    with open(os.path.join(skills, "INDEX.md"), "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(text)
+    return text
+
+
+def walk(base, skip_root_dirs=(), skip_root_files=()):
+    for dirpath, dirs, fs in os.walk(base):
+        at_root = os.path.abspath(dirpath) == os.path.abspath(base)
+        dirs[:] = sorted(d for d in dirs if d not in SKIP_DIRS and not (at_root and d in skip_root_dirs))
         for f in sorted(fs):
-            if f in SKIP_FILES or (at_root and f in SKIP_ROOT_FILES):
+            if f in SKIP_FILES or (at_root and f in skip_root_files):
                 continue
             p = os.path.join(dirpath, f)
-            yield os.path.relpath(p, repo).replace("\\", "/"), p
+            yield os.path.relpath(p, base).replace("\\", "/"), p
 
 
-def build(repo, out, names, top=TOP):
+def files(repo):
+    """Core files, repo-relative: everything outside the skipped root folders and the adapter folders."""
+    return walk(repo, SKIP_ROOT_DIRS, SKIP_ROOT_FILES)
+
+
+def map_skills(rel, skills_dir):
+    return skills_dir + rel[len("skills"):] if rel.startswith("skills/") else rel
+
+
+def entries(repo, adapter):
+    """(source_rel, arc_rel, path) for one output: core files, then the adapter folder overlaid at the root.
+    An adapter file overrides a core file at the same arc path; generated files are never taken from disk."""
+    cfg = ADAPTERS[adapter]
+    skip = ADAPTER_SKIP.get(adapter, ())
+    overlay = []
+    for rel, p in walk(os.path.join(repo, "adapters", adapter)):
+        arc = "setup/platform.md" if rel == "platform.md" else map_skills(rel, cfg["skills_dir"])
+        overlay.append(("adapters/%s/%s" % (adapter, rel), arc, p))
+    taken = {arc for _, arc, _ in overlay}
+    out = []
+    for rel, p in files(repo):
+        if skip and rel.startswith(skip):
+            continue
+        arc = map_skills(rel, cfg["skills_dir"])
+        if arc not in taken:
+            out.append((rel, arc, p))
+    return [e for e in out + overlay if e[1] not in GENERATED]
+
+
+def output_files(repo, adapter):
+    """Yields (arc_rel, source_path) for every file an adapter's output ships, before the generated ones."""
+    for _, arc, p in entries(repo, adapter):
+        yield arc, p
+
+
+def collect(repo, adapter, names):
+    """Writes the index, scans every shipped source, and returns [(arc_rel, path)] or raises LeakError."""
+    if adapter not in ADAPTERS:
+        raise ValueError("unknown adapter %r" % adapter)
+    write_index(repo)
     leaks = []
     included = []
-    for rel, p in files(repo):
+    for rel, arc, p in entries(repo, adapter):
         if is_secret(rel):
             leaks.append("%s: secret-shaped file" % rel)
             continue
@@ -105,50 +218,131 @@ def build(repo, out, names, top=TOP):
                 probs = scan_text(fh.read(), names)
             if probs:
                 leaks.append("%s: %s" % (rel, ", ".join(probs)))
-        included.append((rel, p))
+        included.append((arc, p))
     if leaks:
         raise LeakError("refusing to build:\n  " + "\n  ".join(leaks))
-    os.makedirs(os.path.dirname(os.path.abspath(out)) or ".", exist_ok=True)
-    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
-        for rel, p in included:
-            arc = top + "/" + rel
-            zi = zipfile.ZipInfo.from_file(p, arc)
-            zi.compress_type = zipfile.ZIP_DEFLATED
-            zi.create_system = 3   # Unix: a Mac honours the mode bits only when the creator says Unix
-            zi.external_attr = ((0o755 if rel.endswith(EXEC) else 0o644) << 16)
-            with open(p, "rb") as fh:
-                data = fh.read()
-            if rel.endswith(LF):
-                data = data.replace(b"\r\n", b"\n")   # a zip built on Windows must not ship CRLF scripts to a Mac
-            z.writestr(zi, data)
-        # the commit this zip was built from, so tools/update can tell whether anything is newer
-        z.writestr(top + "/setup/version.json", version_json(repo))
-        included.append(("setup/version.json", None))
-    lines = ["# Build report", "", "Built %s" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), "Zip: %s" % out, "Files: %d" % len(included), ""]
-    lines += ["- " + rel for rel, _ in included]
+    return included
+
+
+def read_shipped(arc, p):
+    with open(p, "rb") as fh:
+        data = fh.read()
+    if arc.endswith(LF):
+        data = data.replace(b"\r\n", b"\n")   # an output built on Windows must not ship CRLF scripts to a Mac or a Bot
+    return data
+
+
+def generated(repo, adapter):
+    # the commit this output was built from, so tools/update can tell whether anything is newer
+    return [("setup/adapter.json", adapter_json(adapter)), ("setup/version.json", version_json(repo))]
+
+
+def write_report(path, adapter, target, rels):
+    lines = ["# Build report", "", "Built %s" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+             "Adapter: %s" % adapter, "Output: %s" % target, "Files: %d" % len(rels), ""]
+    lines += ["- " + rel for rel in rels]
     report = "\n".join(lines) + "\n"
-    with open(os.path.splitext(out)[0] + "-build-report.md", "w", encoding="utf-8", newline="\n") as fh:
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(report)
     return report
 
 
+def build(repo, out, names, adapter="claude-code", top=TOP):
+    """Writes the zip for one adapter under a single top folder. Returns the build report."""
+    included = collect(repo, adapter, names)
+    gen = generated(repo, adapter)
+    os.makedirs(os.path.dirname(os.path.abspath(out)) or ".", exist_ok=True)
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+        for arc, p in included:
+            zi = zipfile.ZipInfo.from_file(p, top + "/" + arc)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.create_system = 3   # Unix: a Mac honors the mode bits only when the creator says Unix
+            zi.external_attr = ((0o755 if arc.endswith(EXEC) else 0o644) << 16)
+            z.writestr(zi, read_shipped(arc, p))
+        for arc, text in gen:
+            zi = zipfile.ZipInfo(top + "/" + arc, datetime.datetime.now().timetuple()[:6])
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.create_system = 3
+            zi.external_attr = 0o644 << 16
+            z.writestr(zi, text)
+    rels = [arc for arc, _ in included] + [arc for arc, _ in gen]
+    return write_report(os.path.splitext(out)[0] + "-build-report.md", adapter, out, rels)
+
+
+def build_folder(repo, out_dir, names, adapter):
+    """Writes one adapter's output as a plain folder, cleared first except its .git. Returns the build report."""
+    included = collect(repo, adapter, names)
+    os.makedirs(out_dir, exist_ok=True)
+    for entry in os.listdir(out_dir):
+        if entry == ".git":
+            continue
+        p = os.path.join(out_dir, entry)
+        if os.path.isdir(p) and not os.path.islink(p):
+            shutil.rmtree(p)
+        else:
+            os.remove(p)
+    items = [(arc, read_shipped(arc, p)) for arc, p in included]
+    items += [(arc, text.encode("utf-8")) for arc, text in generated(repo, adapter)]
+    for arc, data in items:
+        dest = os.path.join(out_dir, *arc.split("/"))
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        with open(dest, "wb") as fh:
+            fh.write(data)
+        os.chmod(dest, 0o755 if arc.endswith(EXEC) else 0o644)
+    report_path = os.path.abspath(out_dir).rstrip("\\/") + "-build-report.md"
+    return write_report(report_path, adapter, out_dir, [arc for arc, _ in items])
+
+
+def push_grok(out_dir, sha):
+    """Commits the grok folder and force-pushes it to the mirror's main. The token never reaches the output."""
+    token = os.environ.get("GROKBOT_PUSH_TOKEN")
+    url = ("https://x-access-token:%s@%s" % (token, GROK_REPO)) if token else "https://" + GROK_REPO
+
+    def git(*args, capture=False):
+        try:
+            r = subprocess.run(["git"] + list(args), cwd=out_dir, check=True, text=True,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except subprocess.CalledProcessError as e:
+            msg = "git %s failed: %s" % (args[0], (e.stderr or "").strip())
+            raise RuntimeError(msg.replace(token, "***") if token else msg) from None
+        return r.stdout
+
+    if not os.path.isdir(os.path.join(out_dir, ".git")):
+        git("init", "-b", "main")
+    git("add", "-A")
+    if git("status", "--porcelain").strip():
+        git("commit", "-m", "Mirror of six20am/workspace-blueprint %s" % (sha or "unknown"))
+    git("push", "--force", url, "HEAD:main")
+
+
 def main():
+    repo = os.path.dirname(os.path.abspath(__file__))
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default=os.path.join(os.path.expanduser("~"), "Downloads", TOP + ".zip"))
+    ap.add_argument("--adapter", choices=["claude-code", "grok-bot", "all"], default="all")
+    ap.add_argument("--out", default=os.path.join(os.path.expanduser("~"), "Downloads", TOP + ".zip"), help="the Claude Code zip")
+    ap.add_argument("--grok-dir", default=os.path.join(repo, "dist", "grokbot-blueprint"), help="the Grok Bot folder")
+    ap.add_argument("--push", action="store_true", help="commit and force-push the Grok Bot folder to its mirror repo")
     ap.add_argument("--names", help="file with one extra forbidden string per line")
     a = ap.parse_args()
-    repo = os.path.dirname(os.path.abspath(__file__))
+    if a.push and a.adapter != "grok-bot":
+        ap.error("--push is only valid with --adapter grok-bot")
     names = default_names(repo)
     if a.names:
         with open(a.names, encoding="utf-8") as fh:
             names += [l.strip() for l in fh if l.strip()]
     try:
-        report = build(repo, a.out, names)
+        if a.adapter in ("claude-code", "all"):
+            report = build(repo, a.out, names, adapter="claude-code")
+            print("claude-code: wrote %s (%s)" % (a.out, report.splitlines()[5]))
+        if a.adapter in ("grok-bot", "all"):
+            report = build_folder(repo, a.grok_dir, names, adapter="grok-bot")
+            print("grok-bot: wrote %s (%s)" % (a.grok_dir, report.splitlines()[5]))
+            if a.push:
+                push_grok(a.grok_dir, git_sha(repo))
+                print("grok-bot: pushed to https://" + GROK_REPO)
     except LeakError as e:
         print(e)
         return 1
-    print(report.splitlines()[4])
-    print("Wrote " + a.out)
     return 0
 
 

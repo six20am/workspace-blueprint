@@ -7,3 +7,4 @@ tools/site-cloner/node_modules/
 .superpowers/
 site/dist/
 .impeccable/
+dist/

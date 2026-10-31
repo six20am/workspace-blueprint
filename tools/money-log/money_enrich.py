@@ -17,7 +17,10 @@ Standard library only.
 import csv, datetime, os, re, statistics
 
 EVERYDAY_CATEGORIES = {"groceries", "restaurants", "coffee", "gas", "fast food", "food & dining"}
-TRANSFER_WORDS = ("transfer", "payment thank you", "card payment", "ach pmt", "autopay payment", "online payment")
+# Only clear between-account moves and card payments. Bills paid by ACH or online
+# ("CITY WATER ACH PMT") and fees ("WIRE TRANSFER FEE") are spending, and a
+# matching category rule always beats this guess.
+TRANSFER_WORDS = ("payment thank you", "transfer to", "transfer from", "card payment", "credit card pmt", "zelle to")
 PAY_LATER_WORDS = ("pay in 4", "pay-in-4", "pay later", "installment")
 UNCATEGORIZED = "Uncategorized"
 
@@ -46,9 +49,11 @@ def load_rules(path):
     return rules
 
 
-def spend_type(row):
+def spend_type(row, rule_matched=False):
     desc, cat = norm(row.get("description")), norm(row.get("category"))
-    if any(w in desc for w in TRANSFER_WORDS) or cat in {"transfer", "transfers", "payment"}:
+    if cat in {"transfer", "transfers"}:
+        return "transfer"
+    if not rule_matched and (any(w in desc for w in TRANSFER_WORDS) or cat == "payment"):
         return "transfer"
     if any(w in desc for w in PAY_LATER_WORDS):
         return "pay_later"
@@ -61,6 +66,7 @@ def categorize(rows, rules):
     for raw in rows:
         row = dict(raw)
         row["amount"] = round(money(row.get("amount")), 2)
+        matched = False
         if row["amount"] < 0:
             desc = norm(row.get("description"))
             for rule in rules:
@@ -68,8 +74,9 @@ def categorize(rows, rules):
                     row["category"] = rule["category"] or row.get("category", "")
                     if rule["subcategory"]:
                         row["subcategory"] = rule["subcategory"]
+                    matched = True
                     break
-        row["spend_type"] = spend_type(row)
+        row["spend_type"] = spend_type(row, matched)
         if not (row.get("category") or "").strip():
             if row["spend_type"] == "transfer":
                 row["category"] = "Transfer"

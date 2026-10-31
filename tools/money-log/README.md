@@ -14,7 +14,7 @@ Writes only inside `money/` in the workspace (`--money-dir` to point elsewhere):
 - `money/<YYYY>/<YYYY-MM>-summary.md` and `<YYYY-MM>-dashboard.html`: the month.
 - `money/.gitignore`: keeps the whole folder out of git.
 
-Options: `--format <shape>` when detection fails, `--rules <file>`, `--keep-duplicates`.
+Options: `--format <shape>` when detection fails, `--rules <file>`, `--drop-exact-duplicates` (identical rows inside one export are kept unless you pass it).
 
 Files: `money.py` (entry point), `money_adapters.py` (export shapes), `money_dedup.py` (repeated rows), `money_enrich.py` (categories, recurring charges), `money_dashboard.py` (the HTML page). Standard library only.
 

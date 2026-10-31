@@ -1,6 +1,7 @@
 match,category,subcategory
 monthly maintenance,Fees,Bank fee
 overdraft,Fees,Bank fee
+transfer fee,Fees,Bank fee
 gas station,Gas,
 fuel,Gas,
 grocery,Groceries,
@@ -15,7 +16,7 @@ fitness,Health & Fitness,Gym
 gym,Health & Fitness,Gym
 pharmacy,Health,
 electric,Utilities,Electric
-water utility,Utilities,Water
+water,Utilities,Water
 internet,Utilities,Internet
 wireless,Utilities,Phone
 insurance,Insurance,

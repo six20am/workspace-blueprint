@@ -3,10 +3,9 @@
 Two cases, kept apart on purpose:
 
 1. Inside one export: rows with the same date, amount, description and account.
-   Banks repeat a row when a pending charge posts, or when two downloads are pasted
-   together. remove_exact() keeps one and returns the rest so the summary can list
-   every removal. Two real identical purchases on one day are possible, so the
-   person can turn this off with --keep-duplicates.
+   Two real identical purchases on one day are possible, so these are kept by
+   default. With --drop-exact-duplicates, remove_exact() keeps one of each and
+   returns the rest so the summary can list every removal.
 
 2. Between the saved ledger and a new export that overlaps it: merge_ledger()
    keeps, for each identical row, the larger of the two counts. Re-exporting a

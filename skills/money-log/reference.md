@@ -44,14 +44,16 @@ If an export is not recognized, add one entry to `ADAPTERS` in `tools/money-log/
 
 ## Repeated rows
 
-- **Inside one export:** rows with the same date, amount, description and account are kept once, and each removal is listed in the summary. Banks repeat a row when a pending charge posts. If the person really bought the same thing twice on one day, run again with `--keep-duplicates`.
+- **Inside one export:** rows with the same date, amount, description and account are all kept by default, since two real identical purchases on one day happen. If the bank repeated a row (a pending charge that posted twice, two downloads pasted together), run with `--drop-exact-duplicates`: one of each is kept and the removals are listed in that month's summary.
 - **Between exports:** the ledger keeps, for each identical row, the larger of the two counts. Loading September twice adds nothing; a new row is added. Use the same `--source` name for the same account every time, or the same rows count as a second account.
 
 ## Recurring charges, exactly
 
 A merchant (its description with store numbers dropped) is recurring when it has at least 3 charges, in at least 3 different months, most of them within 15% of the middle amount, with a middle gap of at least 11 days. The gap sets the cadence: 24 to 38 days monthly, 80 to 100 quarterly, 330 to 400 annual, anything else irregular. The monthly amount is the charge itself for a monthly charge, and spread to a month for the others. Charges under 2 dollars a month are dropped.
 
-Left out on purpose: groceries, restaurants, coffee and gas (a habit, not a bill), transfers and card payments, and pay-later installments. A charge unseen for longer than its cadence allows (60 days for monthly) is marked "possibly cancelled".
+Left out on purpose: groceries, restaurants, coffee and gas (a habit, not a bill), transfers between the person's own accounts and card payments, and pay-later installments. Bills paid by ACH or online count.
+
+Refunds count as money in, not as a reduction of a category. A charge unseen for longer than its cadence allows (60 days for monthly) is marked "possibly cancelled".
 
 ## A monthly routine
 

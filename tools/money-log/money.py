@@ -95,6 +95,7 @@ def summary_markdown(month, source, mrows, categories, totals, recurring, remove
         lines += ["", "## No category yet", "", "Add a line to the rule file for the biggest ones.", ""]
         for desc, total in sorted(unc.items(), key=lambda kv: -kv[1])[:10]:
             lines.append("- %s: %s" % (desc, fmt(total)))
+    removed = [r for r in removed if r["date"][:7] == month]
     if removed:
         lines += ["", "## Repeated rows removed", "",
                   "From this export: same date, amount, description and account. Kept one of each.", ""]
@@ -105,7 +106,7 @@ def summary_markdown(month, source, mrows, categories, totals, recurring, remove
     return "\n".join(lines)
 
 
-def run(export, source=None, month=None, fmt_id=None, rules_path=None, money_dir=None, keep_duplicates=False):
+def run(export, source=None, month=None, fmt_id=None, rules_path=None, money_dir=None, drop_exact_duplicates=False):
     money_dir = money_dir or os.path.join(ROOT, "money")
     if not os.path.isfile(export):
         raise SystemExit("No such file: %s" % export)
@@ -122,7 +123,7 @@ def run(export, source=None, month=None, fmt_id=None, rules_path=None, money_dir
     if not rows:
         raise SystemExit("No transactions read from %s (shape: %s)." % (export, aid))
     removed = []
-    if not keep_duplicates:
+    if drop_exact_duplicates:
         rows, removed = DD.remove_exact(rows)
 
     prepare_money_dir(money_dir)
@@ -168,9 +169,10 @@ def main(argv=None):
     ap.add_argument("--format", dest="fmt_id", help="export shape when detection fails: " + ", ".join(AD.DETECT_ORDER))
     ap.add_argument("--rules", help="rule file (default: money/rules.csv, made from the example on first run)")
     ap.add_argument("--money-dir", help="where the money folder is (default: money/ in the workspace)")
-    ap.add_argument("--keep-duplicates", action="store_true", help="keep repeated identical rows")
+    ap.add_argument("--drop-exact-duplicates", action="store_true",
+                    help="remove identical rows inside this export (same date, amount, description, account)")
     a = ap.parse_args(argv)
-    res = run(a.export, a.source, a.month, a.fmt_id, a.rules, a.money_dir, a.keep_duplicates)
+    res = run(a.export, a.source, a.month, a.fmt_id, a.rules, a.money_dir, a.drop_exact_duplicates)
     t = res["totals"]
     print("Export shape: %s. Read %d rows, removed %d repeated, added %d new to the ledger." % (
         res["shape"], res["read"], len(res["removed"]), res["added"]))

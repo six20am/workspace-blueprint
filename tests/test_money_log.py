@@ -26,11 +26,48 @@ class MoneyLogTests(unittest.TestCase):
             months = set(re.findall(r"^(\d\d)/\d\d/2026", f.read(), re.M))
         self.assertEqual({"07", "08", "09"}, months)
 
-    def test_dedupe_removes_the_duplicate(self):
-        self.assertEqual(1, len(self.res["removed"]))
-        self.assertEqual("HARBOR HARDWARE", self.res["removed"][0]["description"])
+    def test_identical_rows_kept_by_default(self):
+        self.assertEqual([], self.res["removed"])
         with open(self.res["ledger"], encoding="utf-8") as f:
+            self.assertEqual(2, f.read().count("HARBOR HARDWARE"))
+
+    def test_drop_exact_duplicates_removes_the_duplicate(self):
+        other = os.path.join(self.tmp, "money2")
+        res = money.run(FIXTURE, source="Example Bank checking", month="2026-08", money_dir=other,
+                        drop_exact_duplicates=True)
+        self.assertEqual(1, len(res["removed"]))
+        self.assertEqual("HARBOR HARDWARE", res["removed"][0]["description"])
+        with open(res["ledger"], encoding="utf-8") as f:
             self.assertEqual(1, f.read().count("HARBOR HARDWARE"))
+        with open(res["summary"], encoding="utf-8") as f:
+            self.assertIn("2026-08-21 HARBOR HARDWARE", f.read())
+
+    def test_removed_list_shows_only_that_month(self):
+        other = os.path.join(self.tmp, "money3")
+        res = money.run(FIXTURE, source="Example Bank checking", month="2026-09", money_dir=other,
+                        drop_exact_duplicates=True)
+        with open(res["summary"], encoding="utf-8") as f:
+            text = f.read()
+        self.assertNotIn("Repeated rows removed", text)
+        self.assertNotIn("HARBOR HARDWARE", text)
+
+    def test_bills_and_fees_are_spending_transfers_are_not(self):
+        export = os.path.join(self.tmp, "bills.csv")
+        with open(export, "w", encoding="utf-8") as f:
+            f.write("Date,Description,Amount\n"
+                    "07/05/2026,CITY WATER ACH PMT,-45.00\n"
+                    "08/05/2026,CITY WATER ACH PMT,-45.00\n"
+                    "09/05/2026,CITY WATER ACH PMT,-45.00\n"
+                    "09/08/2026,WIRE TRANSFER FEE,-15.00\n"
+                    "09/12/2026,PAYMENT THANK YOU,-300.00\n"
+                    "09/14/2026,TRANSFER TO SAVINGS,-200.00\n")
+        res = money.run(export, source="Bills checking", month="2026-09", money_dir=os.path.join(self.tmp, "m4"))
+        cats = dict(res["categories"])
+        self.assertAlmostEqual(45.00, cats["Utilities"])
+        self.assertAlmostEqual(15.00, cats["Fees"])
+        self.assertAlmostEqual(60.00, res["totals"]["spent"])
+        self.assertAlmostEqual(500.00, res["totals"]["transfers"])
+        self.assertEqual({"CITY WATER ACH PMT": 45.0}, {r["name"]: r["monthly"] for r in res["recurring"]})
 
     def test_rerun_adds_nothing_to_the_ledger(self):
         again = money.run(FIXTURE, source="Example Bank checking", month="2026-09", money_dir=self.money_dir)

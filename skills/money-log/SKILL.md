@@ -25,7 +25,7 @@ python tools/money-log/money.py <export.csv> --source "<bank or app name>" --mon
 
 Run it from the workspace folder. `--source` names the account (use the same name every time for the same account). `--month` is the month to summarize; leave it off for the latest month in the export. If it says it cannot tell what kind of export this is, it lists the shapes it knows; pick one with `--format <shape>`. Run doctor if `python` is missing.
 
-Each run adds the export to `money/ledger.csv`. Loading an overlapping export again adds nothing new, so the person can export a fresh range each month without worrying about doubles.
+Each run adds the export to `money/ledger.csv`. Loading an overlapping export again adds nothing new, so the person can export a fresh range each month without worrying about doubles. Identical rows inside one export (same day, amount, description) are kept, since two real purchases can match; if the bank repeated a row, run again with `--drop-exact-duplicates` and the summary lists what was removed.
 
 ## What it writes
 
@@ -43,10 +43,10 @@ Money in, spent, net, and transfers (not counted as spending)
 ## Recurring charges
 | Charge | Cadence | Monthly amount | Last seen | Status |
 ## No category yet        (only when some spending has no rule)
-## Repeated rows removed  (only when the export repeated a row)
+## Repeated rows removed  (only with --drop-exact-duplicates, this month's rows)
 ```
 
-Money out is spending; transfers between accounts and card payments are left out of the totals so nothing counts twice. A recurring charge is the same merchant at a steady amount in at least three different months. One that stopped for longer than usual is marked "possibly cancelled", which is how forgotten subscriptions surface.
+Money out is spending, including bills paid by ACH or online and bank fees. Only moves between the person's own accounts and card payments are left out of the totals, so nothing counts twice; a matching category rule always counts as spending. Refunds count as money in. A recurring charge is the same merchant at a steady amount in at least three different months. One that stopped for longer than usual is marked "possibly cancelled", which is how forgotten subscriptions surface.
 
 ## Adding a category rule
 

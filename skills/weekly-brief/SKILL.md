@@ -21,6 +21,7 @@ Run it from the workspace folder. It looks at the last 7 days, ending today. Add
 - **Went out**: the ones inside a delivery or sent folder.
 - **Dates coming up**: the next 14 days from `paperwork/dates.md`, if the paperwork skill has written it.
 - **In town this week**: the next 7 days from the newest file in `local-events/`, if the local-events skill has written one.
+- **Waiting on, overdue**: the lines in `waiting-on.md` past their wait, with the days, if the waiting-on skill keeps that file. Offer the nudge draft for each; the person sends it.
 - **Gaps logged**: this week's lines in `setup/gap-log.md`.
 - **Jobs that keep coming back**: the undo-history summaries from the last 90 days that repeat three or more times, with the count. This is the look-back: the work got done, now ask whether it should become a pipeline.
 - **Sign-ins needed**: the accounts the last doctor run said the person connects by hand.

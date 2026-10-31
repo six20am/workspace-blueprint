@@ -63,6 +63,7 @@ Do this without asking more questions. Tell them you are building and that it ta
 | what's going on in town, local events, community | `local-events`, `weekly-brief` |
 | job search, resume, applications | `resume-and-letter`, `meeting-prep` |
 | meetings, clients, calls | `meeting-prep`, `summarize`, `weekly-brief` |
+| waiting to hear back, chasing quotes, people who owe me something | `waiting-on`, `writer`, `weekly-brief` |
 | anything else | `summarize`, `writer` |
 
 A row for a skill that is not in the skills folder yet is still written; the skill lands with `update`.

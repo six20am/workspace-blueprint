@@ -5,11 +5,12 @@
     python tools/weekly-brief/brief.py --days 14 --out x.md
     python tools/weekly-brief/brief.py --today 2026-10-31   # end the week on that date
 
-Six sections: files that came in (changed in the window), files that went out (the ones inside
-a delivery or sent folder), dates coming up in the next 14 days (from paperwork/dates.md), gaps
+Seven sections: files that came in (changed in the window), files that went out (the ones inside
+a delivery or sent folder), dates coming up in the next 14 days (from paperwork/dates.md), things
+waited on past their time (waiting-on.md, read with tools/waiting-on/waiting.py), gaps
 logged (setup/gap-log.md), jobs that keep coming back (undo-history summaries from the last 90
 days that repeat three or more times) and sign-ins still needed (setup/setup-report.md). It reads
-only file dates, those three files, the router file and the undo history's summaries. It saves weekly-brief-YYYY-MM-DD.md in the
+only file dates, those four files, the router file and the undo history's summaries. It saves weekly-brief-YYYY-MM-DD.md in the
 notes folder the router names, else the workspace folder, and prints the path. Standard library only.
 """
 import argparse
@@ -78,6 +79,28 @@ def _sign_ins(path):
 
 def _day_start(day):
     return datetime.datetime(day.year, day.month, day.day).timestamp()
+
+
+def _sibling_tool(folder, module):
+    """Load tools/<folder>/<module>.py from beside this script; None when the tool is not installed."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", folder, module + ".py")
+    if not os.path.isfile(path):
+        return None
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(module, path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _waiting_on(root, today):
+    """Overdue lines from waiting-on.md, as the waiting-on tool prints them. Empty without the file or the tool."""
+    waiting = _sibling_tool("waiting-on", "waiting")
+    text = _read(os.path.join(root, "waiting-on.md"))
+    if waiting is None or not text:
+        return []
+    overdue, _ = waiting.sort_items(waiting.parse(text), today)
+    return [waiting.line_for(it) for it in overdue]
 
 
 REPEAT_DAYS = 90
@@ -164,6 +187,7 @@ def collect(root, today, days):
         "came_in": came_in,
         "went_out": went_out,
         "dates_due": _dated_lines(os.path.join(root, "paperwork", "dates.md"), today, today + datetime.timedelta(days=DUE_DAYS)),
+        "waiting": _waiting_on(root, today),
         "gaps": _dated_lines(os.path.join(root, "setup", "gap-log.md"), start, today),
         "repeats": ["%d times: %s" % (n, label) for n, label in repeats(_history_summaries(root, REPEAT_DAYS))],
         "sign_ins": _sign_ins(os.path.join(root, "setup", "setup-report.md")),
@@ -188,6 +212,7 @@ def render(data):
     lines += _section("Came in", data["came_in"], CAP)
     lines += _section("Went out", data["went_out"], CAP)
     lines += _section("Dates coming up", data["dates_due"])
+    lines += _section("Waiting on, overdue", data.get("waiting", []))
     lines += _section("Gaps logged", data["gaps"])
     lines += _section("Jobs that keep coming back (last %d days)" % REPEAT_DAYS, data.get("repeats", []))
     lines += _section("Sign-ins needed", data["sign_ins"])

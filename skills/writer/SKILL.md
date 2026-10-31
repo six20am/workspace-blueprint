@@ -27,7 +27,7 @@ Route these elsewhere in one line, then stop:
 
 ## Where drafts go
 
-The folder the router file names for drafts, or next to the message it answers. Name the file `<date>-<to>-<topic>-draft.md`, for example `2026-11-02-sam-saturday-shift-draft.md`.
+A reply goes next to the message it answers. Anything else goes in the folder the router file names for drafts; if the router names none, ask the person where it goes. Name the file `<date>-<to>-<topic>-draft.md`, for example `2026-11-02-sam-saturday-shift-draft.md`.
 
 ## Rules
 

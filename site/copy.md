@@ -16,7 +16,7 @@ One folder on your own computer. Claude reads what's in it, follows your rules, 
 
 [Download the zip]
 
-Windows now. Mac is new and untested.
+Works on Windows today. The Mac version is new and hasn't been tested yet.
 
 <!-- problem -->
 ## The chat box forgets
@@ -40,7 +40,7 @@ You explain your business, paste in a file, get a decent answer, and the next da
 <!-- can-do -->
 ## What it can do on day one
 
-It arrives knowing how to do twenty-one things. Most of them bring outside material in: web pages, posts, videos, documents, photos. The rest look after the workspace itself. Here's the list, straight from the files.
+It arrives knowing how to do twenty-one things. Most of them bring outside material in: web pages, posts, videos, documents, photos. The rest look after the workspace itself. Here's the full list.
 
 <!-- generated skill list goes here -->
 
@@ -49,7 +49,24 @@ It arrives knowing how to do twenty-one things. Most of them bring outside mater
 
 **Claude Code, on your own computer.** This is the zip. Unzip it, double-click setup, answer four questions, and everything lives in a folder on your machine. Windows is tested. Mac is new and untested.
 
-**Grok Bot, on its own cloud computer.** Same method, rebuilt as a Grok Bot template. Nothing to install, because the bot already has a computer. Its first conversation asks the four questions, builds its folder, and saves a rule so it reads the map before every task. The template isn't out yet. The repo is: github.com/six20am/grokbot-blueprint.
+**Grok Bot, on its own cloud computer.** Same method, rebuilt as a Grok Bot template. Nothing to install, because the bot already has a computer. The first time you talk to it, it asks the four questions, builds its folder, and saves a rule to read the map before every task. The template isn't out yet. The repo is: github.com/six20am/grokbot-blueprint.
+
+<!-- paste-this -->
+## Already have one? Paste this
+
+If Claude Code or a Grok Bot is already running, you don't need the download. Paste the prompt and the agent goes and gets everything itself.
+
+**Already have Claude Code**
+```prompt
+Clone https://github.com/six20am/workspace-blueprint into a folder called "Six20AM Workspace Blueprint" in my Documents folder, then tell me which file in it to double-click to run setup.
+```
+When Claude says it's there, double-click `setup.cmd` on Windows or `setup.command` on a Mac. It skips anything you already have. When it finishes, type: set this up.
+
+**Have a Grok Bot**
+```prompt
+Download https://github.com/six20am/grokbot-blueprint/archive/refs/heads/main.zip and unzip it inside your own folder under /workspace. Read README.md and skills/getting-started/SKILL.md. Save each folder under skills/ as a skill, word for word, using the description at the top of its SKILL.md. Then run getting-started with me.
+```
+This path hasn't been tested on a real Grok Bot yet. If it stalls, open an issue on GitHub and paste what the bot said.
 
 <!-- first-week -->
 ## Your first week
@@ -94,7 +111,7 @@ The zip is free and the code is public. Claude has its own plans, and those are 
 Nothing during setup. Afterward, the only things that leave are what you ask Claude to go fetch or send, and the sign-ins you do yourself.
 
 **Can I undo it?**
-Yes. It's one folder and a few standard programs. Delete the folder and everything it built is gone. The programs came in through winget on Windows or Homebrew on a Mac, and they come out the same way.
+Yes. It's one folder and a few standard programs. Delete the folder and everything it built is gone. The programs were installed with winget on Windows or Homebrew on a Mac, and those same tools remove them.
 
 <!-- close -->
 ## Give it one real job this week

@@ -74,6 +74,12 @@ ul.outcomes li strong{color:var(--fg)}
 .paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--s2);margin-top:var(--s2)}
 .paths p{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:var(--s3);margin:0;max-width:none;color:var(--fg2);min-width:0}
 .paths p strong{display:block;color:var(--fg);font-family:var(--head);font-size:17px;margin-bottom:var(--s1)}
+.prompt{position:relative;background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin:var(--s1) 0 var(--s2)}
+.prompt pre{margin:0;padding:var(--s3) var(--s3) var(--s5);font:400 14px/1.6 ui-monospace,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--fg);max-width:none}
+.prompt .copy{position:absolute;right:var(--s2);bottom:var(--s2);min-height:36px;padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--fg);font:600 13px var(--head);cursor:pointer}
+.prompt .copy:hover{border-color:var(--amber)}
+.prompt .copy.done{background:var(--amber);color:var(--on-amber);border-color:var(--amber)}
+.prompt .copy:focus-visible{outline:3px solid var(--amber-light);outline-offset:2px}
 ol.week{counter-reset:step;list-style:none;padding:0;margin:0;display:grid;gap:var(--s1);grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 ol.week li{counter-increment:step;position:relative;padding:var(--s2) var(--s2) var(--s2) 52px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin:0;max-width:none;font-size:15px}
 ol.week li::before{content:counter(step);position:absolute;left:var(--s2);top:var(--s2);width:26px;height:26px;border-radius:50%;background:var(--amber);color:var(--on-amber);font:600 13px/26px var(--head);text-align:center}
@@ -146,6 +152,10 @@ footer a{color:var(--fg2)}
 </section>
 
 <section>
+{{paste-this}}
+</section>
+
+<section>
 {{first-week}}
 </section>
 
@@ -182,5 +192,15 @@ footer a{color:var(--fg2)}
 <p>Page built from the repo at {{sha}}, {{date}}. {{count}} skills listed, read from the skill files at build time.</p>
 </footer>
 </div>
+<script>
+document.querySelectorAll('[data-copy]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var pre=b.parentNode.querySelector('pre'),t=pre.textContent;
+    function done(){b.textContent='Copied';b.classList.add('done');setTimeout(function(){b.textContent='Copy';b.classList.remove('done')},1800)}
+    function fallback(){var r=document.createRange();r.selectNodeContents(pre);var s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected, press copy';setTimeout(function(){b.textContent='Copy'},3000)}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,fallback)}else{fallback()}
+  });
+});
+</script>
 </body>
 </html>

@@ -49,6 +49,12 @@ Free. A zip file. Inside it, a setup that installs the tools, installs Claude Co
 - *Claude Code, on your own computer.* The zip. Unzip, double-click setup, answer four questions. Everything installs on the reader's machine. Windows tested, Mac untested. This is the path the CTA sells.
 - *Grok Bot, on its cloud computer.* The same method rebuilt as a Grok Bot template, public repo `github.com/six20am/grokbot-blueprint`. Nothing to install: a Grok Bot already has a computer and a shell. The bot's first conversation runs the setup: four questions, builds its folder, saves a rule that loads the map and router before every task, then proves it on one real task in a new chat. Import is from a template link ("Add to Grok Bot") or in the app under Connect apps, Bot templates. **Status: the template is not published yet and has not been run with a new owner.** The page must say the template is not out yet and point to the repo as the only thing available today. No download, no date.
 
+**Paste-in prompts.** For a reader who already has the tool, the page gives one prompt to paste, and the agent fetches everything itself.
+
+- *Already have Claude Code:* the prompt tells Claude to clone `https://github.com/six20am/workspace-blueprint` into a folder named `Six20AM Workspace Blueprint` in Documents, then tells the reader to double-click `setup.cmd` (Windows) or `setup.command` (Mac) in that folder, because the installer puts in the tools and skips anything already present, and then to say "set this up". The repo's `CLAUDE.md` routes "set this up" to `setup/SETUP.md`.
+- *Have a Grok Bot:* the prompt tells the bot to download `https://github.com/six20am/grokbot-blueprint/archive/refs/heads/main.zip`, unzip it inside its own folder under `/workspace`, read `README.md` and `skills/getting-started/SKILL.md`, save each folder under `skills/` as a skill with the description from the top of its `SKILL.md`, then run `getting-started`. **This path has not been tested on a real Grok Bot**, and whether the bot's computer can reach github.com is unverified. The page must say it is untested.
+- Each prompt is shown in a box with a Copy button. The Copy button is microcopy.
+
 **Your first week (asks that work today, each backed by a shipped skill).** Paste a YouTube link and ask for the transcript (`video-watcher`). Drop a PDF, Word or Excel file in the folder and ask what it says (`markitdown`). Ask what people have said about a topic in the last 30 days (`last30days`). Give it a website and ask for every photo on it (`client-asset-harvester`). Paste three emails you wrote and ask it to learn your voice (`voice-extractor`). Ask it to update (`update`). Ask for something it has no tool for and watch it say so and offer to build one (`gap-finder`). How to ask: say the outcome you want, name the file or link, say where the result should land. "Not sure" and "what can you do with this" are both fine openers.
 
 ## Guardrails
@@ -74,6 +80,7 @@ what-you-get    three outcomes, one line each
 how-it-works    three steps: unzip, run setup, answer four questions
 can-do          one line introducing the skills list; the list itself is generated from the skill files at build time, not written
 two-ways        which one are you on: Claude Code on your computer (the zip), or Grok Bot on its cloud computer (template not out yet, repo today)
+paste-this      two prompts in boxes, one per tool, each with a Copy button; the Grok one marked untested
 first-week      seven asks that work today, and how to ask
 installed       what gets installed, size, privacy, the sign-in list
 stays-current   the update path in three sentences

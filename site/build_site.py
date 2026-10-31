@@ -29,7 +29,10 @@ def inline(s):
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"\b(github\.com/[\w./-]+)", r'<a href="https://\1">\1</a>', s)
-    s = s.replace("open an issue on GitHub", f'<a href="{REPO_URL}/issues">open an issue on GitHub</a>')
+    if "what the bot said" in s:  # the Grok Bot path reports to its own repo
+        s = s.replace("open an issue on GitHub", '<a href="https://github.com/six20am/grokbot-blueprint/issues">open an issue on GitHub</a>')
+    else:
+        s = s.replace("open an issue on GitHub", f'<a href="{REPO_URL}/issues">open an issue on GitHub</a>')
     return s
 
 
@@ -41,6 +44,14 @@ def md_block(text, section):
     while i < len(lines):
         l = lines[i]
         if not l:
+            i += 1; continue
+        if l.startswith("```prompt"):
+            buf = []
+            i += 1
+            while i < len(lines) and not lines[i].startswith("```"):
+                buf.append(lines[i]); i += 1
+            prompt = esc("\n".join(buf).strip())
+            out.append(f'<div class="prompt"><pre>{prompt}</pre><button type="button" class="copy" data-copy>Copy</button></div>')
             i += 1; continue
         if l.startswith("# "):
             out.append(f"<h1>{inline(l[2:])}</h1>")

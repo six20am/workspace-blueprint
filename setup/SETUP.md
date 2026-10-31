@@ -66,6 +66,7 @@ Do this without asking more questions. Tell them you are building and that it ta
 | waiting to hear back, chasing quotes, people who owe me something | `waiting-on`, `writer`, `weekly-brief` |
 | insurance, licenses, registration, things that expire or renew | `renewals`, `paperwork`, `weekly-brief` |
 | taxes, the accountant, tax season, deductions | `tax-time`, `money-log`, `paperwork` |
+| reviews, ratings, what customers say about us online | `review-replies`, `voice-extractor`, `writer` |
 | anything else | `summarize`, `writer` |
 
 A row for a skill that is not in the skills folder yet is still written; the skill lands with `update`.

@@ -2,16 +2,18 @@ import os, re, unittest
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 FORBIDDEN = re.compile(r"six20am|motus|machado|mtesi|C:\\Users\\|/c/Users/|shared-core|shared-systems|work-log|Michael|GHL|HighLevel|Hard Rule \d|\b[0-9a-f]{32}\b", re.I)
-ALLOWED = {"README.md", os.path.join("docs", "design.md")}
+ALLOWED = {"README.md", os.path.join("docs", "design.md"), os.path.join("tools", "update", "update.py")}  # the updater names the public repo
 # vendor code shipped as-is; scanned by eye, not by string (see the ledger ruling)
 VENDOR = (os.path.join(".claude", "skills", "last30days", "scripts"), os.path.join(".claude", "skills", "agent-reach", "_references"))
 TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js")
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".superpowers"}
+SKIP_ROOT_DIRS = {"site", ".github", "docs"}  # the website and CI never ship; build.py skips them too
 
 
 def shipped_files():
     for dirpath, dirs, files in os.walk(ROOT):
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        at_root = os.path.abspath(dirpath) == os.path.abspath(ROOT)
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS and not (at_root and d in SKIP_ROOT_DIRS)]
         for f in files:
             p = os.path.join(dirpath, f)
             rel = os.path.relpath(p, ROOT)
@@ -42,8 +44,8 @@ class ShippedTest(unittest.TestCase):
             with open(os.path.join(ROOT, rel), encoding="utf-8") as fh:
                 text = fh.read()
             for path in re.findall(r"`((?:setup|_reference|\.claude)/[A-Za-z0-9_./-]+)`", text):
-                if path.endswith("setup-report.md"):
-                    continue  # written by the installer at run time, gitignored on purpose
+                if path.endswith(("setup-report.md", "version.json", "update-report.md")):
+                    continue  # written by the installer, the zip build or the updater at run time
                 self.assertTrue(os.path.exists(os.path.join(ROOT, path)), "%s names %s" % (rel, path))
 
     def test_claude_md_routes_setup(self):
@@ -52,11 +54,12 @@ class ShippedTest(unittest.TestCase):
         self.assertIn("set this up", text)
         self.assertIn("setup/SETUP.md", text)
 
-    def test_gap_finder_present_and_twenty_skills(self):
+    def test_gap_finder_present_and_skill_count(self):
         skills = os.path.join(ROOT, ".claude", "skills")
         names = sorted(d for d in os.listdir(skills) if os.path.isfile(os.path.join(skills, d, "SKILL.md")))
         self.assertIn("gap-finder", names)
-        self.assertEqual(len(names), 20, names)
+        self.assertIn("update", names)
+        self.assertEqual(len(names), 21, names)
         with open(os.path.join(skills, "gap-finder", "SKILL.md"), encoding="utf-8") as fh:
             text = fh.read()
         for word in ("build", "find", "by hand", "gap-log.md", "three times", "tool-vetting"):

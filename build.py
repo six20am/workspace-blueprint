@@ -14,8 +14,8 @@ import zipfile
 
 TOP = "Six20AM Workspace Blueprint"
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", ".superpowers"}
-SKIP_ROOT_DIRS = {"tests", "docs"}  # the repo's own test suite and design doc; setup/tests ships
-SKIP_FILES = {"build.py", "setup-report.md"}
+SKIP_ROOT_DIRS = {"tests", "docs", "site", ".github"}  # the repo's own test suite, design doc, website and CI; setup/tests ships
+SKIP_FILES = {"build.py", "setup-report.md", "update-report.md"}
 SKIP_ROOT_FILES = {"README.md"}     # the GitHub readme; START-HERE.md is the product's front page
 TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml")
 LF = (".sh", ".command", ".py", ".md", ".json", ".mjs", ".js", ".cjs", ".yml", ".yaml", ".toml")
@@ -27,7 +27,7 @@ FIXED = ["\u2014", "mtesi", "C:\\Users\\", "/c/Users/", "shared-core", "shared-s
 FIXED_CI = ["six20am", "motus", "machado", "michael"]
 HARD_RULE = re.compile(r"Hard Rule \d", re.I)     # a numbered rule from the parent workspace; a "Hard rules" heading is fine
 HEX_ID = re.compile(r"\b[0-9a-f]{32}\b")
-ALLOWED = {"README.md", "docs/design.md"}
+ALLOWED = {"README.md", "docs/design.md", "tools/update/update.py"}  # the updater has to name the public repo
 # vendor code shipped as-is; scanned by eye, not by string (same exemption as tests/test_shipped.py)
 VENDOR = (".claude/skills/last30days/scripts/", ".claude/skills/agent-reach/_references")
 
@@ -71,6 +71,17 @@ def default_names(repo):
     return names
 
 
+def version_json(repo):
+    try:
+        import subprocess
+        sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+        date = subprocess.check_output(["git", "log", "-1", "--format=%cs"], cwd=repo, text=True).strip()
+    except Exception:
+        sha, date = None, None
+    return '{\n "commit": %s,\n "date": %s,\n "updated": null\n}\n' % (
+        ('"%s"' % sha) if sha else "null", ('"%s"' % date) if date else "null")
+
+
 def files(repo):
     for dirpath, dirs, fs in os.walk(repo):
         at_root = os.path.abspath(dirpath) == os.path.abspath(repo)
@@ -110,6 +121,9 @@ def build(repo, out, names, top=TOP):
             if rel.endswith(LF):
                 data = data.replace(b"\r\n", b"\n")   # a zip built on Windows must not ship CRLF scripts to a Mac
             z.writestr(zi, data)
+        # the commit this zip was built from, so tools/update can tell whether anything is newer
+        z.writestr(top + "/setup/version.json", version_json(repo))
+        included.append(("setup/version.json", None))
     lines = ["# Build report", "", "Built %s" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), "Zip: %s" % out, "Files: %d" % len(included), ""]
     lines += ["- " + rel for rel, _ in included]
     report = "\n".join(lines) + "\n"

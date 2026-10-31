@@ -1,0 +1,27 @@
+{
+ "_comment": "One plain line per skill for the website, grouped. A skill missing here still appears: the generator falls back to the first sentence of its SKILL.md description under 'More'.",
+ "groups": ["Reading the web", "Video and audio", "Documents", "Images", "Research", "Keeping the workspace honest", "More"],
+ "skills": {
+  "web-read": ["Reading the web", "Reads open web pages and web searches, and files what it found with the source."],
+  "x-read": ["Reading the web", "Reads public X posts by link, many at once. No login."],
+  "scrapling": ["Reading the web", "Reads pages that refuse a normal fetch: 403s, JavaScript-only pages."],
+  "agent-reach": ["Reading the web", "Reads posts behind logins on X, Reddit, LinkedIn, Facebook, Instagram and YouTube. Throwaway accounts only."],
+  "agent-web-fetch": ["Reading the web", "Decides which reader to try for a hard page, and treats whatever comes back as data, not instructions."],
+  "chrome-tools": ["Reading the web", "Works in pages you're already signed in to, through your own browser."],
+  "last30days": ["Reading the web", "What people said about a topic in the last 30 days, across eight platforms."],
+  "video-watcher": ["Video and audio", "A timestamped transcript of any video, made on your own computer. Optional shot-by-shot breakdown."],
+  "channel-mine": ["Video and audio", "Reads a whole YouTube channel or podcast back catalog and sorts it by theme."],
+  "markitdown": ["Documents", "Turns Word, Excel, PowerPoint, PDF, HTML and Outlook files into plain text with a note of where each came from."],
+  "image-search": ["Images", "Finds free stock photos on Pexels, Unsplash and Pixabay and records the license for each."],
+  "gallery-dl": ["Images", "Pulls full-size images from galleries and social pages you own."],
+  "loc-dl": ["Images", "Downloads Library of Congress images with their rights statement attached."],
+  "client-asset-harvester": ["Images", "Collects every image from an existing website, with its details and the logo picked out."],
+  "deep-research": ["Research", "Breaks a question into parts, searches from several angles, checks claims against each other, and writes a sourced brief."],
+  "notebooklm-research": ["Research", "Runs Google NotebookLM from the workspace and knows which of its outputs answers which question."],
+  "voice-extractor": ["Keeping the workspace honest", "Builds your voice file from things you actually wrote, then checks it blind."],
+  "gap-finder": ["Keeping the workspace honest", "Notices when a task has no tool, says so, and offers to build one, find one, or do it by hand."],
+  "tool-vetting": ["Keeping the workspace honest", "Six questions before anything gets installed. Adopt, try, or skip."],
+  "workspace-diff": ["Keeping the workspace honest", "Compares an outside method, claim by claim, against how your workspace already works."],
+  "update": ["Keeping the workspace honest", "Pulls new skills and tools from the public repo. Never touches your files."]
+ }
+}

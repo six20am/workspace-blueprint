@@ -17,7 +17,7 @@ When setup finishes, `setup/SETUP.md` has you rewrite this file into the real ma
 | `setup/tools.json` | Every tool the installer puts in, with its check and install commands. |
 | `setup/setup-report.md` | Written by the installer. What installed, what failed, what needs the person to sign in. |
 | `setup/gap-log.md` | One line per task that had no tool. The gap-finder skill writes here. |
-| `.claude/skills/` | Twenty skills. Read a skill's `SKILL.md` before doing the job it covers. |
+| `.claude/skills/` | Twenty-one skills. Read a skill's `SKILL.md` before doing the job it covers. |
 | `tools/` | Scripts some skills run. |
 | `_reference/` | How this template works, and a filled-in example workspace. Read `_reference/03-context-md-anatomy.md` when you write a `CONTEXT.md`. |
 

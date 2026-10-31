@@ -38,7 +38,8 @@ Do this without asking more questions. Tell them you are building and that it ta
 3. **`CONTEXT.md`** at the top level. The router: a table with one row per section: the task, the folder, what else to load. Under 50 lines. Shape: `_reference/example-workspace/CONTEXT.md`.
 4. **One `CONTEXT.md` per section.** Follow `_reference/03-context-md-anatomy.md` exactly: what this section is, a what-to-load table with a skip-these column, the folder layout, the process, where tools plug in, what not to do. Name the skills from `.claude/skills/` that fit this section in the "where tools plug in" section with a trigger, not just a mention.
 5. **`voice.md`** in the reference folder of the chosen style (or `reference/` if the style has none). From Q4: three or four rules, a short sample paragraph in that voice, and three things never to do. If they pasted a sample, pull the rules from it.
-6. **Keep `setup/`, `.claude/`, `tools/` and `_reference/` where they are.** Do not move or delete them.
+6. **Keep `setup/`, `.claude/`, `tools/` and `_reference/` where they are.** Do not move or delete them. The `update` skill replaces them in place later; the person's own files are never in its path.
+7. **One line in `CLAUDE.md` about updates:** "When `setup/version.json` is more than 30 days old, offer the `update` skill once." That is how the workspace keeps getting new skills and tools.
 
 ## 3. Fix
 

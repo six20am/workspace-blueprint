@@ -8,3 +8,4 @@ tools/site-cloner/node_modules/
 site/dist/
 .impeccable/
 dist/
+setup/private-terms.txt

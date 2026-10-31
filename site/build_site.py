@@ -59,7 +59,8 @@ def md_block(text, section):
             items = []
             while i < len(lines) and re.match(r"\d+\. ", lines[i]):
                 items.append(f"<li>{inline(re.sub(r'^\d+\. ', '', lines[i]))}</li>"); i += 1
-            out.append("<ol class=\"steps\">" + "".join(items) + "</ol>"); continue
+            cls = "week" if section == "first-week" else "steps"
+            out.append(f'<ol class="{cls}">' + "".join(items) + "</ol>"); continue
         elif section == "faq" and l.startswith("**") and l.endswith("**"):
             q = l.strip("*")
             a = lines[i + 1] if i + 1 < len(lines) else ""
@@ -139,8 +140,11 @@ def main():
     for sid, text in sections.items():
         if sid == "can-do":
             text = text.replace("<!-- generated skill list goes here -->", "")
-            text = re.sub(r"Twenty-one skills", f"{num_word(count)} skills", text)
+            text = re.sub(r"knowing how to do twenty-one things", f"knowing how to do {num_word(count).lower()} things", text)
         body[sid] = md_block(text, sid)
+        if sid == "two-ways":
+            # the two bold-led paragraphs become side-by-side cards
+            body[sid] = re.sub(r"(<p><strong>.*?</p>\s*<p><strong>.*?</p>)", r'<div class="paths">\1</div>', body[sid], flags=re.S)
     body["can-do"] += f'\n<div class="skillgrid">{skills_html}</div>'
     tool_list = "".join(f"<li>{esc(n)}</li>" for n in tool_names)
     login_list = "".join(f"<li>{esc(n)}</li>" for n in logins)

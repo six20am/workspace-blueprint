@@ -44,7 +44,12 @@ Free. A zip file. Inside it, a setup that installs the tools, installs Claude Co
 
 **Who makes it.** Six20AM, a two-brand marketing agency run by one person. The repo is public: `github.com/six20am/workspace-blueprint`. The routing method comes from a teaching kit whose author approved redistribution.
 
-**Grok Bot.** A version for Grok Bot exists as a public repo and has not been run with a new owner yet. The page may say "a Grok Bot version is in the works" and nothing more.
+**Two ways to run it.** The page guides the reader to the right one.
+
+- *Claude Code, on your own computer.* The zip. Unzip, double-click setup, answer four questions. Everything installs on the reader's machine. Windows tested, Mac untested. This is the path the CTA sells.
+- *Grok Bot, on its cloud computer.* The same method rebuilt as a Grok Bot template, public repo `github.com/six20am/grokbot-blueprint`. Nothing to install: a Grok Bot already has a computer and a shell. The bot's first conversation runs the setup: four questions, builds its folder, saves a rule that loads the map and router before every task, then proves it on one real task in a new chat. Import is from a template link ("Add to Grok Bot") or in the app under Connect apps, Bot templates. **Status: the template is not published yet and has not been run with a new owner.** The page must say the template is not out yet and point to the repo as the only thing available today. No download, no date.
+
+**Your first week (asks that work today, each backed by a shipped skill).** Paste a YouTube link and ask for the transcript (`video-watcher`). Drop a PDF, Word or Excel file in the folder and ask what it says (`markitdown`). Ask what people have said about a topic in the last 30 days (`last30days`). Give it a website and ask for every photo on it (`client-asset-harvester`). Paste three emails you wrote and ask it to learn your voice (`voice-extractor`). Ask it to update (`update`). Ask for something it has no tool for and watch it say so and offer to build one (`gap-finder`). How to ask: say the outcome you want, name the file or link, say where the result should land. "Not sure" and "what can you do with this" are both fine openers.
 
 ## Guardrails
 
@@ -53,7 +58,7 @@ Free. A zip file. Inside it, a setup that installs the tools, installs Claude Co
 - No invented numbers, testimonials, logos or names of users. There are none.
 - Never say "AI agent", "supercharge", "unlock", "seamless", "powerful".
 - Do not name the agency's clients or the two agency brands.
-- Do not mention Grok Bot beyond the one line above.
+- Grok Bot: only the facts in "Two ways to run it". Never imply the template can be installed today.
 - The download link is `https://github.com/six20am/workspace-blueprint/releases/latest/download/Six20AM-Workspace-Blueprint.zip`. The GitHub repo link is footer microcopy, not a second CTA.
 
 ## CTA
@@ -68,10 +73,12 @@ problem         the chat box forgets; your files are not in it
 what-you-get    three outcomes, one line each
 how-it-works    three steps: unzip, run setup, answer four questions
 can-do          one line introducing the skills list; the list itself is generated from the skill files at build time, not written
+two-ways        which one are you on: Claude Code on your computer (the zip), or Grok Bot on its cloud computer (template not out yet, repo today)
+first-week      seven asks that work today, and how to ask
 installed       what gets installed, size, privacy, the sign-in list
 stays-current   the update path in three sentences
 status          Windows tested, Mac untested, more skills on the way
 faq             four questions: Do I need an account? Is it free? What does it send? Can I undo it?
 close           one line and the CTA again
-footer          microcopy: Six20AM, GitHub link, teaching-kit credit
+footer          microcopy: Six20AM, GitHub links for both repos, teaching-kit credit
 ```

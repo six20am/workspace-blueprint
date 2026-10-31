@@ -40,9 +40,29 @@ You explain your business, paste in a file, get a decent answer, and the next da
 <!-- can-do -->
 ## What it can do on day one
 
-Twenty-one skills come in the box. Most of them pull outside material in: web pages, posts, videos, documents, photos. The rest look after the workspace itself. Here's the list, straight from the files.
+It arrives knowing how to do twenty-one things. Most of them bring outside material in: web pages, posts, videos, documents, photos. The rest look after the workspace itself. Here's the list, straight from the files.
 
 <!-- generated skill list goes here -->
+
+<!-- two-ways -->
+## Two ways to run it
+
+**Claude Code, on your own computer.** This is the zip. Unzip it, double-click setup, answer four questions, and everything lives in a folder on your machine. Windows is tested. Mac is new and untested.
+
+**Grok Bot, on its own cloud computer.** Same method, rebuilt as a Grok Bot template. Nothing to install, because the bot already has a computer. Its first conversation asks the four questions, builds its folder, and saves a rule so it reads the map before every task. The template isn't out yet. The repo is: github.com/six20am/grokbot-blueprint.
+
+<!-- first-week -->
+## Your first week
+
+Say what you want, name the file or link, and say where the result should go. "Not sure" and "what can you do with this" both work as openers. Seven things to try:
+
+1. Paste a YouTube link and ask for the transcript.
+2. Drop a PDF, Word or Excel file in the folder and ask what it says.
+3. Ask what people have been saying about something in the last 30 days.
+4. Give it a website and ask for every photo on it.
+5. Paste three emails you wrote and ask it to learn your voice.
+6. Ask it to update.
+7. Ask for something it has no tool for, and watch it say so and offer to build one.
 
 <!-- installed -->
 ## What gets installed, and what doesn't leave your computer
@@ -54,12 +74,12 @@ Setup sends nothing anywhere. It signs in to nothing for you. Five things need y
 <!-- stays-current -->
 ## It doesn't go stale
 
-New skills and tools land in the public repo as they're built. Double-click `update.cmd`, or ask Claude to update, and your workspace pulls them in and installs anything new. Your files, your folders, your routing and your voice file are never touched. If you edited one of the template files, a copy is saved first. Once the workspace is 30 days old, Claude asks once whether you want to update. It never updates without your yes.
+New skills and tools land in the public repo as they're built. Double-click `update.cmd`, or ask Claude to update, and your workspace pulls them in and installs anything new. It never touches your own files or the folders it built for you. If you edited one of the template files, a copy is saved first. Once the workspace is 30 days old, Claude asks once whether you want to update. It never updates without your yes.
 
 <!-- status -->
 ## Where it stands
 
-The Windows installer has been through a full run on one machine. The Mac installer is new and hasn't been tested yet, so if it stops, open an issue on GitHub and attach `setup/setup-report.md`. More skills are on the way.
+The Windows installer has been through a full run on one machine. The Mac installer is new and hasn't been tested yet. If it stops, open an issue on GitHub and attach the file `setup/setup-report.md`. More skills are on the way.
 
 <!-- faq -->
 ## Questions people ask
@@ -84,7 +104,7 @@ Download it, run setup, and hand it the thing you've been putting off.
 [Download the zip]
 
 <!-- footer -->
-Made by Six20AM. Source on GitHub: github.com/six20am/workspace-blueprint. The routing method comes from a teaching kit, used with its author's permission. A Grok Bot version is in the works.
+Made by Six20AM. Source on GitHub: github.com/six20am/workspace-blueprint and github.com/six20am/grokbot-blueprint. The routing method comes from a teaching kit, used with its author's permission.
 
 <!-- page-level -->
 title: Workspace Blueprint: an AI that works out of your files

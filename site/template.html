@@ -71,6 +71,12 @@ ul li{margin-bottom:var(--s1)}
 ul.outcomes{list-style:none;padding:0;display:grid;gap:var(--s2);grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 ul.outcomes li{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:var(--s3);max-width:none;margin:0;font-size:16px;color:var(--fg2)}
 ul.outcomes li strong{color:var(--fg)}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--s2);margin-top:var(--s2)}
+.paths p{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:var(--s3);margin:0;max-width:none;color:var(--fg2);min-width:0}
+.paths p strong{display:block;color:var(--fg);font-family:var(--head);font-size:17px;margin-bottom:var(--s1)}
+ol.week{counter-reset:step;list-style:none;padding:0;margin:0;display:grid;gap:var(--s1);grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+ol.week li{counter-increment:step;position:relative;padding:var(--s2) var(--s2) var(--s2) 52px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin:0;max-width:none;font-size:15px}
+ol.week li::before{content:counter(step);position:absolute;left:var(--s2);top:var(--s2);width:26px;height:26px;border-radius:50%;background:var(--amber);color:var(--on-amber);font:600 13px/26px var(--head);text-align:center}
 ol.steps{list-style:none;padding:0;margin:0;counter-reset:step;display:grid;gap:var(--s2)}
 ol.steps li{counter-increment:step;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:var(--s3) var(--s3) var(--s3) 72px;position:relative;max-width:none;margin:0;color:var(--fg2)}
 ol.steps li strong{color:var(--fg)}
@@ -133,6 +139,14 @@ footer a{color:var(--fg2)}
 
 <section>
 {{can-do}}
+</section>
+
+<section>
+{{two-ways}}
+</section>
+
+<section>
+{{first-week}}
 </section>
 
 <section>

@@ -39,7 +39,7 @@ export type SlideshowProps = {
   transition?: TransitionKind;
   /** Edge a slide, wipe or push arrives from. */
   transitionFrom?: Direction;
-  /** Overrides the recipe length (fade and slide 0.6 s, wipe and push 1.2 s). */
+  /** Overrides the recipe length. Every kind has its own default in ../effects/transitions.tsx. */
   transitionSeconds?: number;
   /** Peak zoom. 1.08 is an 8% push across a photo. */
   zoom?: number;

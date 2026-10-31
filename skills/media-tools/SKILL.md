@@ -26,6 +26,7 @@ Use this when the person asks to convert, trim, resize, crop or compress a video
 |---|---|---|
 | Convert, trim, resize, GIF, pull audio, compress video | ffmpeg | `recipes.md` |
 | Join clips in order | ffmpeg | `recipes.md`, Join clips in order |
+| Join two clips with a transition (circle, slide, pixelate, zoom) | ffmpeg | `recipes.md`, Join two clips with a transition |
 | Speed up or slow down, sound in step | ffmpeg | `recipes.md`, Speed up or slow down |
 | Burn captions into the picture | ffmpeg | `recipes.md`, Burn captions (a track the viewer can turn off: `container.py mux`) |
 | Logo or watermark in a corner, picture in picture | ffmpeg | `recipes.md`, Overlay a logo or watermark |

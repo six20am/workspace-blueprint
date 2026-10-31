@@ -16,9 +16,18 @@ import { AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig } fr
  *          accent line riding the edge.
  *   push   incoming scene pushes the outgoing one off by the same distance in
  *          the same direction, 1.2 s, ease in and out.
+ *
+ * Six more, written for this file:
+ *
+ *   iris    a circle opens from the center, 0.9 s.
+ *   clock   a hand sweeps round and uncovers the scene, 1 s.
+ *   blinds  ten slats open across the frame, 0.9 s.
+ *   zoom    the outgoing scene rushes at the viewer as the next one settles, 0.6 s.
+ *   whip    both scenes smear past fast, like a whipped camera, 0.45 s.
+ *   flash   a white pop hides the cut, 0.4 s.
  */
 
-export type TransitionKind = "none" | "fade" | "slide" | "wipe" | "push";
+export type TransitionKind = "none" | "fade" | "slide" | "wipe" | "push" | "iris" | "clock" | "blinds" | "zoom" | "whip" | "flash";
 /** The edge the incoming scene arrives from. */
 export type Direction = "left" | "right" | "up" | "down";
 
@@ -34,6 +43,12 @@ export const RECIPE_SECONDS: Record<TransitionKind, number> = {
   slide: 0.6,
   wipe: 1.2,
   push: 1.2,
+  iris: 0.9,
+  clock: 1,
+  blinds: 0.9,
+  zoom: 0.6,
+  whip: 0.45,
+  flash: 0.4,
 };
 
 const EASING: Record<TransitionKind, (t: number) => number> = {
@@ -42,6 +57,12 @@ const EASING: Record<TransitionKind, (t: number) => number> = {
   slide: EASE_OUT,
   wipe: LINEAR,
   push: EASE_IN_OUT,
+  iris: EASE_IN_OUT,
+  clock: EASE_IN_OUT,
+  blinds: EASE_IN_OUT,
+  zoom: EASE_OUT,
+  whip: EASE_IN_OUT,
+  flash: LINEAR,
 };
 
 /** Length of a transition in frames; `seconds` overrides the recipe default. */
@@ -57,6 +78,11 @@ export const transitionProgress = (frame: number, start: number, frames: number,
         extrapolateRight: "clamp",
         easing: EASING[kind],
       });
+
+/** A CSS mask, with the prefixed name headless Chrome still reads. */
+const masked = (image: string): React.CSSProperties => ({ maskImage: image, WebkitMaskImage: image });
+
+const SLATS = 10;
 
 const shift = (dir: Direction, pct: number) =>
   dir === "left"
@@ -88,16 +114,35 @@ export const enterStyle = (kind: TransitionKind, p: number, dir: Direction = "ri
                 ? `inset(0 0 ${rest}% 0)`
                 : `inset(${rest}% 0 0 0)`,
       };
+    case "iris":
+      // 75% of the frame's diagonal reaches every corner at any aspect.
+      return { clipPath: `circle(${p * 75}% at 50% 50%)` };
+    case "clock":
+      return masked(`conic-gradient(#000 ${p * 360}deg, transparent ${p * 360}deg)`);
+    case "blinds": {
+      const slat = 100 / SLATS;
+      const open = p * slat;
+      const side = dir === "up" || dir === "down" ? "180deg" : "90deg";
+      return masked(`repeating-linear-gradient(${side}, #000 0 ${open}%, transparent ${open}% ${slat}%)`);
+    }
+    case "zoom":
+      return { opacity: p, transform: `scale(${1.25 - 0.25 * p})` };
+    case "whip":
+      return { transform: shift(dir, rest), filter: `blur(${Math.sin(p * Math.PI) * 28}px)` };
+    case "flash":
+      return { opacity: p < 0.5 ? 0 : 1 };
     default:
       return {};
   }
 };
 
-/** Style for the outgoing scene. Only push moves it; the others hold it still. */
+/** Style for the outgoing scene. Push, whip and zoom move it; the others hold it still. */
 export const exitStyle = (kind: TransitionKind, p: number, dir: Direction = "right"): React.CSSProperties => {
-  if (kind !== "push") return {};
   const opposite: Record<Direction, Direction> = { left: "right", right: "left", up: "down", down: "up" };
-  return { transform: shift(opposite[dir], p * 100) };
+  if (kind === "push") return { transform: shift(opposite[dir], p * 100) };
+  if (kind === "whip") return { transform: shift(opposite[dir], p * 100), filter: `blur(${Math.sin(p * Math.PI) * 28}px)` };
+  if (kind === "zoom") return { transform: `scale(${1 + 0.6 * p})` };
+  return {};
 };
 
 /** The thin accent line that rides a wipe's edge. Hidden before and after the move. */
@@ -148,6 +193,9 @@ export const SceneTransition: React.FC<{
     <AbsoluteFill style={{ overflow: "hidden" }}>
       <AbsoluteFill style={style}>{children}</AbsoluteFill>
       {kind === "wipe" && enterFrames > 0 ? <WipeEdge p={pIn} dir={dir} color={accent} /> : null}
+      {kind === "flash" && enterFrames > 0 && frame < enterFrames ? (
+        <AbsoluteFill style={{ backgroundColor: "#fff", opacity: 1 - Math.abs(2 * pIn - 1) }} />
+      ) : null}
     </AbsoluteFill>
   );
 };

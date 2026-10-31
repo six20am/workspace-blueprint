@@ -819,6 +819,70 @@
   ]
  },
  {
+  "id": "video-shotcraft",
+  "name": "video-shotcraft (152 cinematic shot recipes with working code)",
+  "area": "programs",
+  "needs": [
+   "git"
+  ],
+  "check": "Test-Path \"$HOME\\tools\\video-shotcraft\\SKILL.md\"",
+  "install": [
+   "New-Item -ItemType Directory -Force -Path \"$HOME\\tools\" | Out-Null",
+   "if (Test-Path \"$HOME\\tools\\video-shotcraft.part\") { Remove-Item -Recurse -Force \"$HOME\\tools\\video-shotcraft.part\" }",
+   "git clone --quiet https://github.com/Vincentwei1021/video-shotcraft.git \"$HOME\\tools\\video-shotcraft.part\"",
+   "git -C \"$HOME\\tools\\video-shotcraft.part\" checkout --quiet 41ee360d82f4c491ba9d88a24a4add7d8ff1cf8b",
+   "Move-Item -Force \"$HOME\\tools\\video-shotcraft.part\" \"$HOME\\tools\\video-shotcraft\""
+  ],
+  "check_mac": "test -f \"$HOME/tools/video-shotcraft/SKILL.md\"",
+  "install_mac": [
+   "mkdir -p \"$HOME/tools\"",
+   "rm -rf \"$HOME/tools/video-shotcraft.part\"",
+   "git clone --quiet https://github.com/Vincentwei1021/video-shotcraft.git \"$HOME/tools/video-shotcraft.part\"",
+   "git -C \"$HOME/tools/video-shotcraft.part\" checkout --quiet 41ee360d82f4c491ba9d88a24a4add7d8ff1cf8b",
+   "mv \"$HOME/tools/video-shotcraft.part\" \"$HOME/tools/video-shotcraft\""
+  ],
+  "check_linux": "test -f \"$HOME/tools/video-shotcraft/SKILL.md\"",
+  "install_linux": [
+   "mkdir -p \"$HOME/tools\"",
+   "rm -rf \"$HOME/tools/video-shotcraft.part\"",
+   "git clone --quiet https://github.com/Vincentwei1021/video-shotcraft.git \"$HOME/tools/video-shotcraft.part\"",
+   "git -C \"$HOME/tools/video-shotcraft.part\" checkout --quiet 41ee360d82f4c491ba9d88a24a4add7d8ff1cf8b",
+   "mv \"$HOME/tools/video-shotcraft.part\" \"$HOME/tools/video-shotcraft\""
+  ]
+ },
+ {
+  "id": "awesome-ai-motion",
+  "name": "awesome-ai-motion (637 motion effect cards: charts, captions, explainers)",
+  "area": "programs",
+  "needs": [
+   "git"
+  ],
+  "check": "Test-Path \"$HOME\\tools\\awesome-ai-motion\\index.json\"",
+  "install": [
+   "New-Item -ItemType Directory -Force -Path \"$HOME\\tools\" | Out-Null",
+   "if (Test-Path \"$HOME\\tools\\awesome-ai-motion.part\") { Remove-Item -Recurse -Force \"$HOME\\tools\\awesome-ai-motion.part\" }",
+   "git clone --quiet https://github.com/gongnyang/awesome-ai-motion.git \"$HOME\\tools\\awesome-ai-motion.part\"",
+   "git -C \"$HOME\\tools\\awesome-ai-motion.part\" checkout --quiet 1e3c249073c61b42ceb556d7800f628d565d9312",
+   "Move-Item -Force \"$HOME\\tools\\awesome-ai-motion.part\" \"$HOME\\tools\\awesome-ai-motion\""
+  ],
+  "check_mac": "test -f \"$HOME/tools/awesome-ai-motion/index.json\"",
+  "install_mac": [
+   "mkdir -p \"$HOME/tools\"",
+   "rm -rf \"$HOME/tools/awesome-ai-motion.part\"",
+   "git clone --quiet https://github.com/gongnyang/awesome-ai-motion.git \"$HOME/tools/awesome-ai-motion.part\"",
+   "git -C \"$HOME/tools/awesome-ai-motion.part\" checkout --quiet 1e3c249073c61b42ceb556d7800f628d565d9312",
+   "mv \"$HOME/tools/awesome-ai-motion.part\" \"$HOME/tools/awesome-ai-motion\""
+  ],
+  "check_linux": "test -f \"$HOME/tools/awesome-ai-motion/index.json\"",
+  "install_linux": [
+   "mkdir -p \"$HOME/tools\"",
+   "rm -rf \"$HOME/tools/awesome-ai-motion.part\"",
+   "git clone --quiet https://github.com/gongnyang/awesome-ai-motion.git \"$HOME/tools/awesome-ai-motion.part\"",
+   "git -C \"$HOME/tools/awesome-ai-motion.part\" checkout --quiet 1e3c249073c61b42ceb556d7800f628d565d9312",
+   "mv \"$HOME/tools/awesome-ai-motion.part\" \"$HOME/tools/awesome-ai-motion\""
+  ]
+ },
+ {
   "id": "mcp-scrapling",
   "name": "Connect Scrapling to Claude",
   "area": "mcp",

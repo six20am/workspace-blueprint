@@ -133,6 +133,16 @@ ffmpeg -i <a>.mp4 -i <b>.mp4 -filter_complex "[0:v]scale=1280:720:force_original
 
 The one thing to know: `-c copy` on clips that do not match gives a file that freezes, skips or loses sound partway, so compare the `ffprobe` lines first. Set the frame size and `fps` to the main clip's, or to what the person names (1280:720 and 30 above are examples). For three clips, add a third input and a `[2:v]...[v2]` chain, and set `n=3`. Every clip needs an audio track for `a=1`; for silent clips, drop the audio with `a=0` and `[v0][v1]`. Delete the list file afterwards; this recipe made it.
 
+### Join two clips with a transition
+
+For two real video clips. Both must have the same size, and both must have sound; run Resize first if they differ. `offset` is where the move starts: the first clip's length minus the transition. Here a 10-second clip and a 1-second move give 9.
+
+```
+ffmpeg -i a.mp4 -i b.mp4 -filter_complex "[0:v]fps=30,settb=AVTB,format=yuv420p[v0];[1:v]fps=30,settb=AVTB,format=yuv420p[v1];[v0][v1]xfade=transition=circleopen:duration=1:offset=9[v];[0:a][1:a]acrossfade=d=1[a]" -map "[v]" -map "[a]" out.mp4
+```
+
+Good names for `transition`: `fade`, `dissolve`, `wipeleft`, `slideup`, `circleopen`, `radial`, `pixelize`, `squeezev`, `zoomin`, `hblur`. For a third clip, run it again on `out.mp4`. Photos instead of clips: the `motion-video` skill does it better.
+
 ### Speed up or slow down
 
 Changes the speed and keeps the sound in step. Twice as fast, then half speed:

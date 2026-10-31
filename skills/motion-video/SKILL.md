@@ -5,9 +5,9 @@ description: "Makes motion graphics and animated video: title and lower-third ca
 
 # motion-video
 
-Use this when the person wants something that moves, overlays or animates: a title card or lower-third name card, captions burned in word by word, a fade, slide, wipe or push between clips, a slideshow of photos with a slow zoom, a before and after, a clip with their logo at the start and end, a short video of numbers from a small table, or the same video in 16:9, 9:16 and 1:1.
+Use this when the person wants something that moves, overlays or animates: a title card or lower-third name card, captions burned in word by word, a fade, slide, wipe, push, iris, clock, blinds, zoom, whip or flash between photos, a slideshow of photos with a slow zoom, a before and after, a clip with their logo at the start and end, a short video of numbers from a small table, or the same video in 16:9, 9:16 and 1:1.
 
-Cuts, trims, joins, re-encodes, GIFs and shrinking a file stay in the `media-tools` skill. If the job is only cutting or converting, use that instead.
+Cuts, trims, joins, re-encodes, GIFs and shrinking a file stay in the `media-tools` skill, and so does a transition between two real video clips. If the job is only cutting or converting, use that instead. For a cinematic promo or a single special shot these templates do not cover, use `video-shots`.
 
 ## Before you start
 
@@ -31,13 +31,25 @@ Check that `tools/motion/node_modules/remotion` exists. If it does not, say "The
 | `CoverFrame` | Title card video or thumbnail still | `headline`; optional `eyebrow` (a date), `logo`, `src` photo, `seconds` |
 | `BrandedClip` | Logo intro, footage, outro card; logo bug, lower third, captions | `src` video or photo, `logo` or `name`; optional `lowerThird`, `cues` or `words`, `outroHeadline`, `cta`, `music` |
 | `CaptionBurn` | Captions burned into a video, the spoken word lit | `src`, and `words` (text, startMs, endMs) or `cues` (text, from, to) |
-| `Slideshow` | Photos with slow zoom, joined by fade, slide, wipe or push | `slides`; optional `secondsPerSlide`, `transition`, `cards`, `music` |
+| `Slideshow` | Photos with slow zoom, joined by any transition below | `slides`; optional `secondsPerSlide`, `transition`, `cards`, `music` |
 | `KenBurns` | One photo as a slow zoom or pan | `src`; optional `direction`, `zoom`, `seconds` |
 | `BeforeAfter` | A wipe from before to after | `before`, `after`; optional labels, `logo`, `outroHeadline`, `cta` |
 | `DataVideo` | Numbers from a small table as growing bars | `title`, `rows` (label, value, prefix, suffix); optional `note`, `logo`, `cta` |
 | `TalkingCards` | Cards that land one by one, scene by scene | `scenes` (title, seconds, items); optional `audio`, `cues` |
 | `AspectVariant` | One picture as another aspect, no cropping needed | `src`; optional `fit`, `focal` (render to `.png`) |
 | `ImagePost` | A social image in one of 17 layouts | `layout`, `images`, `text` (render to `.png`) |
+
+Transitions, set with `"transition"`:
+
+| Feel | Name | Good for |
+|---|---|---|
+| Soft and calm | `fade` | a wedding, a memorial, a home tour |
+| Clean and quick | `slide`, `push` | a product list, a how-to |
+| Showing a change | `wipe` | a line sweeps across and reveals the next photo |
+| Playful | `iris`, `clock`, `blinds` | a kids' class, a sale, a recap |
+| High energy | `whip`, `zoom`, `flash` | a gym reel, an event promo, a beat drop |
+
+One kind per video. Mixing them looks like a demo reel.
 
 For word-timed captions, get the timing from a transcript: the `video-watcher` skill makes one. A lower third is `"lowerThird": {"name": "...", "title": "...", "at": 1, "seconds": 3}` on `BrandedClip`.
 

@@ -1,10 +1,10 @@
 # Test: media-tools
 
 ## The ask
-"Make a 10-second GIF from this clip."
+"Join these three clips in order and add a fade out."
 
 ## The input
-A short .mp4 in the folder.
+Three short .mp4 files in the folder.
 
 ## Done looks like
-A .gif beside the clip made from its first ten seconds at a sensible width (480 unless the person named one), the original .mp4 untouched, and one line naming the command used.
+One new file beside them in the named order with a one-second fade out, the originals untouched, and one line naming the command used.

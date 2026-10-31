@@ -7,7 +7,7 @@ cta: Copy the prompt
 persona: none
 swipe: swipe_empty: web-page
 set_aside: none
-revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft; their fixes applied the same day (second commit); the vendor adapter replaced by the neutral ADAPT.md path (third commit); motion-video added as coming and the FAQ send-out answer cut to sourced wording (fourth commit); round-two editor and one-read fixes (sixth commit); page repositioned to AI services first, Claude Code second, on Michael's word
+revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft; their fixes applied the same day (second commit); the vendor adapter replaced by the neutral ADAPT.md path (third commit); motion-video added as coming and the FAQ send-out answer cut to sourced wording (fourth commit); round-two editor and one-read fixes (sixth commit); page repositioned to AI services first, Claude Code second, on Michael's word; why section added 2026-10-31 (Michael: reasons to use it, as a marketing page), how-it-works step 3 and the meta line follow the revised setup questions
 ```
 
 <!-- hero -->
@@ -16,7 +16,7 @@ revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for th
 Paste this into an AI service where the AI can run programs and keep files. It builds a folder for your work, follows your rules, and writes the way you do. Free.
 
 ```prompt
-Download https://github.com/six20am/workspace-blueprint/archive/refs/heads/main.zip, unzip it into a folder of your own (not the shared root of your file area), read ADAPT.md in it, and follow it step by step. Ask me the four questions when it tells you to.
+Download https://github.com/six20am/workspace-blueprint/archive/refs/heads/main.zip, unzip it into a folder of your own (not the shared root of your file area), read ADAPT.md in it, and follow it step by step. Ask me the setup questions when it tells you to.
 ```
 
 [Copy the prompt]
@@ -48,12 +48,23 @@ You explain your business, paste in a file, get a decent answer, and the next da
 - Three short files that tell the AI where things are, so it reads only the folder the job needs.
 - A voice file, so anything it writes for you sounds like you and not like a press release.
 
+<!-- why -->
+## Why a folder beats a chat box
+
+- **It remembers.** Your files, your rules and how you like things done live in one folder. The next chat picks up where the last one stopped.
+- **It works from your files, not from what you pasted.** Drop in the PDF, the bank export, the three emails you wrote. It reads them where they sit.
+- **It sounds like you.** It builds a voice file from your own writing, so the email it drafts could have come from your desk.
+- **It already knows how to do thirty-nine things.** Transcribe a video, read a bill, sort your photos, plan a trip, write the post. The full list is further down.
+- **It asks before it sends, spends or deletes.** It says so at setup, and you can add to that list. The rule holds in every chat after.
+- **It tells you when it can't.** Ask for something it has no tool for and it says so, then offers to build one. It doesn't fake it.
+- **It's free, and it's one folder.** The code is public. Delete the folder and it's gone.
+
 <!-- how-it-works -->
 ## How it works
 
 1. **Copy the prompt.** It's at the top of this page.
 2. **Paste it into your AI.** Use a service where the AI can run programs, keep files between chats, and keep a standing instruction. It downloads this blueprint and sets it up for itself.
-3. **Answer four questions.** It asks what you do, what work you want help with, how you like things filed, and how it should sound. "Not sure" is a fine answer. It builds the folders and tells you what to try first.
+3. **Answer a few questions.** It asks what you do, what work you want help with, and how it should sound. Then it shows you the folders, names the three things it will never do without asking (send, spend, delete), and asks what to add. "Not sure" is a fine answer. It builds the folders and tells you what to try first.
 
 If your AI can only chat, this won't work. Use Claude Code instead.
 
@@ -62,7 +73,7 @@ If your AI can only chat, this won't work. Use Claude Code instead.
 <!-- can-do -->
 ## What it can do on day one
 
-It arrives knowing how to do thirty-eight things. It reads web pages, videos, documents and photos, and answers a question from many sources. It writes emails, posts and letters in your voice. It handles everyday jobs like bills, trips and spending. And it looks after the workspace itself. How many work on day one depends on what your AI's computer can run. Each group opens to the full list.
+It arrives knowing how to do thirty-nine things. It reads web pages, videos, documents and photos, and answers a question from many sources. It writes emails, posts and letters in your voice. It handles everyday jobs like bills, trips and spending. And it looks after the workspace itself. How many work on day one depends on what your AI's computer can run. Each group opens to the full list.
 
 <!-- generated skill list goes here -->
 
@@ -73,7 +84,7 @@ Claude Code is Claude's tool for working on your own machine. Download the zip a
 
 1. **Unzip the download.** Move the folder to Documents.
 2. **Run setup.** Double-click `setup.cmd` on Windows or `setup.command` on a Mac. A black window installs the tools and Claude Code. Fifteen to thirty minutes. Windows may ask "allow this app to make changes" a few times. Say yes. A Mac refuses it the first time: open System Settings, then Privacy and Security, and click Open Anyway.
-3. **Answer four questions.** Claude opens and asks them one at a time, then builds the folders.
+3. **Answer a few questions.** Claude opens and asks them one at a time, then builds the folders.
 
 [Download the zip]
 
@@ -101,7 +112,7 @@ Say what you want, name the file or link, and say where the result should go. "N
 <!-- installed -->
 ## What the zip installs, and what doesn't leave your computer
 
-Free, standard tools: Git, Python, Node.js, ffmpeg, a browser engine, Claude Code, and the readers and converters the skills use. The largest, LibreOffice, is 300 MB and more. Animated video, which is coming, will use Remotion, which is free for individuals and companies of three people or fewer; bigger companies need its company license.
+Free, standard tools: Git, Python, Node.js, ffmpeg, a browser engine, Claude Code, and the readers and converters the skills use. The largest, LibreOffice, is 300 MB and more. Animated video uses Remotion, which is free for individuals and companies of three people or fewer; bigger companies need its company license.
 
 On Claude Code, setup sends nothing anywhere and signs in to nothing for you. Five things need your own sign-in, Claude among them, and setup lists them at the end. Anything it fetches from the web or a document is treated as reading material, never as orders.
 
@@ -150,4 +161,4 @@ Made by Six20AM. Source on GitHub: github.com/six20am/workspace-blueprint. The r
 
 <!-- page-level -->
 title: Workspace Blueprint: an AI that works out of your files
-meta: A free prompt for an AI service that gives the AI its own computer. Four questions build a workspace around how you work. Claude Code version included.
+meta: A free prompt for an AI service that gives the AI its own computer. A few questions build a workspace around how you work. Claude Code version included.

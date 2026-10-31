@@ -12,7 +12,7 @@ When setup finishes, `setup/SETUP.md` has you rewrite this file into the real ma
 
 | Folder or file | What it is |
 |---|---|
-| `setup/SETUP.md` | Your playbook for building the workspace. Four questions, then the build. |
+| `setup/SETUP.md` | Your playbook for building the workspace. A few questions, then the build. |
 | `setup/filing-styles.md` | The six ways the person can have their folders laid out. |
 | `setup/tools.json` | Every tool the installer puts in, with its check and install commands. |
 | `setup/setup-report.md` | Written by the installer. What installed, what failed, what needs the person to sign in. |

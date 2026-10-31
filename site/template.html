@@ -99,9 +99,11 @@ section.row{display:grid;grid-template-columns:168px minmax(0,1fr);gap:var(--s4)
 .body{min-width:0}
 .body>p{color:var(--fg2);font-size:18px}
 ul,ol{margin:0;padding:0;list-style:none}
-ul.outcomes li,ol.steps li,ol.week li{max-width:none;border-top:1px solid var(--line);color:var(--fg2)}
-ul.outcomes,ol.steps,ol.week{border-bottom:1px solid var(--line);margin-top:var(--s3)}
+ul.outcomes li,ul.why li,ol.steps li,ol.week li{max-width:none;border-top:1px solid var(--line);color:var(--fg2)}
+ul.outcomes,ul.why,ol.steps,ol.week{border-bottom:1px solid var(--line);margin-top:var(--s3)}
 ul.outcomes li{padding:var(--s3) 0;font-size:18px}
+ul.why li{padding:var(--s3) 0;font-size:17px}
+ul.why li strong{display:block;color:var(--fg);font-size:19px;margin-bottom:4px}
 ol.steps{counter-reset:step}
 ol.steps li{counter-increment:step;display:block;position:relative;padding:var(--s3) 0 var(--s3) 88px;font-size:17px}
 ol.steps li::before{content:counter(step);position:absolute;left:0;top:10px;font:400 52px/1 var(--serif);color:var(--fg)}
@@ -249,6 +251,10 @@ footer a{color:var(--fg2)}
 
 <section class="row"><p class="rail">What you get</p><div class="body">
 {{what-you-get}}
+</div></section>
+
+<section class="row" id="why"><p class="rail">Why</p><div class="body">
+{{why}}
 </div></section>
 
 <section class="row" id="setup"><p class="rail">Setup</p><div class="body">

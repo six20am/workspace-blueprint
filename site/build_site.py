@@ -65,7 +65,7 @@ def md_block(text, section):
             items = []
             while i < len(lines) and lines[i].startswith("- "):
                 items.append(f"<li>{inline(lines[i][2:])}</li>"); i += 1
-            cls = ' class="outcomes"' if section == "what-you-get" else ""
+            cls = {"what-you-get": ' class="outcomes"', "why": ' class="why"'}.get(section, "")
             out.append(f"<ul{cls}>" + "".join(items) + "</ul>"); continue
         elif re.match(r"\d+\. ", l):
             items = []
@@ -232,6 +232,8 @@ def main():
             if coming == 0:  # nothing left on the roadmap: drop the sentence about what is on the way
                 text = re.sub(r"\s*Another \{\{coming\}\}[^.]*?where it's going\.", "", text)
             text = text.replace("{{coming}}", str(coming))
+        if sid == "why":  # the skill count in the reasons list follows the skill folders too
+            text = re.sub(r"how to do [A-Za-z-]+ things", f"how to do {num_word(count).lower()} things", text)
         body[sid] = md_block(text, sid)
     body["can-do"] += f'\n<div class="schedule">{skills_html}</div>'
     tool_list = "".join(f"<li>{esc(n)}</li>" for n in tool_names)

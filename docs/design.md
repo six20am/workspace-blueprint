@@ -23,7 +23,7 @@ six20am/workspace-blueprint/
   skills/                      the core skills, one folder each, SKILL.md plus any scripts
   skills/INDEX.md              generated: one line per skill, read only when no router row matches
   setup/
-    SETUP.md                   the four questions and the build, platform-neutral
+    SETUP.md                   the setup questions and the build, platform-neutral
     filing-styles.md           six styles, each saying where the owner's sections go
     tools.json                 every program, with win / mac / linux check and install columns
     tools-reference/           one short page per program: what it does, two example commands
@@ -52,7 +52,7 @@ Deviation from the tree above, as built: `setup.ps1`, `setup.sh` and `runner.py`
 
 - `ROUTER.md` (neutral path) and `CLAUDE.md` (Claude) carry one row per kind of task naming one or two skills. `skills/INDEX.md` holds every skill's one line and is read only when no row matches, which is also when `gap-finder` fires.
 - Question 2's answers pick the owner's starting rows: a photographer gets `media-tools` and `photo-organizer`; a bookkeeper gets `money-log` and `paperwork`. A mapping table in `setup/SETUP.md` from common answers to rows; unmatched answers get `summarize` and `writer`.
-- `getting-started` ends by running `doctor`, then the first-week card (five things to try, from the four answers), then one line on `gap-finder`.
+- Setup asks three questions (what you do, what work to hand off, how it should sound), shows the folder tree it picked and asks for a yes, then states what it never does without asking (send, spend, delete) and asks for additions; that list goes into the map and every section's notes (2026-10-31, replaces the filing-style pick: a first-time owner has no basis to choose between six styles). It ends by running `doctor`, then the first-week card (five things to try, from the answers), then one line on `gap-finder`.
 - Every skill ships one test task in `skills/<name>/TEST.md`: the ask, the input, what done looks like. The adapters' acceptance test runs them.
 
 ## Section 3: The skills (38 core)

@@ -15,9 +15,9 @@ Tell the person, in three lines at most:
 
 Then ask: "Want me to fix the failed ones now, or after we set up your folders?" Default is after. Do not re-run anything that is marked installed or present.
 
-## 1. The four questions
+## 1. The questions
 
-Ask them one at a time. Wait for the answer before the next. Each has a "not sure" answer; if you get one, say what you picked and move on.
+Three questions, one look at the folders, and one boundary. Ask them one at a time. Wait for the answer before the next. Each has a "not sure" answer; if you get one, say what you picked and move on. The person may have nothing yet: no files, no folders, no tools. Never ask what they already have.
 
 **Q1. "What do you do?"**
 Free text. Use the answer to name things and to pick examples in the files you write. "Not sure" is not an option here; if they give one word, that is enough.
@@ -25,20 +25,23 @@ Free text. Use the answer to name things and to pick examples in the files you w
 **Q2. "What are the two or three kinds of work you would hand to an assistant if you had one?"**
 Free text. Each answer becomes a section of their one workspace: its own folder and its own section notes file, so you load only what that kind of work needs. Say "section" to the person, never "workspace", for these; to them the workspace is the whole folder. Two is fine, three is better, more than four means ask them to pick the top three. "Not sure": pick three from Q1 and say them back; let them correct you.
 
-**Q3. "How do you like things filed?"**
-Read `setup/filing-styles.md`. Show the six names, each with its one-line "suits" sentence. If they want to see one, show its sample tree with their own sections swapped in. If they pick two styles, combine them: the first sets the top level, the second sets the layout inside the folder where the work happens, and show the merged tree before building. "Not sure": by stage.
+**Q3. Show the folders, then: "Here is how I would file it. Good, or want it another way?"**
+Do not ask them to choose a filing style; they have no basis to pick. Read `setup/filing-styles.md` and pick the style yourself from Q1 and Q2, using each style's "suits" line: work that belongs to someone else is by client or project, work that moves start to finish is by stage, and by stage when nothing fits. Show its sample tree with their own sections swapped in, short, no file paths. "Good" or "not sure" means build it. If they want it another way, show the six names with their one-line "suits" sentence and let them pick. If they pick two styles, combine them: the first sets the top level, the second sets the layout inside the folder where the work happens, and show the merged tree before building.
 
 **Q4. "When I write for you, how should it sound?"**
 Three choices: plain and direct, warm, formal. Or they can paste something they wrote. "Not sure": plain and direct.
+
+**Q5. "I will never send, spend, or delete anything without asking you first. Anything else you want on that list?"**
+Say the three first, then ask. Most people say no, and that is fine; the line did its job. Anything they add goes on the same list, in their words. The list becomes the standing rules in the map file (step 2) and the "what not to do" block of every section notes file. Never shorten the three, even if they say they do not care.
 
 ## 2. Build
 
 Do this without asking more questions. Tell them you are building and that it takes a minute.
 
 1. **Folders.** Create the tree for the chosen style with their sections from Q2. Use the sample in `setup/filing-styles.md` as the pattern. Lowercase, hyphens, no spaces in folder names unless the style itself uses them (Numbered index does).
-2. **The map file.** Overwrite the template version. It becomes the map: what this workspace is (one line from Q1), the folder tree, a quick navigation table (task from Q2, folder to go to), file naming rules (`[topic]-[status].md`, statuses `draft`, `review`, `final`), and where files land. Keep it under 150 lines. The shape is the map file in `_reference/example-workspace/`; the content is theirs. Delete the "not set up yet" block.
+2. **The map file.** Overwrite the template version. It becomes the map: what this workspace is (one line from Q1), the folder tree, a quick navigation table (task from Q2, folder to go to), file naming rules (`[topic]-[status].md`, statuses `draft`, `review`, `final`), where files land, and a "Never without asking" block holding the Q5 list. Keep it under 150 lines. The shape is the map file in `_reference/example-workspace/`; the content is theirs. Delete the "not set up yet" block.
 3. **The router file** at the top level. The router: a table with one row per section: the task, the folder, what else to load. Under 50 lines. Shape: the router file in `_reference/example-workspace/`.
-4. **One section notes file per section.** Follow `_reference/03-context-md-anatomy.md` exactly: what this section is, a what-to-load table with a skip-these column, the folder layout, the process, where tools plug in, what not to do. Name the skills from the skills folder that fit this section in the "where tools plug in" section with a trigger, not just a mention.
+4. **One section notes file per section.** Follow `_reference/03-context-md-anatomy.md` exactly: what this section is, a what-to-load table with a skip-these column, the folder layout, the process, where tools plug in, what not to do. The "what not to do" block starts with the Q5 list, then anything specific to this section. Name the skills from the skills folder that fit this section in the "where tools plug in" section with a trigger, not just a mention.
 5. **`voice.md`** in the reference folder of the chosen style (or `reference/` if the style has none). From Q4: three or four rules, a short sample paragraph in that voice, and three things never to do. If they pasted a sample, pull the rules from it.
 6. **Keep `setup/`, the skills folder, `tools/` and `_reference/` where they are.** Do not move or delete them. The `update` skill replaces them in place later; the person's own files are never in its path.
 7. **One line in the map file about updates:** "When `setup/version.json` is more than 30 days old, offer the `update` skill once." That is how the workspace keeps getting new skills and tools.
@@ -90,7 +93,7 @@ Run the `doctor` skill first.
 
 Then say, in this order:
 1. "Your workspace is ready." One line on what it has: the sections by name.
-2. The first-week card: five things to try this week, each one sentence, drawn from the four answers.
+2. The first-week card: five things to try this week, each one sentence, drawn from the answers to Q1, Q2 and Q4.
 3. The sign-in list from doctor or the report, if any, as "Two things need you: ..."
 4. "If you ask for something I have no tool for, I will say so and offer to build one."
 

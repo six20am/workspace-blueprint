@@ -1,6 +1,6 @@
 # Workspace Blueprint
 
-A base workspace template for anyone, in any line of work. You double-click one file. It installs a fixed base of tools for reading videos, web pages, social posts and documents, installs Claude Code, then opens Claude and says "set this up" for you. Claude asks four questions, builds your folders in the filing style you pick, and writes the routing files an AI needs to find its way around.
+A base workspace template for anyone, in any line of work. You double-click one file. It installs a fixed base of tools for reading videos, web pages, social posts and documents, installs Claude Code, then opens Claude and says "set this up" for you. Claude asks a few questions, shows you the folders it would build, asks what it must never do without your say, and writes the routing files an AI needs to find its way around.
 
 No file editing. Fifteen to thirty minutes, most of it installs. Windows first; the Mac installer ships as beta.
 
@@ -24,7 +24,7 @@ six20am/workspace-blueprint/
   skills/                      the core skills, one folder each, SKILL.md plus any scripts
   skills/INDEX.md              generated: one line per skill, read only when no router row matches
   setup/
-    SETUP.md                   the four questions and the build, platform-neutral
+    SETUP.md                   the setup questions and the build, platform-neutral
     filing-styles.md           six styles, each saying where the owner's sections go
     tools.json                 every program, with win / mac / linux check and install columns
     tools-reference/           one short page per program: what it does, two example commands
@@ -55,7 +55,7 @@ An agent that has files that persist, a shell and a way to keep one standing rul
 
 1. Unzip the folder somewhere you will keep it. `build.py` builds the zip from this repo. On every push, `.github/workflows/publish.yml` publishes the zip as the latest release; the one-page site under `site/` deploys the same way.
 2. Windows: double-click `setup.cmd`. Mac: right-click `setup.command` and choose Open.
-3. Wait for Claude to open, sign in when the browser asks, and answer four questions.
+3. Wait for Claude to open, sign in when the browser asks, and answer a few questions.
 
 ## Built from
 

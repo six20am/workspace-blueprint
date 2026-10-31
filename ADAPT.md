@@ -2,7 +2,7 @@
 
 This file is for you, the AI agent, not for the person you work for. Read all of it before you act.
 
-The Workspace Blueprint is a base workspace for one person in any line of work: a set of skills (one folder each, `SKILL.md` plus any scripts), an installer for the programs those skills use, and a setup playbook that asks the person four questions and builds their folders and routing files. The routing files are a map (what each folder holds), a router (one row per kind of task, naming what to load) and section notes (what to read for each job in one section). With them you load only what a task needs.
+The Workspace Blueprint is a base workspace for one person in any line of work: a set of skills (one folder each, `SKILL.md` plus any scripts), an installer for the programs those skills use, and a setup playbook that asks the person a few questions and builds their folders and routing files. The routing files are a map (what each folder holds), a router (one row per kind of task, naming what to load) and section notes (what to read for each job in one section). With them you load only what a task needs.
 
 ## What you need
 
@@ -19,7 +19,7 @@ If any of the three is missing, stop and tell the person which one, in one line.
 3. Save the platform table below as `setup/platform.md`. The playbook reads that file for the names on this platform.
 4. Run `bash setup/setup.sh --no-launch`. It installs what `setup/tools.json` lists, skips anything already present, and writes `setup/setup-report.md`. Say what it will install, and why, before you run it.
 5. Save one standing rule in whatever you use for memory or standing instructions: "Before any task, read MAP.md and ROUTER.md in this folder, then load only the files the matching row names."
-6. Follow `setup/SETUP.md` from step 0, using the table below: read the report, ask the four questions one at a time, build, fix, run the test task, and close. The build writes `MAP.md` and `ROUTER.md`.
+6. Follow `setup/SETUP.md` from step 0, using the table below: read the report, ask the questions one at a time, build, fix, run the test task, and close. The build writes `MAP.md` and `ROUTER.md`.
 7. Prove the rule from step 5 in a fresh conversation: if you do not read `MAP.md` and `ROUTER.md` there without being told, the rule did not save. Fix it and prove it again.
 8. Run `python3 tools/doctor/doctor.py` and tell the person the result in three lines.
 

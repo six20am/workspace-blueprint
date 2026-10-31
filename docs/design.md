@@ -1,7 +1,7 @@
 # Workspace Blueprint: Design
 
 **Date:** 2026-10-31
-**Status:** Phases 1 to 3 built; Phase 4 built except motion-video; Phase 5 (neutral path) built 2026-10-31; a run on a real third-party agent is still to do
+**Status:** Phases 1 to 3 built; Phase 4 built, motion-video included; Phase 5 (neutral path) built 2026-10-31; a run on a real third-party agent is still to do
 **Repos:** core `six20am/workspace-blueprint`, public. The vendor mirror repo was retired with Phase 5.
 **Companions:** `ADAPT.md` at the repo root (the neutral path, written for the agent).
 
@@ -127,7 +127,7 @@ As built, "run `getting-started`" is "follow `setup/SETUP.md` from step 0": the 
 1. **Split.** (built 2026-10-31) Move the 21 skills to `skills/`, write `adapters/claude-code/` and a second, vendor-specific adapter (removed in Phase 5), update `build.py`, `update.py`, the tests and the workflow. The zip must still install and pass the Windows test. Ship nothing new in this phase.
 2. **Programs and care.** (built 2026-10-31) `tools.json` linux column and the eleven new programs; `doctor`, `undo`, `outbound-check`, `update` for the second path. Installer tested on Windows and on a Linux container.
 3. **Adopt and trial.** (built 2026-10-31) The five adopts and four trials, each behind its gate, each with `TEST.md`.
-4. **New skills.** (the nine built 2026-10-31; motion-video still to do) The nine written fresh, each with `TEST.md`, plus `motion-video` (added 2026-10-31): scrub and copy the compositions, install Remotion in `tools/motion/`, render each template once on Windows as its test.
+4. **New skills.** (the nine and motion-video built 2026-10-31) The nine written fresh, each with `TEST.md`, plus `motion-video` (added 2026-10-31): scrub and copy the compositions, install Remotion in `tools/motion/`, render each template once on Windows as its test.
 5. **Neutral path.** (built 2026-10-31) Write `ADAPT.md`, remove the vendor adapter folder and the mirror push from `build.py` and the workflow, archive the retired mirror repo with a README pointing at the core, strip the vendor name from the site and the docs. A run on a real third-party agent is Michael's to do when he wants; the site marks the path untested until then.
 
 Each phase ends with the site rebuilt (the skills grid moves entries from coming to in the box on its own) and a commit.

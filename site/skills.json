@@ -204,6 +204,10 @@
   "decision-log": [
    "Keeping the workspace honest",
    "One dated line per decision: what, why, who said. Searchable, and the weekly brief reads back what was decided this week."
+  ],
+  "voice-memo": [
+   "Video and audio",
+   "A voice memo from your phone becomes a transcript, a few notes and a to-do list, filed by date. Runs on your computer; nothing uploaded."
   ]
  },
  "headlines": {

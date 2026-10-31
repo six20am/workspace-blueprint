@@ -74,11 +74,11 @@ One: **Download the zip**. Button label is microcopy; the copywriter may propose
 ## Sections, in order (the page framework for this piece)
 
 ```
-hero            headline, one line under it, the CTA
+hero            headline, one line under it, the CTA, a small status table, and a sample folder tree (by stage, generic names, labeled as a sample) where three jobs each light the files the AI opens
 problem         the chat box forgets; your files are not in it
-what-you-get    three outcomes, one line each, then a figure: a sample folder tree from setup/filing-styles.md (by stage), product data not copy
+what-you-get    three outcomes, one line each
 how-it-works    three steps: unzip, run setup, answer four questions
-can-do          one line introducing the skills; six group cards, each with a plain headline (from site/skills.json) and the first two skills in sentence form, the rest behind "Show all"; shipped and coming both generated at build time
+can-do          one line introducing the skills; one schedule of skills by group, each group with a plain headline (from site/skills.json), columns skill, what it does, status; shipped and coming both generated at build time
 two-ways        Claude Code on your computer (the zip) as the main card; Grok Bot as one line under it (template not out yet, repo today)
 paste-this      the Claude Code prompt in a box with a Copy button; the Grok Bot prompt behind a "Have a Grok Bot?" disclosure, marked untested
 first-week      seven asks that work today, and how to ask
@@ -86,6 +86,6 @@ installed       what gets installed, size, privacy; the full tool list behind a 
 stays-current   the update path in three sentences
 status          Windows tested, Mac untested, more skills on the way
 faq             four questions: Do I need an account? Is it free? What does it send? Can I undo it?
-close           one line and the CTA again
+close           one line and the CTA again, then a short signed note from the maker, signed Six20AM
 footer          microcopy: Six20AM, GitHub links for both repos, teaching-kit credit
 ```

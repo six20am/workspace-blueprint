@@ -33,6 +33,7 @@ def inline(s):
         s = s.replace("open an issue on GitHub", '<a href="https://github.com/six20am/grokbot-blueprint/issues">open an issue on GitHub</a>')
     else:
         s = s.replace("open an issue on GitHub", f'<a href="{REPO_URL}/issues">open an issue on GitHub</a>')
+    s = s.replace("Post it to us on GitHub", f'Post it to us <a href="{REPO_URL}/issues">on GitHub</a>')
     return s
 
 
@@ -123,23 +124,28 @@ def skills():
         coming += 1
     count = len(shipped)
     out = []
+    first = True
     for g, items in groups.items():
         if not items:
             continue
         have = sum(1 for _, _, c in items if not c)
         soon = len(items) - have
         headline = meta.get("headlines", {}).get(g, g)
-        meta_line = (f"{have} in the box" if have else "") + (f"{', ' if have else ''}{soon} coming" if soon else "")
-        lead = [it for it in items if not it[2]][:2] or items[:2]
-        out.append(f'<div class="group{" all-coming" if not have else ""}"><p class="glabel">{esc(g)} <span>{meta_line}</span></p><h3>{esc(headline)}</h3>')
-        out.append("<ul class=\"lead\">" + "".join(f'<li>{esc(line)}{" <em>coming</em>" if c else ""}</li>' for _, line, c in lead) + "</ul>")
-        out.append(f'<details class="all"><summary>Show all {len(items)}</summary><ul class="skills">')
+        meta_line = (f"{have} ready" if have else "") + (f"{', ' if have else ''}{soon} coming" if soon else "")
+        rows = []
         for name, line, is_coming in items:
             cls = ' class="coming"' if is_coming else ""
-            tag = '<em>coming</em>' if is_coming else ""
-            out.append(f'<li{cls}><code>{esc(name)}</code>{tag}<span>{esc(line)}</span></li>')
-        out.append("</ul></details></div>")
+            rows.append(f'<tr{cls}><td><code>{esc(name)}</code></td><td>{esc(line)}</td><td>{"Coming" if is_coming else "Ready"}</td></tr>')
+        cls = "sched" + (" all-coming" if not have else "")
+        out.append(f'<details class="{cls}"{" open" if first else ""}><summary><span>{esc(headline)}</span><small>{meta_line}</small></summary>'
+                   f'<table><thead><tr><th scope="col">Skill</th><th scope="col">What it does</th><th scope="col">Status</th></tr></thead><tbody>{"".join(rows)}</tbody></table></details>')
+        first = False
     return count, coming, "\n".join(out)
+
+
+def pipe_rows(text):
+    """Lines of `left | right`, for the hero's status table and job picker."""
+    return [tuple(p.strip() for p in l.split("|", 1)) for l in text.strip().splitlines() if "|" in l]
 
 
 def tools():
@@ -167,6 +173,12 @@ def main():
     title = re.search(r"title:\s*(.+)", page).group(1).strip()
     meta = re.search(r"meta:\s*(.+)", page).group(1).strip()
 
+    status_rows = "".join(f'<tr><th scope="row">{esc(a)}</th><td>{esc(b)}</td></tr>' for a, b in pipe_rows(sections.pop("hero-status")))
+    jobs = pipe_rows(sections.pop("hero-jobs"))
+    job_inputs = "".join(f'<input type="radio" name="job" id="job{i}"{" checked" if i == 1 else ""}><label for="job{i}">{esc(a)}</label>' for i, (a, _) in enumerate(jobs, 1))
+    job_caps = "".join(f'<p class="cap cap{i}">{esc(b)}</p>' for i, (_, b) in enumerate(jobs, 1))
+    hero_figure = esc(sections.pop("hero-figure").strip())
+
     body = {}
     for sid, text in sections.items():
         if sid == "can-do":
@@ -177,14 +189,14 @@ def main():
             text = text.replace("{{coming}}", str(coming))
         body[sid] = md_block(text, sid)
         if sid == "two-ways":
-            # the two bold-led paragraphs become side-by-side cards
+            # the two bold-led paragraphs sit side by side
             body[sid] = re.sub(r"(<p><strong>.*?</p>\s*<p><strong>.*?</p>)", r'<div class="paths">\1</div>', body[sid], flags=re.S)
         if sid == "paste-this":
             # the Grok Bot prompt sits behind a disclosure; the Claude Code one stays open
             body[sid] = re.sub(r"<p><strong>Have a Grok Bot</strong></p>(.*)$", lambda m: '<details class="grok"><summary>Have a Grok Bot?</summary>' + m.group(1) + '</details>', body[sid], flags=re.S)
         if sid == "two-ways":
             body[sid] = body[sid].replace("<p>Have a Grok Bot?", '<p class="grokline">Have a Grok Bot?')
-    body["can-do"] += f'\n<div class="skillgrid">{skills_html}</div>'
+    body["can-do"] += f'\n<div class="schedule">{skills_html}</div>'
     tool_list = "".join(f"<li>{esc(n)}</li>" for n in tool_names)
     login_list = "".join(f"<li>{esc(n)}</li>" for n in logins)
 
@@ -193,6 +205,8 @@ def main():
     for k, v in body.items():
         out = out.replace("{{" + k + "}}", v)
     out = (out.replace("{{title}}", esc(title)).replace("{{meta}}", esc(meta))
+              .replace("{{hero-status}}", status_rows).replace("{{hero-jobs}}", job_inputs)
+              .replace("{{hero-caps}}", job_caps).replace("{{hero-figure}}", hero_figure)
               .replace("{{tools}}", tool_list).replace("{{logins}}", login_list)
               .replace("{{download}}", DOWNLOAD).replace("{{repo}}", REPO_URL)
               .replace("{{sha}}", esc(sha)).replace("{{date}}", esc(date)).replace("{{count}}", str(count)).replace("{{coming}}", str(coming)))

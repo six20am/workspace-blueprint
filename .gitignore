@@ -6,3 +6,4 @@ tools/site-cloner/node_modules/
 .env
 .superpowers/
 site/dist/
+.impeccable/

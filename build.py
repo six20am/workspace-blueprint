@@ -13,7 +13,7 @@ import sys
 import zipfile
 
 TOP = "Six20AM Workspace Blueprint"
-SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", ".superpowers"}
+SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", ".superpowers", ".impeccable"}
 SKIP_ROOT_DIRS = {"tests", "docs", "site", ".github"}  # the repo's own test suite, design doc, website and CI; setup/tests ships
 SKIP_FILES = {"build.py", "setup-report.md", "update-report.md"}
 SKIP_ROOT_FILES = {"README.md"}     # the GitHub readme; START-HERE.md is the product's front page

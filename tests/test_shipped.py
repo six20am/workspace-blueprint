@@ -6,7 +6,7 @@ ALLOWED = {"README.md", os.path.join("docs", "design.md"), os.path.join("tools",
 # vendor code shipped as-is; scanned by eye, not by string (see the ledger ruling)
 VENDOR = (os.path.join(".claude", "skills", "last30days", "scripts"), os.path.join(".claude", "skills", "agent-reach", "_references"))
 TEXT = (".md", ".json", ".ps1", ".sh", ".command", ".cmd", ".py", ".txt", ".mjs", ".js")
-SKIP_DIRS = {".git", "node_modules", "__pycache__", ".superpowers"}
+SKIP_DIRS = {".git", "node_modules", "__pycache__", ".superpowers", ".impeccable"}
 SKIP_ROOT_DIRS = {"site", ".github", "docs"}  # the website and CI never ship; build.py skips them too
 
 

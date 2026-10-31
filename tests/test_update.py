@@ -167,6 +167,44 @@ class UpdateTest(unittest.TestCase):
         self.assertFalse(exists(claude, "setup/adapter.json"))
         self.assertTrue(exists(claude, "setup.cmd"))
 
+    def test_unknown_adapter_name_falls_back_to_claude_code(self):
+        put(self.root, "setup/adapter.json", json.dumps({"adapter": "../..", "skills_dir": "skills", "map": "MAP.md"}))
+        adapter = update.read_adapter(self.root)
+        self.assertEqual(adapter, update.ADAPTERS["claude-code"])
+        self.assertEqual(update.owned_pairs(adapter, self.src)[0], ("skills", ".claude/skills"))
+
+    def test_old_install_with_stamped_version_still_migrates(self):
+        make_old_install(self.root)
+        remote = "a" * 40
+        # the old updater copied tools/ and stamped the remote commit, but never saw the new layout
+        put(self.root, "setup/version.json", json.dumps({"commit": remote, "date": "2026-10-31", "updated": "2026-10-31"}))
+        local = json.loads(read(self.root, "setup/version.json"))
+        self.assertEqual(update.needs_update(local, remote, False), "migrate")
+        log = []
+        adapter, (added, changed, removed) = update.apply_update(self.src, self.root, self.backup, log, remote, "2026-10-31")
+        self.assertEqual(adapter["adapter"], "claude-code")
+        self.assertEqual(read(self.root, ".claude/skills/web-read/SKILL.md"), "web-read new\n")
+        self.assertEqual(removed, 1)
+        self.assertEqual(json.loads(read(self.root, "setup/adapter.json")), update.ADAPTERS["claude-code"])
+        version = json.loads(read(self.root, "setup/version.json"))
+        self.assertEqual(version["layout"], 2)
+        self.assertEqual(version["commit"], remote)
+        self.assertEqual(update.needs_update(version, remote, False), "up-to-date")
+
+    def test_layout_2_and_matching_commit_is_up_to_date(self):
+        remote = "b" * 40
+        local = {"commit": remote, "date": "2026-10-31", "layout": 2}
+        self.assertEqual(update.needs_update(local, remote, False), "up-to-date")
+        self.assertEqual(update.needs_update(local, remote, True), "update")
+        self.assertEqual(update.needs_update(local, "c" * 40, False), "update")
+        self.assertEqual(update.needs_update({"commit": remote, "layout": 1}, remote, False), "migrate")
+        self.assertEqual(update.needs_update({"commit": None, "date": None}, remote, False), "migrate")
+
+    def test_existing_adapter_json_is_never_overwritten(self):
+        put(self.root, "setup/adapter.json", json.dumps(GROK_CFG))
+        update.apply_update(self.src, self.root, self.backup, [], "d" * 40, "2026-10-31")
+        self.assertEqual(json.loads(read(self.root, "setup/adapter.json")), GROK_CFG)
+
 
 if __name__ == "__main__":
     unittest.main()

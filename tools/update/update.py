@@ -7,7 +7,12 @@
 
 Which platform: setup/adapter.json, written by the build and never overwritten here, names the
 adapter (claude-code or grok-bot) and where its skills live. A workspace built before adapters
-existed has no adapter.json and keeps its skills in .claude/skills; it is treated as claude-code.
+existed has no adapter.json and keeps its skills in .claude/skills; it is treated as claude-code,
+and after its first sync the claude-code adapter.json is created (never overwritten).
+
+Layout migration: setup/version.json gets "layout": 2 whenever this script writes it. A version.json
+without it (stamped by the old updater, which could not see the new layout) means one full sync
+even when the commit matches; --check reports it as an update.
 
 What it replaces: the download is the raw repo, so this script applies the build's mapping itself
 (see owned_pairs). The repo's skills/ lands in the adapter's skills folder (.claude/skills or
@@ -83,6 +88,8 @@ IGNORED_DIRS = ("__pycache__", "node_modules", ".git")
 # Never read or written, whatever the adapter. The map and router names are added per adapter.
 ALWAYS_NEVER = ("voice.md", "setup/adapter.json", "setup/setup-report.md", "setup/gap-log.md", "setup/update-report.md")
 EXEC = (".sh", ".command")
+# setup/version.json carries "layout": 2 once this updater has synced the workspace at least once.
+LAYOUT = 2
 
 
 def fetch(url, accept=None):
@@ -146,7 +153,7 @@ def safe_join(base, rel):
 
 def read_adapter(root):
     """The adapter this workspace was built for, from setup/adapter.json. A workspace without one
-    (built before adapters existed) is claude-code. A bad skills_dir falls back to the adapter's default."""
+    (built before adapters existed), or one naming an adapter not in ADAPTERS, is claude-code. A bad skills_dir falls back to the adapter's default."""
     data = {}
     try:
         with open(os.path.join(root, "setup", "adapter.json"), encoding="utf-8") as fh:
@@ -155,8 +162,10 @@ def read_adapter(root):
         data = {}
     if not isinstance(data, dict):
         data = {}
-    name = data.get("adapter") if isinstance(data.get("adapter"), str) else DEFAULT_ADAPTER
-    adapter = dict(ADAPTERS.get(name, ADAPTERS[DEFAULT_ADAPTER]), adapter=name)
+    name = data.get("adapter")
+    if not isinstance(name, str) or name not in ADAPTERS:
+        return dict(ADAPTERS[DEFAULT_ADAPTER])   # unknown or hostile name: the claude-code default, entirely
+    adapter = dict(ADAPTERS[name])
     for key in ("skills_dir", "map", "router", "notes"):
         value = data.get(key)
         if isinstance(value, str) and value.strip():
@@ -276,6 +285,47 @@ def sync(src_root, root, adapter, backup_dir, log):
     return added, changed, removed
 
 
+def needs_update(local, remote, force):
+    """Returns "up-to-date", "update" or "migrate". A version.json without "layout": 2 was stamped by an
+    updater from before the adapters (or by the build) and gets one full sync even when the commit matches."""
+    try:
+        layout = int(local.get("layout") or 0)
+    except (TypeError, ValueError):
+        layout = 0
+    if layout < LAYOUT:
+        return "migrate"
+    if local.get("commit") == remote and not force:
+        return "up-to-date"
+    return "update"
+
+
+def write_default_adapter(root):
+    """Creates setup/adapter.json with the claude-code default when it is missing. Never overwrites one."""
+    path = safe_join(root, "setup/adapter.json")
+    if os.path.exists(path):
+        return False
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(json.dumps(ADAPTERS[DEFAULT_ADAPTER], indent=1) + "\n")
+    return True
+
+
+def write_version(root, remote, date):
+    with open(safe_join(root, "setup/version.json"), "w", encoding="utf-8", newline="\n") as fh:
+        json.dump({"commit": remote, "date": date, "updated": dt.date.today().isoformat(), "layout": LAYOUT}, fh, indent=1)
+
+
+def apply_update(src_root, root, backup_dir, log, remote, date):
+    """One update from an extracted tree: sync for this workspace's adapter, create adapter.json when an
+    old install has none, stamp version.json with the commit and the layout. Returns (adapter, counts)."""
+    adapter = read_adapter(root)
+    counts = sync(src_root, root, adapter, backup_dir, log)
+    if write_default_adapter(root):
+        log.append("added    setup/adapter.json")
+    write_version(root, remote, date)
+    return adapter, counts
+
+
 def same_file(a, b):
     """Byte-equal after line-ending normalization, so a Windows checkout does not look changed."""
     try:
@@ -366,7 +416,6 @@ def main():
     ap.add_argument("--no-install", action="store_true", help="copy files only, skip the installer or doctor")
     args = ap.parse_args()
 
-    adapter = read_adapter(ROOT)
     local = local_version()
     try:
         remote, date = remote_commit()
@@ -374,24 +423,27 @@ def main():
         print(f"Could not reach github.com: {e}")
         return 2
 
-    if local.get("commit") == remote and not args.force:
+    decision = needs_update(local, remote, args.force)
+    if decision == "up-to-date":
         print(f"Up to date ({remote[:12]}, {date}).")
         return 0
     if args.check:
-        print(f"Update available: {(local.get('commit') or 'none')[:12]} -> {remote[:12]} ({date}).")
+        if decision == "migrate":
+            print("Update available (layout migration).")
+        else:
+            print(f"Update available: {(local.get('commit') or 'none')[:12]} -> {remote[:12]} ({date}).")
         return 10
+    if decision == "migrate":
+        print("First update on the new layout; syncing everything.")
 
-    print(f"Updating {(local.get('commit') or 'none')[:12]} -> {remote[:12]} ({date}) for {adapter['adapter']}...")
+    print(f"Updating {(local.get('commit') or 'none')[:12]} -> {remote[:12]} ({date})...")
     tmp, src_root = download_tree()
     backup_dir = os.path.join(ROOT, "setup", "update-backup", dt.date.today().isoformat())
     log = []
     try:
-        added, changed, removed = sync(src_root, ROOT, adapter, backup_dir, log)
+        adapter, (added, changed, removed) = apply_update(src_root, ROOT, backup_dir, log, remote, date)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
-
-    with open(VERSION_FILE, "w", encoding="utf-8", newline="\n") as fh:
-        json.dump({"commit": remote, "date": date, "updated": dt.date.today().isoformat()}, fh, indent=1)
 
     if args.no_install:
         rc = None

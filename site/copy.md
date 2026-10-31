@@ -7,7 +7,7 @@ cta: Download the zip
 persona: none
 swipe: swipe_empty: web-page
 set_aside: none
-revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft; their fixes applied the same day (second commit); the vendor adapter replaced by the neutral ADAPT.md path (third commit); motion-video added as coming and the FAQ send-out answer cut to sourced wording (fourth commit)
+revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft; their fixes applied the same day (second commit); the vendor adapter replaced by the neutral ADAPT.md path (third commit); motion-video added as coming and the FAQ send-out answer cut to sourced wording (fourth commit); round-two editor and one-read fixes (sixth commit)
 ```
 
 <!-- hero -->
@@ -25,9 +25,9 @@ Privacy | Setup sends nothing off your computer
 Undo | Delete the folder to remove what it built
 
 <!-- hero-jobs -->
-Transcribe a video | For a transcript, Claude opens only what the job needs: the lit files.
-Read a PDF | For a PDF, Claude opens only what the job needs: the lit files.
-Learn my voice | To learn your voice, Claude opens only what the job needs: the lit files.
+Transcribe a video | For a transcript, Claude opens only the files that job needs.
+Read a PDF | To read a PDF, Claude checks the map, then looks in the intake folder.
+Learn my voice | To learn your voice, Claude checks the map, then opens your voice file.
 
 <!-- hero-figure -->
 A sample folder. Yours gets named for your work. Pick a job to see what Claude opens.
@@ -65,18 +65,18 @@ It arrives knowing how to do thirty-eight things. It reads web pages, videos, do
 
 **Claude Code, on your own computer.** This is the zip. Unzip it, double-click setup, answer four questions, and everything installs on your machine. Windows is tested. Mac is new and untested.
 
-Have another AI agent with its own computer and files? It can set this up for itself. The repo has a file that tells it how.
+Have another AI agent with its own computer and files? It can set this up for itself. A file in the download tells it how.
 
 <!-- paste-this -->
 ## Already use an AI tool? Paste this
 
-If Claude Code or another AI agent is already running, you don't need the download. Paste the prompt and the agent goes and gets everything itself.
+Already have Claude Code or another AI agent? Paste one of these prompts and it gets the files itself.
 
 **Already have Claude Code**
 ```prompt
 Download https://github.com/six20am/workspace-blueprint/releases/latest/download/Six20AM-Workspace-Blueprint.zip and unzip it into my Documents folder. Then tell me which file in the new "Six20AM Workspace Blueprint" folder to double-click to run setup.
 ```
-When Claude says it's there, double-click `setup.cmd` on Windows or `setup.command` on a Mac. A Mac refuses it the first time: open System Settings, then Privacy and Security, and click Open Anyway. Setup skips anything you already have. When it finishes, type `set this up` in Claude.
+When Claude says the folder is ready, open it and double-click `setup.cmd` on Windows or `setup.command` on a Mac. A Mac refuses it the first time: open System Settings, then Privacy and Security, and click Open Anyway. Setup skips anything you already have. When it finishes, type `set this up` in Claude.
 
 **Have another AI agent**
 ```prompt
@@ -102,14 +102,14 @@ Say what you want, name the file or link, and say where the result should go. "N
 <!-- installed -->
 ## What gets installed, and what doesn't leave your computer
 
-Free, standard tools: Git, Python, Node.js, ffmpeg, a browser engine, Claude Code, and the readers and converters the skills use. The largest, LibreOffice, is 300 MB and more. Animated video uses Remotion, which is free for individuals and companies of three people or fewer; bigger companies need its company license.
+Free, standard tools: Git, Python, Node.js, ffmpeg, a browser engine, Claude Code, and the readers and converters the skills use. The largest, LibreOffice, is 300 MB and more. Animated video, which is coming, will use Remotion, which is free for individuals and companies of three people or fewer; bigger companies need its company license.
 
-Setup sends nothing anywhere and signs in to nothing for you. Five things need your own sign-in, Claude among them, and setup lists them at the end. Anything a tool fetches from outside is treated as something to read, never as an instruction to follow.
+Setup sends nothing anywhere and signs in to nothing for you. Five things need your own sign-in, Claude among them, and setup lists them at the end. Anything it fetches from the web or a document is treated as reading material, never as orders.
 
 <!-- stays-current -->
 ## It doesn't go stale
 
-New skills and tools land in the public repo as they're built. Double-click `update.cmd` (`update.command` on a Mac), or ask Claude to update, and your workspace pulls them in and installs anything new. It never touches your own files or the folders it built for you. If you edited one of the template files, a copy is saved first. Once the workspace is 30 days old, Claude asks once whether you want to update. It never updates without your yes.
+New skills and tools are added to the public download as they're built. Double-click `update.cmd` (`update.command` on a Mac), or ask Claude to update, and your workspace pulls them in and installs anything new. It never touches your own files or the folders it built for you. If you edited one of the files that came with the download, a copy is saved first. Once the workspace is 30 days old, Claude asks once whether you want to update. It never updates without your yes.
 
 <!-- status -->
 ## Where it stands
@@ -123,7 +123,7 @@ The Windows installer has been tested on one machine. The Mac installer is new a
 You need a Claude account, because Claude Code is what runs the workspace. The zip itself needs nothing. Claude opens your browser to sign in the first time it runs.
 
 **Is it free?**
-The zip is free and the code is public. Claude has its own paid plans; those are between you and Claude.
+The zip is free and the code is public. Claude Code needs a Claude account; what that costs is between you and Claude.
 
 **What does it send out?**
 Nothing during setup. It signs in to nothing for you; the five sign-ins are yours to do, and setup lists them.

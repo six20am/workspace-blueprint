@@ -145,11 +145,42 @@ def pipe_rows(text):
     return [tuple(p.strip() for p in l.split("|", 1)) for l in text.strip().splitlines() if "|" in l]
 
 
+# Plain words for the reader, keyed by the start of the tools.json `name` (which the installer also uses,
+# so the names stay as they are). SIGNIN is the visible sign-in list; PLAIN is the full tool list.
+SIGNIN = {
+    "Claude Code": "Claude Code (the AI itself)",
+    "NotebookLM": "NotebookLM (Google's research tool)",
+    "Agent Reach": "Agent Reach (reads posts behind logins)",
+    "Connect image search": "Image search (free photo keys)",
+    "Claude in Chrome": "Claude in Chrome (your own browser)",
+}
+PLAIN = {
+    "rtk hook": "Command-output trimmer, hooked into Claude Code",
+    "rtk": "Command-output trimmer",
+    "Defuddle": "Web page cleaner",
+    "Trafilatura": "Web page cleaner (Python)",
+    "ccusage": "Shows what Claude Code sessions cost",
+    "Repomix": "Packs a folder into one file for an AI to read",
+    "CodeBurn": "Shows where AI usage goes",
+    "Ghostscript": "PDF engine, used by the scan reader",
+}
+
+
+def mapped(name, table):
+    for key, plain in table.items():  # longest keys first where one starts another ("rtk hook" before "rtk")
+        if name == key or name.startswith(key + " "):
+            return plain
+    return None
+
+
 def label(t, short=False):
     """The name a reader sees. An `mcp` entry is named for the installer ("Connect image search to Claude");
     the page shows the thing itself ("Image search"). `short` also drops a trailing parenthetical, for the
     sign-in list ("NotebookLM (Google Notebook)" reads "NotebookLM")."""
     name = t["name"]
+    plain = mapped(name, SIGNIN if short else PLAIN)
+    if plain:
+        return plain
     if short:
         name = re.sub(r"\s*\([^)]*\)$", "", name)
     if t.get("area") == "mcp":

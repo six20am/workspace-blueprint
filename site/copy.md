@@ -21,6 +21,13 @@ Download https://github.com/six20am/workspace-blueprint/archive/refs/heads/main.
 
 [Copy the prompt]
 
+<!-- fit -->
+## Will your AI work?
+
+**Yes, if you use one of these five:** ChatGPT Dots, Claude Duet, Grok Bot, Codex or Claude Code. They can run programs and keep files.
+
+**No, if yours can only chat.** The regular ChatGPT and Claude chats aren't on the list, so switch to one of the five first.
+
 <!-- hero-status -->
 Cost | Free. Your AI service has its own plans
 AI services | Tried once, up to the setup questions. We haven't seen a full build there yet

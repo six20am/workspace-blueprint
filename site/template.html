@@ -132,6 +132,9 @@ details[open]>summary::after{content:"\2212"}
 details p{margin:0 0 var(--s3);color:var(--fg2)}
 ul.signin{font-size:15px;color:var(--fg2);columns:2;column-gap:var(--s4);padding-left:1.2em;margin:0 0 var(--s4)}
 ul.signin li{padding:4px 0;break-inside:avoid}
+.fit{margin-top:var(--s3);padding-top:var(--s2);border-top:1px solid var(--line)}
+.fit h2{font-size:22px;letter-spacing:-.015em;margin:0 0 var(--s1)}
+.hero .fit p{font-size:16px;margin:0 0 var(--s1)}
 .peek{border:0;margin:0}
 .peek>summary{display:none}
 .installed-all{margin-top:var(--s4)}
@@ -196,6 +199,7 @@ footer a{color:var(--fg2)}
   .hero .cta .button{width:100%}
   .hero .peek{order:3;margin-top:var(--s2)}
   .peek>summary{display:flex;font:400 14px/1.3 var(--sans);min-height:44px;padding-block:0;color:var(--fg2)}
+  .hero .fit{order:3}
   .hero table.state{order:4}
   table.state th,table.state td{display:block;width:auto;border:0;padding:0}
   table.state tr{display:block;padding:8px 0;border-top:1px solid var(--line)}
@@ -298,6 +302,7 @@ details[open]>:not(summary){animation:rise .35s ease-out both}
 <div>
 <p class="eyebrow">Free. Your AI. Your files.</p>
 {{hero}}
+<div class="fit">{{fit}}</div>
 <table class="state"><tbody>{{hero-status}}</tbody></table>
 </div>
 <figure class="spec">

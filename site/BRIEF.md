@@ -14,7 +14,7 @@ Get them to copy the prompt and paste it into their AI. Nothing else.
 
 ## The offer
 
-Free. One prompt for an AI service that gives the AI its own computer: the AI fetches the blueprint, fits it to its own setup from `ADAPT.md`, asks a few questions and builds a workspace around the answers. Second path: a zip for Claude Code on the reader's own computer. Services are never named on the page (Michael, 2026-10-31).
+Free. One prompt for an AI service that gives the AI its own computer: the AI fetches the blueprint, fits it to its own setup from `ADAPT.md`, asks a few questions and builds a workspace around the answers. Second path: a zip for Claude Code on the reader's own computer. The page names the five that work, in the block under the hero button: ChatGPT Dots, Claude Duet, Grok Bot, Codex and Claude Code (Michael, 2026-10-31, replacing his earlier rule that services are never named).
 
 ## Facts (binding)
 
@@ -65,7 +65,7 @@ Free. One prompt for an AI service that gives the AI its own computer: the AI fe
 - Grade 8 or lower.
 - No invented numbers, testimonials, logos or names of users. There are none.
 - Never say "supercharge", "unlock", "seamless", "powerful". Say "AI service" or "your AI", not "AI agent".
-- Name no AI vendor other than Claude.
+- Name no AI vendor other than Claude, except the five services in the "Will your AI work?" block.
 - Do not name the agency's clients or the two agency brands.
 - The download link is `https://github.com/six20am/workspace-blueprint/releases/latest/download/Six20AM-Workspace-Blueprint.zip`. The GitHub repo link is footer microcopy, not a second CTA.
 

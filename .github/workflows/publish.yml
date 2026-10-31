@@ -49,6 +49,8 @@ jobs:
             gh release create latest "dist/Six20AM-Workspace-Blueprint.zip" --title "Latest build" \
               --notes "Built from ${GITHUB_SHA::12} on $(date -u +%Y-%m-%d). This tag moves with main." --latest
           fi
+          git tag -f latest "$GITHUB_SHA"
+          git push -f origin refs/tags/latest
 
       - name: Build the site
         run: python site/build_site.py

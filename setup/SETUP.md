@@ -82,7 +82,7 @@ If either is wrong, fix the routing file, not the task, and say what you changed
 
 ## 5. Close
 
-Run the `doctor` skill first. Until it ships, read `setup/setup-report.md` instead.
+Run the `doctor` skill first.
 
 Then say, in this order:
 1. "Your workspace is ready." One line on what it has: the sections by name.

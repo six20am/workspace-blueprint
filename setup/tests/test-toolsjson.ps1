@@ -13,7 +13,7 @@ foreach ($t in $tools) {
         Assert-True ($cmd -notmatch $personal) "$($t.id): no personal path in install commands"
     }
 }
-foreach ($id in 'imagemagick', 'exiftool', 'sox', 'handbrake', 'mkvtoolnix', 'libreoffice', 'pandoc', 'tesseract', 'poppler', 'qpdf', 'jq', 'ocrmypdf', 'rtk', 'rtk-hook', 'defuddle', 'trafilatura', 'ccusage', 'repomix', 'codeburn') {
+foreach ($id in 'imagemagick', 'exiftool', 'sox', 'handbrake', 'mkvtoolnix', 'libreoffice', 'pandoc', 'tesseract', 'poppler', 'qpdf', 'jq', 'ghostscript', 'ocrmypdf', 'rtk', 'rtk-hook', 'defuddle', 'trafilatura', 'ccusage', 'repomix', 'codeburn') {
     Assert-True (@($tools | Where-Object { $_.id -eq $id }).Count -eq 1) "tools.json has $id once"
 }
 $noLinux = @($tools | Where-Object { (-not $_.adapter) -and (@($_.install).Count -gt 0) -and (@($_.install_linux).Count -eq 0) })
@@ -25,4 +25,4 @@ Assert-Equal (@($badAdapter | ForEach-Object { $_.id }) -join ',') '' 'every ada
 foreach ($id in 'claude', 'plugin-superpowers', 'mcp-scrapling', 'chrome-extension', 'rtk-hook', 'ccusage') {
     Assert-Equal (@($tools | Where-Object { $_.id -eq $id })[0].adapter) 'claude-code' "$id is Claude Code only"
 }
-Assert-Equal (@($tools | Where-Object { $_.area -eq 'programs' }).Count) 19 'the programs area has nineteen entries'
+Assert-Equal (@($tools | Where-Object { $_.area -eq 'programs' }).Count) 20 'the programs area has twenty entries'

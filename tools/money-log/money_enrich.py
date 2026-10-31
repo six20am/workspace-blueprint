@@ -20,7 +20,7 @@ EVERYDAY_CATEGORIES = {"groceries", "restaurants", "coffee", "gas", "fast food",
 # Only clear between-account moves and card payments. Bills paid by ACH or online
 # ("CITY WATER ACH PMT") and fees ("WIRE TRANSFER FEE") are spending, and a
 # matching category rule always beats this guess.
-TRANSFER_WORDS = ("payment thank you", "transfer to", "transfer from", "card payment", "credit card pmt", "zelle to")
+TRANSFER_WORDS = ("payment thank you", "transfer to", "transfer from", "card payment", "credit card pmt")
 PAY_LATER_WORDS = ("pay in 4", "pay-in-4", "pay later", "installment")
 UNCATEGORIZED = "Uncategorized"
 

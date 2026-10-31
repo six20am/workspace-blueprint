@@ -132,7 +132,11 @@ details[open]>summary::after{content:"\2212"}
 details p{margin:0 0 var(--s3);color:var(--fg2)}
 ul.signin{font-size:15px;color:var(--fg2);columns:2;column-gap:var(--s4);padding-left:1.2em;margin:0 0 var(--s4)}
 ul.signin li{padding:4px 0;break-inside:avoid}
-.installed-head{margin-top:var(--s4)}
+.peek{border:0;margin:0}
+.peek>summary{display:none}
+.installed-all{margin-top:var(--s4)}
+.installed-all>summary{font:600 19px/1.3 var(--display)}
+.installed-all>.schedule{margin-top:0}
 .installed-list{margin-top:var(--s2)}
 .sched.tools td:last-child,.sched.tools th:last-child{width:150px;white-space:nowrap}
 
@@ -181,7 +185,24 @@ footer a{color:var(--fg2)}
 }
 @media (max-width:640px){
   body{font-size:16px}
-  .brand span,nav.menu a.wide{display:none}
+  nav.menu a.wide,nav.menu .go,nav.menu a[href$="#skills"]{display:none}
+  nav.menu a{white-space:nowrap}
+  .brand span{white-space:nowrap}
+  h1{font-size:34px}
+  .hero{padding-block:24px;gap:24px}
+  .hero>div{display:flex;flex-direction:column}
+  .hero .eyebrow,.hero h1,.hero>div>p{order:1}
+  .hero .cta{order:2;margin-top:8px}
+  .hero .cta .button{width:100%}
+  .hero .peek{order:3;margin-top:var(--s2)}
+  .peek>summary{display:flex;font:400 14px/1.3 var(--sans);min-height:44px;padding-block:0;color:var(--fg2)}
+  .hero table.state{order:4}
+  table.state th,table.state td{display:block;width:auto;border:0;padding:0}
+  table.state tr{display:block;padding:8px 0;border-top:1px solid var(--line)}
+  .spec{display:none}
+  .sched summary{font-size:16px}
+  .sched.tools td:first-child{padding-right:0}
+  .sched.tools td:last-child::before{content:"Installs on: "}
   nav.menu{gap:var(--s2)}
   html{scroll-padding-top:80px}
   .tree{font-size:12px}
@@ -210,6 +231,10 @@ footer a{color:var(--fg2)}
    rises line by line, the folder tree builds itself. On scroll: sections and list items rise as they come into
    view and the big step numbers land with a bounce, as scroll-driven CSS animations, so nothing is ever hidden
    behind a class a script must add; a browser without them simply shows the page. No reveal script. */
+@media (max-width:360px){
+  .brand{gap:8px;font-size:12px}
+  nav.menu a{font-size:12px}
+}
 @keyframes sunrise{from{background-size:0% 100%}to{background-size:100% 100%}}
 .hero::after,.close::before{background-repeat:no-repeat;background-size:100% 100%}
 .hero::after{animation:sunrise 1.6s cubic-bezier(.2,.7,.2,1) .2s both}
@@ -324,8 +349,8 @@ details[open]>:not(summary){animation:rise .35s ease-out both}
 <section class="row"><p class="rail">Installed</p><div class="body">
 {{installed}}
 <h3>Needs your own sign-in</h3><ul class="signin">{{logins}}</ul>
-<h3 class="installed-head">Everything setup installs, by what it is for</h3>
-<div class="schedule installed-list">{{tools}}</div>
+<details class="installed-all"><summary>Everything setup installs, by what it is for</summary>
+<div class="schedule installed-list">{{tools}}</div></details>
 </div></section>
 
 <section class="row"><p class="rail">Updates</p><div class="body">
@@ -359,10 +384,16 @@ details[open]>:not(summary){animation:rise .35s ease-out both}
 <div class="sticky" id="sticky"><button type="button" class="button" data-main>Copy the prompt</button></div>
 <script>
 (function(){
+  var peek=document.querySelector('.peek');
+  if(peek&&matchMedia('(max-width:640px)').matches)peek.open=false;
+})();
+(function(){
   var hero=document.querySelector('.hero .button'),bar=document.getElementById('sticky'),last=document.querySelector('.close .button');
   if(!hero||!bar||!('IntersectionObserver' in window))return;
-  var heroSeen=true,lastSeen=false;
-  function set(){var on=!heroSeen&&!lastSeen;bar.classList.toggle('on',on);document.body.classList.toggle('pad',on)}
+  var heroSeen=true,lastSeen=false,ccSeen=false,cc=document.getElementById('claude-code');
+  // that section has its own prompt, and this bar would copy the other one
+  if(cc)new IntersectionObserver(function(e){ccSeen=e[0].isIntersecting;set()}).observe(cc);
+  function set(){var on=!heroSeen&&!lastSeen&&!ccSeen;bar.classList.toggle('on',on);document.body.classList.toggle('pad',on)}
   new IntersectionObserver(function(e){heroSeen=e[0].isIntersecting;set()}).observe(hero);
   if(last)new IntersectionObserver(function(e){lastSeen=e[0].isIntersecting;set()}).observe(last);
 })();
@@ -370,7 +401,7 @@ document.querySelectorAll('[data-main]').forEach(function(b){
   var label=b.textContent,pre=document.querySelector('.hero .prompt pre');
   function all(fn){document.querySelectorAll('[data-main]').forEach(fn)}
   function done(){all(function(x){x.textContent='Copied. Now paste it';x.classList.add('done')});setTimeout(function(){all(function(x){x.textContent=label;x.classList.remove('done')})},2200)}
-  function fallback(){pre.scrollIntoView();var r=document.createRange();r.selectNodeContents(pre);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+  function fallback(){var pk=pre.closest('.peek');if(pk)pk.open=true;pre.scrollIntoView();var r=document.createRange();r.selectNodeContents(pre);var s=getSelection();s.removeAllRanges();s.addRange(r)}
   b.addEventListener('click',function(){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(pre.textContent).then(done,fallback)}else{fallback()}});
 });
 document.querySelectorAll('[data-copy]').forEach(function(b){

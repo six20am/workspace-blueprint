@@ -50,7 +50,9 @@ def md_block(text, section, page="index"):
             while i < len(lines) and not lines[i].startswith("```"):
                 buf.append(lines[i]); i += 1
             prompt = esc("\n".join(buf).strip())
-            out.append(f'<div class="prompt"><pre>{prompt}</pre><button type="button" class="copy" data-copy>Copy</button></div>')
+            box = f'<div class="prompt"><pre>{prompt}</pre><button type="button" class="copy" data-copy>Copy</button></div>'
+            # the hero prompt folds on a phone; open in the markup, so with no script it simply shows
+            out.append(f'<details class="peek" open><summary>See what you are pasting</summary>{box}</details>' if section == "hero" else box)
             i += 1; continue
         if l.startswith("# "):
             out.append(f"<h1>{inline(l[2:])}</h1>")
@@ -274,7 +276,7 @@ def tools_table():
             continue
         placed |= {t["id"] for t in rows}
         trs = "".join(f"<tr><td>{esc(tool_name(t))}</td><td>{esc(tool_purpose(t))}</td><td>{esc(runs_on(t))}</td></tr>" for t in rows)
-        out.append(f'<details class="sched tools"{" open" if not out else ""}><summary><span>{esc(title)}</span><small>{len(rows)}</small></summary>'
+        out.append(f'<details class="sched tools"><summary><span>{esc(title)}</span><small>{len(rows)}</small></summary>'
                    f'<table><thead><tr><th scope="col">Tool</th><th scope="col">What it does</th><th scope="col">Setup installs it on</th></tr></thead>'
                    f"<tbody>{trs}</tbody></table></details>")
     left = [t["name"] for t in data if t["id"] not in placed]

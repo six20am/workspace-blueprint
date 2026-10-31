@@ -1,14 +1,14 @@
 {
  "_comment": "One plain line per skill for the website, grouped. A skill missing here still appears: the generator falls back to the first sentence of its SKILL.md description under 'More'.",
  "groups": [
+  "Everyday life",
+  "Writing",
   "Reading the web",
   "Video and audio",
   "Documents",
   "Images",
   "Research",
-  "Writing",
   "Design",
-  "Everyday life",
   "Keeping the workspace honest",
   "More"
  ],

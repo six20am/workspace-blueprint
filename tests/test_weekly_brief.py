@@ -117,7 +117,7 @@ class WeeklyBriefTests(unittest.TestCase):
         self.assertIn("- clients/acme/notes.md", text)
         self.assertIn("- 2026-11-10 | water bill due | from money/water.pdf", text)
         empty = dict(self.data, came_in=[], went_out=[], dates_due=[], gaps=[], sign_ins=[])
-        self.assertEqual(brief.render(empty).count("Nothing."), 5)
+        self.assertEqual(brief.render(empty).count("Nothing."), 6)
 
     def test_output_path_from_router_notes_line(self):
         out = brief.output_path(self.ws.root, TODAY, None)

@@ -20,6 +20,7 @@ Run it from the workspace folder. It looks at the last 7 days, ending today. Add
 - **Came in**: files changed this week, newest first, up to 40.
 - **Went out**: the ones inside a delivery or sent folder.
 - **Dates coming up**: the next 14 days from `paperwork/dates.md`, if the paperwork skill has written it.
+- **In town this week**: the next 7 days from the newest file in `local-events/`, if the local-events skill has written one.
 - **Gaps logged**: this week's lines in `setup/gap-log.md`.
 - **Sign-ins needed**: the accounts the last doctor run said the person connects by hand.
 

@@ -60,6 +60,7 @@ Do this without asking more questions. Tell them you are building and that it ta
 | video, podcast, recordings | `video-watcher`, `channel-mine`, `media-tools` |
 | letters, forms, mail, bills, notices | `paperwork`, `explain-this`, `writer` |
 | travel, trips, bookings | `trip-plan`, `summarize` |
+| what's going on in town, local events, community | `local-events`, `weekly-brief` |
 | job search, resume, applications | `resume-and-letter`, `meeting-prep` |
 | meetings, clients, calls | `meeting-prep`, `summarize`, `weekly-brief` |
 | anything else | `summarize`, `writer` |

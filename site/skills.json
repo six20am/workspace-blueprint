@@ -176,6 +176,10 @@
   "site-builder": [
    "Design",
    "Builds a small website with Astro 7 and puts it live on Cloudflare Workers, after the words and the look exist."
+  ],
+  "local-events": [
+   "Everyday life",
+   "Keeps a list of what is on in your town over the next two weeks, from the public calendars your city, library, parks and venues already publish."
   ]
  },
  "headlines": {

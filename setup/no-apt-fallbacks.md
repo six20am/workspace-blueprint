@@ -8,7 +8,34 @@ The installer runs `apt-get update` once before the tools and records whether it
 sudo apt-get update
 ```
 
-If that prints errors (a 500 from every mirror through a proxy was the case on the first outside run, on Grok's bot, 2026-10-31), use the routes below. They come from that one run and have not been tested here; test every tool after installing it, because a zero exit code is not proof.
+## First: do curl and apt disagree?
+
+Before any route around apt, test whether apt is blocked or only lost. Take a mirror URL from the error and fetch it with curl:
+
+```
+curl -sI http://deb.debian.org/debian/ | head -1
+```
+
+If curl gets an answer and apt gets `500 Internal Server Error` or `SSL connection failed` from the same place, apt is not blocked. It is going straight out while curl goes through an egress proxy. Point apt at the same proxy. The address is in `$https_proxy` or `$http_proxy` when the machine sets one; on a hosted agent sandbox it was `http://127.0.0.1:8791` (2026-10-31):
+
+```
+echo 'Acquire::http::Proxy "http://127.0.0.1:8791"; Acquire::https::Proxy "http://127.0.0.1:8791";' | sudo tee /etc/apt/apt.conf.d/99egress-proxy
+sudo apt-get update
+```
+
+The installer already tries this once on its own when `apt-get update` fails (the proxy from the environment first, then that address) and says so in the report. If it worked, the report has no "Package source unreachable" section and nothing here applies.
+
+Then prove it with one real package, not an exit code:
+
+```
+sudo apt-get install -y jq && jq --version
+```
+
+Only when that proxy address is not present, or apt still fails with it, go to the routes below. Never conclude apt is blocked for good without the curl test.
+
+## Routes around a blocked apt
+
+The routes come from one outside run (a 500 from every mirror, on a hosted bot, 2026-10-31; the proxy fix above was found afterwards and would have ended it) and have not been tested here; test every tool after installing it, because a zero exit code is not proof.
 
 | Tools | Route |
 |---|---|

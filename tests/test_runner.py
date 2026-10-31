@@ -251,5 +251,65 @@ class PlatformTest(unittest.TestCase):
                 self.assertTrue(t["check_linux"], t["id"] + " has install_linux but no check_linux")
 
 
+class AptProxyTest(unittest.TestCase):
+    """apt-get update failing while curl works means apt is bypassing the egress proxy; setup tries the proxy."""
+
+    def fake_run(self, fail_until_proxy=None, always_fail=False):
+        ran = []
+
+        def run(cmd):
+            ran.append(cmd)
+            if "apt-get update" not in cmd:
+                return 0
+            if always_fail:
+                return 100
+            if fail_until_proxy is None:
+                return 0
+            return 0 if any(fail_until_proxy in c and "tee" in c for c in ran) else 100
+        return run, ran
+
+    def probe(self, run, env):
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            ok = runner.probe_apt(run, sudo="sudo -n", env=env, have_apt=lambda: True)
+        return ok, out.getvalue()
+
+    def test_candidates_env_first_then_known_proxy(self):
+        self.assertEqual(runner.proxy_candidates({}), ["http://127.0.0.1:8791"])
+        self.assertEqual(runner.proxy_candidates({"https_proxy": "http://10.0.0.5:3128", "HTTP_PROXY": "http://10.0.0.5:3128"}),
+                         ["http://10.0.0.5:3128", "http://127.0.0.1:8791"])
+
+    def test_apt_fine_runs_once_and_writes_nothing(self):
+        run, ran = self.fake_run()
+        ok, _ = self.probe(run, {})
+        self.assertTrue(ok)
+        self.assertEqual(ran, ["sudo -n apt-get update -qq"])
+
+    def test_known_proxy_fixes_apt(self):
+        run, ran = self.fake_run(fail_until_proxy="127.0.0.1:8791")
+        ok, out = self.probe(run, {})
+        self.assertTrue(ok)
+        self.assertEqual(ran[0], "sudo -n apt-get update -qq")
+        self.assertIn("Acquire::http::Proxy \"http://127.0.0.1:8791\"; Acquire::https::Proxy \"http://127.0.0.1:8791\";", ran[1])
+        self.assertIn("sudo -n tee /etc/apt/apt.conf.d/99egress-proxy", ran[1])
+        self.assertEqual(ran[2], "sudo -n apt-get update -qq")
+        self.assertEqual(len(ran), 3)
+        self.assertIn("apt works through http://127.0.0.1:8791", out)
+
+    def test_env_proxy_tried_first_and_failed_one_removed(self):
+        run, ran = self.fake_run(fail_until_proxy="127.0.0.1:8791")
+        ok, _ = self.probe(run, {"https_proxy": "http://10.0.0.5:3128"})
+        self.assertTrue(ok)
+        self.assertIn("10.0.0.5:3128", ran[1])
+        self.assertEqual(ran[3], "sudo -n rm -f /etc/apt/apt.conf.d/99egress-proxy")
+        self.assertIn("127.0.0.1:8791", ran[4])
+
+    def test_nothing_helps_is_false_and_leaves_no_conf(self):
+        run, ran = self.fake_run(always_fail=True)
+        ok, _ = self.probe(run, {})
+        self.assertFalse(ok)
+        self.assertEqual(ran[-1], "sudo -n rm -f /etc/apt/apt.conf.d/99egress-proxy")
+        self.assertIsNone(runner.probe_apt(run, have_apt=lambda: False))
+
+
 if __name__ == "__main__":
     unittest.main()

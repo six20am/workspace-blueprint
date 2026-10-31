@@ -170,14 +170,46 @@ def run_tools(tools, run, check, dry_run=False, platform="mac", doctor=False, su
     return results
 
 
-def probe_apt(run, sudo=""):
-    """One `apt-get update` before the tools, as a witness. When the mirrors are unreachable every apt tool
-    fails while the run looks normal; the report then says so first, so the agent does not blame the tools.
-    Returns None where apt is not the package manager."""
-    if subprocess.call("command -v apt-get", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0:
+APT_PROXY_CONF = "/etc/apt/apt.conf.d/99egress-proxy"
+# the egress proxy a hosted agent sandbox used on 2026-10-31: curl went through it on its own, apt did not
+KNOWN_EGRESS_PROXY = "http://127.0.0.1:8791"
+
+
+def proxy_candidates(env=None):
+    """Proxy addresses to try for apt, in order: the environment's, then the known sandbox egress proxy."""
+    env = os.environ if env is None else env
+    out = []
+    for key in ("https_proxy", "HTTPS_PROXY", "http_proxy", "HTTP_PROXY", "all_proxy", "ALL_PROXY"):
+        v = (env.get(key) or "").strip()
+        if v and v not in out:
+            out.append(v)
+    if KNOWN_EGRESS_PROXY not in out:
+        out.append(KNOWN_EGRESS_PROXY)
+    return out
+
+
+def probe_apt(run, sudo="", env=None, have_apt=None):
+    """One `apt-get update` before the tools, as a witness. When it fails, apt is often not blocked but
+    bypassing the egress proxy that curl uses, so each candidate proxy is written to APT_PROXY_CONF and apt is
+    tried again; the first that works stays, the rest are removed. Returns None where apt is not the package
+    manager, True when apt works (with or without a proxy), False when nothing helped."""
+    if have_apt is None:
+        have_apt = lambda: subprocess.call("command -v apt-get", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+    if not have_apt():
         return None
     print("Checking the package source...", flush=True)
-    return run(with_sudo("$SUDO apt-get update -qq", sudo)) == 0
+    update = with_sudo("$SUDO apt-get update -qq", sudo)
+    if run(update) == 0:
+        return True
+    for proxy in proxy_candidates(env):
+        print("apt-get update failed. Trying the proxy at %s..." % proxy, flush=True)
+        conf = 'Acquire::http::Proxy "%s"; Acquire::https::Proxy "%s";' % (proxy, proxy)
+        run(with_sudo("echo %s | $SUDO tee %s >/dev/null" % (shlex.quote(conf), APT_PROXY_CONF), sudo))
+        if run(update) == 0:
+            print("apt works through %s; kept in %s." % (proxy, APT_PROXY_CONF), flush=True)
+            return True
+        run(with_sudo("$SUDO rm -f %s" % APT_PROXY_CONF, sudo))
+    return False
 
 
 def write_report(results, path, host, dry_run=False, doctor=False, source_ok=None):
@@ -187,7 +219,8 @@ def write_report(results, path, host, dry_run=False, doctor=False, source_ok=Non
     if source_ok is False:
         lines += ["## Package source unreachable", "",
                   "`apt-get update` failed before any tool was installed, so every apt-based tool below failed for that reason, "
-                  "not on its own. Check the mirrors or the proxy, then run setup again. Routes around a blocked apt: `setup/no-apt-fallbacks.md`.", ""]
+                  "not on its own. Setup tried pointing apt at the egress proxy and that did not help either. Test whether curl and apt "
+                  "disagree before blaming the mirrors: `setup/no-apt-fallbacks.md`, first section.", ""]
     attention = ([r for r in results if r["status"] == "failed"]
                  + [r for r in results if r["status"] == "skipped"]
                  + [r for r in results if r["status"] == "manual"])

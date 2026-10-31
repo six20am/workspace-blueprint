@@ -15,7 +15,7 @@ Tell the person, in three lines at most:
 
 Then ask: "Want me to fix the failed ones now, or after we set up your folders?" Default is after. Do not re-run anything that is marked installed or present.
 
-If the report says the package source was unreachable, or most of the failures are apt tools, the blueprint is not what failed: the machine cannot reach its package mirrors. Read `setup/no-apt-fallbacks.md` before fixing anything, and tell the person in one line that the computer's package source is down, not the tools.
+If the report says the package source was unreachable, or most of the failures are apt tools, the blueprint is not what failed. Most often apt is bypassing a proxy that curl uses; setup already tried the proxy once. Read `setup/no-apt-fallbacks.md` before fixing anything, run its curl test, and tell the person in one line what you found: the proxy fix, or that the computer's package source is down.
 
 ## 1. The questions
 

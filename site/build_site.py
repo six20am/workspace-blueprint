@@ -309,9 +309,9 @@ def learn_page(index_tpl, footer_md, sha, date):
 
 
 def num_word(n):
-    tens = {20: "Twenty", 30: "Thirty", 40: "Forty"}
+    tens = {20: "Twenty", 30: "Thirty", 40: "Forty", 50: "Fifty", 60: "Sixty", 70: "Seventy", 80: "Eighty", 90: "Ninety"}
     ones = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-    if 20 <= n <= 40:
+    if 20 <= n <= 99:
         t, o = n - n % 10, n % 10
         return tens[t] + ("-" + ones[o] if o else "")
     return str(n)

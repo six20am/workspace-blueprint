@@ -26,11 +26,11 @@
   ],
   "agent-reach": [
    "Reading the web",
-   "Reads posts behind logins on X, Reddit, LinkedIn, Facebook, Instagram and YouTube. Throwaway accounts only."
+   "Reads posts that need a login on X, Reddit, LinkedIn, Facebook, Instagram and YouTube. Sign in with a spare account, never your real one."
   ],
   "agent-web-fetch": [
    "Reading the web",
-   "Decides which reader to try for a hard page, and treats whatever comes back as data, not instructions."
+   "Picks the right reader when a page won't open, and says so when nothing can reach it."
   ],
   "chrome-tools": [
    "Reading the web",
@@ -48,9 +48,21 @@
    "Video and audio",
    "Reads a whole YouTube channel or podcast back catalog and sorts it by theme."
   ],
+  "media-tools": [
+   "Video and audio",
+   "Converts, trims, shrinks and resizes video, audio and image files. Makes a GIF or pulls the audio out."
+  ],
   "markitdown": [
    "Documents",
    "Turns Word, Excel, PowerPoint, PDF, HTML and Outlook files into plain text with a note of where each came from."
+  ],
+  "document-builder": [
+   "Documents",
+   "Turns your notes into a Word, PDF or PowerPoint file, or a table into a file a spreadsheet can open."
+  ],
+  "summarize": [
+   "Documents",
+   "Turns a long document, folder or thread into a short brief: decisions, open items and dates."
   ],
   "image-search": [
    "Images",
@@ -68,17 +80,53 @@
    "Images",
    "Collects every image from an existing website, with its details and the logo picked out."
   ],
+  "photo-organizer": [
+   "Images",
+   "Renames your photos by the date taken, sets duplicates aside and sorts them by month. Nothing deleted, nothing uploaded."
+  ],
   "deep-research": [
    "Research",
    "Breaks a question into parts, searches from several angles, checks claims against each other, and writes a sourced brief."
   ],
   "notebooklm-research": [
    "Research",
-   "Runs Google NotebookLM from the workspace and knows which of its outputs answers which question."
+   "Studies a pile of sources, even YouTube links, in Google NotebookLM."
+  ],
+  "meeting-prep": [
+   "Research",
+   "One page on a person or company before a call: who they are, what they want, and three questions to ask."
   ],
   "voice-extractor": [
-   "Keeping the workspace honest",
-   "Builds your voice file from things you actually wrote, then checks it blind."
+   "Writing",
+   "Learns how you write from emails and notes you wrote, so what it writes sounds like you."
+  ],
+  "writer": [
+   "Writing",
+   "Writes everyday emails, replies, notes and thank-yous in your voice."
+  ],
+  "social-copywriter": [
+   "Writing",
+   "Posts and captions for nine platforms, in your voice. Drafts only. It never posts."
+  ],
+  "resume-and-letter": [
+   "Writing",
+   "Fits your resume to a job posting, writes the cover letter, and writes letters that need a result: a dispute, a landlord, a refund."
+  ],
+  "explain-this": [
+   "Everyday life",
+   "Explains a contract, bill, medical letter or notice in plain words, with the dates and three things to do."
+  ],
+  "paperwork": [
+   "Everyday life",
+   "Reads a scan or photo of a letter, bill or form, names it, files it, and pulls out the dates that matter."
+  ],
+  "money-log": [
+   "Everyday life",
+   "Turns a bank or card export into a monthly summary by category and a list of repeat charges. No bank connection."
+  ],
+  "trip-plan": [
+   "Everyday life",
+   "Turns booking confirmations into one itinerary in date order, plus a list of what's still not booked."
   ],
   "gap-finder": [
    "Keeping the workspace honest",
@@ -86,15 +134,31 @@
   ],
   "tool-vetting": [
    "Keeping the workspace honest",
-   "Six questions before anything gets installed. Adopt, try, or skip."
+   "Before you install a tool you saw online, checks what it really is and whether you already have something that does the job."
   ],
   "workspace-diff": [
    "Keeping the workspace honest",
-   "Compares an outside method, claim by claim, against how your workspace already works."
+   "Compares a course or method you found with your workspace and lists what it would change. Changes nothing without your yes."
   ],
   "workspace-audit": [
    "Keeping the workspace honest",
-   "Checks that your map still matches the folders on disk. Moves nothing without your yes."
+   "Checks that the files telling Claude where things are still match your folders. Moves nothing without your yes."
+  ],
+  "doctor": [
+   "Keeping the workspace honest",
+   "Checks every tool and sign-in the workspace needs, and puts back only what's missing."
+  ],
+  "undo": [
+   "Keeping the workspace honest",
+   "Keeps a save history of your folder, so any change can be taken back."
+  ],
+  "outbound-check": [
+   "Keeping the workspace honest",
+   "Before anything leaves, checks it for passwords, account numbers, other people's names and your address."
+  ],
+  "weekly-brief": [
+   "Keeping the workspace honest",
+   "One page on your week: what came in, what went out, and the dates ahead."
   ],
   "update": [
    "Keeping the workspace honest",
@@ -103,13 +167,13 @@
  },
  "headlines": {
   "Reading the web": "Reads the web, even behind logins",
-  "Video and audio": "Turns video and audio into text you can use",
-  "Documents": "Reads your documents",
-  "Images": "Finds photos, with the rights recorded",
+  "Video and audio": "Turns video and audio into text, and converts the files",
+  "Documents": "Reads your documents and makes new ones",
+  "Images": "Finds photos with the rights recorded, and sorts your own",
   "Research": "Answers a question from many sources, with receipts",
   "Keeping the workspace honest": "Looks after itself and stays current",
   "More": "Added since this page was written",
-  "Writing": "Coming: writing in your voice",
-  "Everyday life": "Coming: the paperwork of life"
+  "Writing": "Writes in your voice",
+  "Everyday life": "Handles the paperwork of life"
  }
 }

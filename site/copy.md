@@ -7,6 +7,7 @@ cta: Download the zip
 persona: none
 swipe: swipe_empty: web-page
 set_aside: none
+revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft
 ```
 
 <!-- hero -->
@@ -55,7 +56,7 @@ You explain your business, paste in a file, get a decent answer, and the next da
 <!-- can-do -->
 ## What it can do on day one
 
-It arrives knowing how to do twenty-one things. Most of them bring outside material in: web pages, posts, videos, documents, photos. The rest look after the workspace itself. Another {{coming}} are designed and on the way, marked so you can see where it's going. Each group opens to the full list.
+It arrives knowing how to do thirty-eight things. It reads web pages, videos, documents and photos, and digs into a question across many sources. It writes emails, posts and letters in your voice. It handles everyday jobs like bills, trips and spending. And it looks after the workspace itself. Each group opens to the full list.
 
 <!-- generated skill list goes here -->
 
@@ -113,7 +114,7 @@ New skills and tools land in the public repo as they're built. Double-click `upd
 <!-- status -->
 ## Where it stands
 
-The Windows installer has been through a full run on one machine. The Mac installer is new and hasn't been tested yet. If it stops, open an issue on GitHub and attach the file `setup/setup-report.md`. More skills are on the way.
+The Windows installer has been through a full run on one machine. The Mac installer is new and hasn't been tested yet. If it stops, open an issue on GitHub and attach the file `setup/setup-report.md`. Next up is the Grok Bot template. It isn't out yet.
 
 <!-- faq -->
 ## Questions people ask

@@ -148,10 +148,21 @@ def pipe_rows(text):
     return [tuple(p.strip() for p in l.split("|", 1)) for l in text.strip().splitlines() if "|" in l]
 
 
+def label(t):
+    """The name a reader sees. An `mcp` entry is named for the installer ("Connect image search to Claude");
+    the page shows the thing itself ("Image search")."""
+    name = t["name"]
+    if t.get("area") == "mcp":
+        name = re.sub(r"^Connect\s+", "", name)
+        name = re.sub(r"\s+to Claude$", "", name)
+        name = name[:1].upper() + name[1:]
+    return name
+
+
 def tools():
     data = json.load(open(os.path.join(ROOT, "setup", "tools.json"), encoding="utf-8"))
-    names = [t["name"] for t in data if t.get("area") in ("base", "claude", "plugins", "tools", "mcp", "programs")]
-    logins = [t["name"] for t in data if t.get("login")]
+    names = [label(t) for t in data if t.get("area") in ("base", "claude", "plugins", "tools", "mcp", "programs")]
+    logins = [label(t) for t in data if t.get("login")]
     return names, logins
 
 
@@ -183,7 +194,7 @@ def main():
     for sid, text in sections.items():
         if sid == "can-do":
             text = text.replace("<!-- generated skill list goes here -->", "")
-            text = re.sub(r"knowing how to do twenty-one things", f"knowing how to do {num_word(count).lower()} things", text)
+            text = re.sub(r"knowing how to do [A-Za-z-]+ things", f"knowing how to do {num_word(count).lower()} things", text)
             if coming == 0:  # nothing left on the roadmap: drop the sentence about what is on the way
                 text = re.sub(r"\s*Another \{\{coming\}\}[^.]*?where it's going\.", "", text)
             text = text.replace("{{coming}}", str(coming))

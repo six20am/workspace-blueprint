@@ -22,13 +22,13 @@ Free. A zip file. Inside it, a setup that installs the tools, installs Claude Co
 
 **Setup.** Unzip, move the folder to Documents, double-click `setup.cmd` (Windows) or `setup.command` (Mac). Fifteen to thirty minutes, most of it installs, in a black window. Windows may ask "allow this app to make changes" a few times. When it finishes, Claude opens and asks four questions: what you do, what work you want help with, how you like things filed, how you want it to sound when it writes for you. "Not sure" is an acceptable answer to each; it picks something sensible. Then it builds the folders and names three things to try.
 
-**Status.** Windows installer tested on one machine. Mac installer is new and untested; the page must say so in those words or plainer.
+**Status.** Setup writes `setup/setup-report.md` (what installed, what failed, what needs a sign-in); that file is what to attach to an issue. Windows installer tested on one machine. Mac installer is new and untested; the page must say so in those words or plainer.
 
 **What gets built.** Folders in one of six filing styles (military, by stage, by client or project, PARA, numbered index, by date). Three routing files so the AI loads only what a task needs. A voice file so anything it writes sounds like the owner.
 
 **What it can do, today.** Twenty-one skills. Reading: open web pages, X posts, pages that block fetching, posts behind logins on X, Reddit, LinkedIn, Facebook, Instagram and YouTube, pages the owner is signed in to in their own browser, what people said about a topic in the last 30 days across eight platforms. Video and audio: a timestamped transcript of any video, on the owner's own computer; a whole YouTube channel or podcast read and clustered. Documents: Word, Excel, PowerPoint, PDF and Outlook files into text with a record of where each came from. Images: free stock photos with the license recorded; the owner's own galleries; Library of Congress; every image on an existing website. Research: a sourced multi-pass brief; Google NotebookLM run from the workspace. Care: a voice extractor, a gap finder that notices when a task has no tool and offers to build one, a tool-vetting checklist, a workspace diff, and an update skill.
 
-**What it cannot do yet.** Write beyond the voice file (no general writer, no social posts), edit media, make Word or PDF documents, handle paperwork, money, photos or trips. These are designed and not built. The page may say more skills are coming only as "more skills are on the way"; no dates, no list.
+**What it cannot do yet.** Write beyond the voice file (no general writer, no social posts), edit media, make Word or PDF documents, handle paperwork, money, photos or trips. These are designed and not built. Seventeen more skills are designed and not built (the list is `site/roadmap.json`, rendered at build time and marked "coming" next to the shipped ones). The page may say how many are coming and show them marked; no dates, and never as if they work today.
 
 **Updates.** `update.cmd` / `update.command`, or asking Claude to update, pulls the newest skills and tools from the public repo and installs anything new. It never touches the owner's files, map, routing or voice file. If the owner edited a template file, a copy is saved first. The workspace offers the update once when it is more than 30 days old, and never runs it unasked (`.claude/skills/update/SKILL.md`). Problems with setup go to the repo's GitHub issues page: `github.com/six20am/workspace-blueprint/issues`.
 
@@ -69,20 +69,20 @@ Free. A zip file. Inside it, a setup that installs the tools, installs Claude Co
 
 ## CTA
 
-One: **Download the zip**. Button label is microcopy; the copywriter may propose it. The same action may repeat at the bottom of the page.
+One: **Download the zip**. Button label is microcopy; the copywriter may propose it. The same action repeats after how-it-works, after first-week, and at the close, and a phone-only sticky bar carries it once the hero scrolls away.
 
 ## Sections, in order (the page framework for this piece)
 
 ```
 hero            headline, one line under it, the CTA
 problem         the chat box forgets; your files are not in it
-what-you-get    three outcomes, one line each
+what-you-get    three outcomes, one line each, then a figure: a sample folder tree from setup/filing-styles.md (by stage), product data not copy
 how-it-works    three steps: unzip, run setup, answer four questions
-can-do          one line introducing the skills list; the list itself is generated from the skill files at build time, not written
-two-ways        which one are you on: Claude Code on your computer (the zip), or Grok Bot on its cloud computer (template not out yet, repo today)
-paste-this      two prompts in boxes, one per tool, each with a Copy button; the Grok one marked untested
+can-do          one line introducing the skills; six group cards, each with a plain headline (from site/skills.json) and the first two skills in sentence form, the rest behind "Show all"; shipped and coming both generated at build time
+two-ways        Claude Code on your computer (the zip) as the main card; Grok Bot as one line under it (template not out yet, repo today)
+paste-this      the Claude Code prompt in a box with a Copy button; the Grok Bot prompt behind a "Have a Grok Bot?" disclosure, marked untested
 first-week      seven asks that work today, and how to ask
-installed       what gets installed, size, privacy, the sign-in list
+installed       what gets installed, size, privacy; the full tool list behind a disclosure, the sign-in list visible
 stays-current   the update path in three sentences
 status          Windows tested, Mac untested, more skills on the way
 faq             four questions: Do I need an account? Is it free? What does it send? Can I undo it?

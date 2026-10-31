@@ -37,19 +37,21 @@ You explain your business, paste in a file, get a decent answer, and the next da
 2. **Run setup.** Double-click `setup.cmd` on Windows or `setup.command` on a Mac. A black window installs the tools and Claude Code. Fifteen to thirty minutes. Windows may ask "allow this app to make changes" a few times. Say yes.
 3. **Answer four questions.** Claude opens and asks what you do, what work you want help with, how you like things filed, and how it should sound. "Not sure" is a fine answer. It builds the folders and tells you three things to try.
 
+[Download the zip]
+
 <!-- can-do -->
 ## What it can do on day one
 
-It arrives knowing how to do twenty-one things. Most of them bring outside material in: web pages, posts, videos, documents, photos. The rest look after the workspace itself. Here's the full list.
+It arrives knowing how to do twenty-one things. Most of them bring outside material in: web pages, posts, videos, documents, photos. The rest look after the workspace itself. Another {{coming}} are designed and on the way, marked so you can see where it's going. Each group opens to the full list.
 
 <!-- generated skill list goes here -->
 
 <!-- two-ways -->
-## Two ways to run it
+## Where it runs
 
 **Claude Code, on your own computer.** This is the zip. Unzip it, double-click setup, answer four questions, and everything lives in a folder on your machine. Windows is tested. Mac is new and untested.
 
-**Grok Bot, on its own cloud computer.** Same method, rebuilt as a Grok Bot template. Nothing to install, because the bot already has a computer. The first time you talk to it, it asks the four questions, builds its folder, and saves a rule to read the map before every task. The template isn't out yet. The repo is: github.com/six20am/grokbot-blueprint.
+Have a Grok Bot? Same method, nothing to install, because the bot already has a computer. The template isn't out yet. The repo is github.com/six20am/grokbot-blueprint.
 
 <!-- paste-this -->
 ## Already have one? Paste this
@@ -81,6 +83,8 @@ Say what you want, name the file or link, and say where the result should go. "N
 6. Ask it to update.
 7. Ask for something it has no tool for, and watch it say so and offer to build one.
 
+[Download the zip]
+
 <!-- installed -->
 ## What gets installed, and what doesn't leave your computer
 
@@ -91,7 +95,7 @@ Setup sends nothing anywhere. It signs in to nothing for you. Five things need y
 <!-- stays-current -->
 ## It doesn't go stale
 
-New skills and tools land in the public repo as they're built. Double-click `update.cmd`, or ask Claude to update, and your workspace pulls them in and installs anything new. It never touches your own files or the folders it built for you. If you edited one of the template files, a copy is saved first. Once the workspace is 30 days old, Claude asks once whether you want to update. It never updates without your yes.
+New skills and tools land in the public repo as they're built. Double-click `update.cmd` (`update.command` on a Mac), or ask Claude to update, and your workspace pulls them in and installs anything new. It never touches your own files or the folders it built for you. If you edited one of the template files, a copy is saved first. Once the workspace is 30 days old, Claude asks once whether you want to update. It never updates without your yes.
 
 <!-- status -->
 ## Where it stands
@@ -108,7 +112,7 @@ You need a Claude account, because Claude Code is what runs the workspace. The z
 The zip is free and the code is public. Claude has its own plans, and those are between you and Claude.
 
 **What does it send out?**
-Nothing during setup. Afterward, the only things that leave are what you ask Claude to go fetch or send, and the sign-ins you do yourself.
+Nothing during setup. It signs in to nothing for you; the five sign-ins are yours to do.
 
 **Can I undo it?**
 Yes. It's one folder and a few standard programs. Delete the folder and everything it built is gone. The programs were installed with winget on Windows or Homebrew on a Mac, and those same tools remove them.

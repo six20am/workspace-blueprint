@@ -28,7 +28,7 @@ def inline(s):
     s = esc(s)
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
-    s = re.sub(r"\b(github\.com/[\w./-]+)", r'<a href="https://\1">\1</a>', s)
+    s = re.sub(r"\b(github\.com/[\w./-]*[\w/])", r'<a href="https://\1">\1</a>', s)
     if "what the bot said" in s:  # the Grok Bot path reports to its own repo
         s = s.replace("open an issue on GitHub", '<a href="https://github.com/six20am/grokbot-blueprint/issues">open an issue on GitHub</a>')
     else:
@@ -94,13 +94,18 @@ def read_copy():
 
 
 def skills():
+    """Shipped skills from .claude/skills (plain lines from skills.json), plus designed-but-not-built ones from
+    roadmap.json marked as coming. A roadmap entry whose folder already exists is dropped, so nothing shows twice."""
     meta = json.load(open(os.path.join(HERE, "skills.json"), encoding="utf-8"))
+    road = json.load(open(os.path.join(HERE, "roadmap.json"), encoding="utf-8"))["skills"]
     groups = {g: [] for g in meta["groups"]}
     skills_dir = os.path.join(ROOT, ".claude", "skills")
+    shipped = []
     for d in sorted(os.listdir(skills_dir)):
         p = os.path.join(skills_dir, d, "SKILL.md")
         if not os.path.isfile(p):
             continue
+        shipped.append(d)
         if d in meta["skills"]:
             group, line = meta["skills"][d]
         else:
@@ -109,17 +114,32 @@ def skills():
             desc = re.sub(r"\s+", " ", (m.group(1) if m else "")).strip().strip('"').strip("'")
             line = re.split(r"(?<=[.!?])\s", desc)[0] if desc else "New skill."
             group = "More"
-        groups.setdefault(group, []).append((d, line))
-    count = sum(len(v) for v in groups.values())
+        groups.setdefault(group, []).append((d, line, False))
+    coming = 0
+    for d, (group, line) in road.items():
+        if d in shipped:
+            continue
+        groups.setdefault(group, []).append((d, line, True))
+        coming += 1
+    count = len(shipped)
     out = []
     for g, items in groups.items():
         if not items:
             continue
-        out.append(f'<div class="group"><h3>{esc(g)}</h3><ul class="skills">')
-        for name, line in items:
-            out.append(f'<li><code>{esc(name)}</code><span>{esc(line)}</span></li>')
-        out.append("</ul></div>")
-    return count, "\n".join(out)
+        have = sum(1 for _, _, c in items if not c)
+        soon = len(items) - have
+        headline = meta.get("headlines", {}).get(g, g)
+        meta_line = (f"{have} in the box" if have else "") + (f"{', ' if have else ''}{soon} coming" if soon else "")
+        lead = [it for it in items if not it[2]][:2] or items[:2]
+        out.append(f'<div class="group{" all-coming" if not have else ""}"><p class="glabel">{esc(g)} <span>{meta_line}</span></p><h3>{esc(headline)}</h3>')
+        out.append("<ul class=\"lead\">" + "".join(f'<li>{esc(line)}{" <em>coming</em>" if c else ""}</li>' for _, line, c in lead) + "</ul>")
+        out.append(f'<details class="all"><summary>Show all {len(items)}</summary><ul class="skills">')
+        for name, line, is_coming in items:
+            cls = ' class="coming"' if is_coming else ""
+            tag = '<em>coming</em>' if is_coming else ""
+            out.append(f'<li{cls}><code>{esc(name)}</code>{tag}<span>{esc(line)}</span></li>')
+        out.append("</ul></details></div>")
+    return count, coming, "\n".join(out)
 
 
 def tools():
@@ -140,7 +160,7 @@ def version():
 
 def main():
     sections = read_copy()
-    count, skills_html = skills()
+    count, coming, skills_html = skills()
     tool_names, logins = tools()
     sha, date = version()
     page = sections.pop("page-level", "")
@@ -152,10 +172,16 @@ def main():
         if sid == "can-do":
             text = text.replace("<!-- generated skill list goes here -->", "")
             text = re.sub(r"knowing how to do twenty-one things", f"knowing how to do {num_word(count).lower()} things", text)
+            text = text.replace("{{coming}}", str(coming))
         body[sid] = md_block(text, sid)
         if sid == "two-ways":
             # the two bold-led paragraphs become side-by-side cards
             body[sid] = re.sub(r"(<p><strong>.*?</p>\s*<p><strong>.*?</p>)", r'<div class="paths">\1</div>', body[sid], flags=re.S)
+        if sid == "paste-this":
+            # the Grok Bot prompt sits behind a disclosure; the Claude Code one stays open
+            body[sid] = re.sub(r"<p><strong>Have a Grok Bot</strong></p>(.*)$", lambda m: '<details class="grok"><summary>Have a Grok Bot?</summary>' + m.group(1) + '</details>', body[sid], flags=re.S)
+        if sid == "two-ways":
+            body[sid] = body[sid].replace("<p>Have a Grok Bot?", '<p class="grokline">Have a Grok Bot?')
     body["can-do"] += f'\n<div class="skillgrid">{skills_html}</div>'
     tool_list = "".join(f"<li>{esc(n)}</li>" for n in tool_names)
     login_list = "".join(f"<li>{esc(n)}</li>" for n in logins)
@@ -167,7 +193,7 @@ def main():
     out = (out.replace("{{title}}", esc(title)).replace("{{meta}}", esc(meta))
               .replace("{{tools}}", tool_list).replace("{{logins}}", login_list)
               .replace("{{download}}", DOWNLOAD).replace("{{repo}}", REPO_URL)
-              .replace("{{sha}}", esc(sha)).replace("{{date}}", esc(date)).replace("{{count}}", str(count)))
+              .replace("{{sha}}", esc(sha)).replace("{{date}}", esc(date)).replace("{{count}}", str(count)).replace("{{coming}}", str(coming)))
     left = re.findall(r"{{[a-z-]+}}", out)
     if left:
         raise SystemExit(f"unfilled placeholders: {left}")

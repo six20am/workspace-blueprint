@@ -22,7 +22,7 @@ Download https://github.com/six20am/workspace-blueprint/archive/refs/heads/main.
 [Copy the prompt]
 
 <!-- hero-status -->
-AI services | New, not tested yet
+AI services | Run once; fixes from that run are in
 Claude Code on Windows | Tested on one machine
 Claude Code on a Mac | New, not tested yet
 Cost | Free. Your AI service has its own plans
@@ -64,7 +64,7 @@ You explain your business, paste in a file, get a decent answer, and the next da
 
 1. **Copy the prompt.** It's at the top of this page.
 2. **Paste it into your AI.** Use a service where the AI can run programs, keep files between chats, and keep a standing instruction. It downloads this blueprint and sets it up for itself.
-3. **Answer a few questions.** It asks what you do, what work you want help with, and how it should sound. Then it shows you the folders, names the three things it will never do without asking (send, spend, delete), and asks what to add. "Not sure" is a fine answer. It builds the folders and tells you what to try first.
+3. **Answer a few questions.** It asks what you do, names the kinds of work it would set up and checks them with you, and asks how it should sound. Then it shows you the folders, names the three things it will never do without asking (send, spend, delete), and asks what to add. "Not sure" is a fine answer. It builds the folders and tells you what to try first.
 
 If your AI can only chat, this won't work. Use Claude Code instead.
 
@@ -124,7 +124,7 @@ New skills and tools are added to the public download as they're built. On an AI
 <!-- status -->
 ## Where it stands
 
-The AI service path is new and hasn't been run on a real service yet. The Claude Code installer has been tested on one Windows machine. The Mac installer is new and hasn't been tested yet. If something stops, open an issue on GitHub. On Claude Code, attach the setup report, the file named setup-report.md in the setup folder. Next up: the first run on an AI service, and the Mac installer test.
+The AI service path has been run once on a real service. It got as far as the setup questions. That computer couldn't reach its package source, so the installer now says so up front instead of looking fine, and the questions were tightened from what that run showed. The Claude Code installer has been tested on one Windows machine. The Mac installer is new and hasn't been tested yet. If something stops, open an issue on GitHub. On Claude Code, attach the setup report, the file named setup-report.md in the setup folder. Next up: a full run on an AI service through the build and the first task, and the Mac installer test.
 
 <!-- faq -->
 ## Questions people ask

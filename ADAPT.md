@@ -17,7 +17,7 @@ If any of the three is missing, stop and tell the person which one, in one line.
 1. Download `https://github.com/six20am/workspace-blueprint/archive/refs/heads/main.zip` and unzip it into a folder of its own, named for you. Never unzip into the shared root of your file area; other agents or the person may keep files there. Work from that folder from now on.
 2. Write `setup/adapter.json` with exactly: `{"adapter": "other", "skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"}`
 3. Save the platform table below as `setup/platform.md`. The playbook reads that file for the names on this platform.
-4. Run `bash setup/setup.sh --no-launch`. It installs what `setup/tools.json` lists, skips anything already present, and writes `setup/setup-report.md`. Say what it will install, and why, before you run it.
+4. Run `bash setup/setup.sh --no-launch`. It installs what `setup/tools.json` lists, skips anything already present, and writes `setup/setup-report.md`. Say what it will install, and why, before you run it. If the report says the package source was unreachable, read `setup/no-apt-fallbacks.md` before you blame anything.
 5. Save one standing rule in whatever you use for memory or standing instructions: "Before any task, read MAP.md and ROUTER.md in this folder, then load only the files the matching row names."
 6. Follow `setup/SETUP.md` from step 0, using the table below: read the report, ask the questions one at a time, build, fix, run the test task, and close. The build writes `MAP.md` and `ROUTER.md`.
 7. Prove the rule from step 5 in a fresh conversation: if you do not read `MAP.md` and `ROUTER.md` there without being told, the rule did not save. Fix it and prove it again.

@@ -1,7 +1,7 @@
 # Workspace Blueprint: Design
 
 **Date:** 2026-10-31
-**Status:** Phases 1 to 3 built; Phase 4 built, motion-video included; Phase 5 (neutral path) built 2026-10-31; a run on a real third-party agent is still to do
+**Status:** Phases 1 to 3 built; Phase 4 built, motion-video included; Phase 5 (neutral path) built 2026-10-31 and run once the same day on Grok's bot. That run reached the questions; its three findings (apt mirrors unreachable through the proxy with the installer looking fine, the open "what would you hand off" question, the six-style pick) are fixed: `setup/no-apt-fallbacks.md` and the apt probe in `runner.py`, and the revised questions in `setup/SETUP.md`. The build and test task on that agent are still to see.
 **Repos:** core `six20am/workspace-blueprint`, public. The vendor mirror repo was retired with Phase 5.
 **Companions:** `ADAPT.md` at the repo root (the neutral path, written for the agent).
 
@@ -52,7 +52,7 @@ Deviation from the tree above, as built: `setup.ps1`, `setup.sh` and `runner.py`
 
 - `ROUTER.md` (neutral path) and `CLAUDE.md` (Claude) carry one row per kind of task naming one or two skills. `skills/INDEX.md` holds every skill's one line and is read only when no row matches, which is also when `gap-finder` fires.
 - Question 2's answers pick the owner's starting rows: a photographer gets `media-tools` and `photo-organizer`; a bookkeeper gets `money-log` and `paperwork`. A mapping table in `setup/SETUP.md` from common answers to rows; unmatched answers get `summarize` and `writer`.
-- Setup asks three questions (what you do, what work to hand off, how it should sound), shows the folder tree it picked and asks for a yes, then states what it never does without asking (send, spend, delete) and asks for additions; that list goes into the map and every section's notes (2026-10-31, replaces the filing-style pick: a first-time owner has no basis to choose between six styles). It ends by running `doctor`, then the first-week card (five things to try, from the answers), then one line on `gap-finder`.
+- Setup asks what you do, proposes two or three sections from that and asks for a correction (an open "what would you hand off" got "everything" from every owner on the first outside run, 2026-10-31), asks how it should sound, shows the folder tree it picked with one reason and asks for a yes, then states what it never does without asking (send, spend, delete) and asks for additions; that list goes into the map and every section's notes (2026-10-31, replaces the filing-style pick: a first-time owner has no basis to choose between six styles). It ends by running `doctor`, then the first-week card (five things to try, from the answers), then one line on `gap-finder`.
 - Every skill ships one test task in `skills/<name>/TEST.md`: the ask, the input, what done looks like. The adapters' acceptance test runs them.
 
 ## Section 3: The skills (38 core)

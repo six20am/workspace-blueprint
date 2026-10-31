@@ -15,18 +15,20 @@ Tell the person, in three lines at most:
 
 Then ask: "Want me to fix the failed ones now, or after we set up your folders?" Default is after. Do not re-run anything that is marked installed or present.
 
+If the report says the package source was unreachable, or most of the failures are apt tools, the blueprint is not what failed: the machine cannot reach its package mirrors. Read `setup/no-apt-fallbacks.md` before fixing anything, and tell the person in one line that the computer's package source is down, not the tools.
+
 ## 1. The questions
 
-Three questions, one look at the folders, and one boundary. Ask them one at a time. Wait for the answer before the next. Each has a "not sure" answer; if you get one, say what you picked and move on. The person may have nothing yet: no files, no folders, no tools. Never ask what they already have.
+Two questions, two things to confirm, and one boundary. Ask them one at a time. Wait for the answer before the next. Each has a "not sure" answer; if you get one, say what you picked and move on. The person may have nothing yet: no files, no folders, no tools. Never ask what they already have. Never ask an open question that "everything" can answer; propose, then ask for the correction.
 
 **Q1. "What do you do?"**
 Free text. Use the answer to name things and to pick examples in the files you write. "Not sure" is not an option here; if they give one word, that is enough.
 
-**Q2. "What are the two or three kinds of work you would hand to an assistant if you had one?"**
-Free text. Each answer becomes a section of their one workspace: its own folder and its own section notes file, so you load only what that kind of work needs. Say "section" to the person, never "workspace", for these; to them the workspace is the whole folder. Two is fine, three is better, more than four means ask them to pick the top three. "Not sure": pick three from Q1 and say them back; let them correct you.
+**Q2. Propose the sections, then: "I'd set up these three: [a], [b], [c]. Right, or change one?"**
+Do not ask what work they would hand to an assistant; every owner answers "everything" and you end up guessing. From Q1, name two or three kinds of work in one line, each in their words (a photographer: shoots, editing, client delivery; a landlord: tenants, repairs, the books). Each becomes a section of their one workspace: its own folder and its own section notes file, so you load only what that kind of work needs. Say "section" to the person, never "workspace", for these; to them the workspace is the whole folder. Two is fine, three is better. If they add a fourth, keep it; if they add more, ask which three matter most. "Right" or "not sure" means build them as proposed.
 
-**Q3. Show the folders, then: "Here is how I would file it. Good, or want it another way?"**
-Do not ask them to choose a filing style; they have no basis to pick. Read `setup/filing-styles.md` and pick the style yourself from Q1 and Q2, using each style's "suits" line: work that belongs to someone else is by client or project, work that moves start to finish is by stage, and by stage when nothing fits. Show its sample tree with their own sections swapped in, short, no file paths. "Good" or "not sure" means build it. If they want it another way, show the six names with their one-line "suits" sentence and let them pick. If they pick two styles, combine them: the first sets the top level, the second sets the layout inside the folder where the work happens, and show the merged tree before building.
+**Q3. Show the folders, then: "For you I'd file it like this, because [one reason]. Take that, or something else?"**
+Do not ask them to choose a filing style; a list of six stalls people, and a recommendation with a reason gets answered in one word. Read `setup/filing-styles.md` and pick the style yourself from Q1 and Q2, using each style's "suits" line: work that belongs to someone else is by client or project, work that moves start to finish is by stage, and by stage when nothing fits. Say the reason in their terms ("because your work belongs to other people"). Show its sample tree with their own sections swapped in, short, no file paths. "Take it" or "not sure" means build it. If they want it another way, show the six names with their one-line "suits" sentence and let them pick. If they pick two styles, combine them: the first sets the top level, the second sets the layout inside the folder where the work happens, and show the merged tree before building.
 
 **Q4. "When I write for you, how should it sound?"**
 Three choices: plain and direct, warm, formal. Or they can paste something they wrote. "Not sure": plain and direct.

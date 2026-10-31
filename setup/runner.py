@@ -170,10 +170,24 @@ def run_tools(tools, run, check, dry_run=False, platform="mac", doctor=False, su
     return results
 
 
-def write_report(results, path, host, dry_run=False, doctor=False):
+def probe_apt(run, sudo=""):
+    """One `apt-get update` before the tools, as a witness. When the mirrors are unreachable every apt tool
+    fails while the run looks normal; the report then says so first, so the agent does not blame the tools.
+    Returns None where apt is not the package manager."""
+    if subprocess.call("command -v apt-get", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0:
+        return None
+    print("Checking the package source...", flush=True)
+    return run(with_sudo("$SUDO apt-get update -qq", sudo)) == 0
+
+
+def write_report(results, path, host, dry_run=False, doctor=False, source_ok=None):
     heading = "# Doctor report" if doctor else "# Setup report"
     lines = [heading + (" (dry run, nothing installed)" if dry_run else ""), "",
              "Run: %s on %s" % (datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), host), ""]
+    if source_ok is False:
+        lines += ["## Package source unreachable", "",
+                  "`apt-get update` failed before any tool was installed, so every apt-based tool below failed for that reason, "
+                  "not on its own. Check the mirrors or the proxy, then run setup again. Routes around a blocked apt: `setup/no-apt-fallbacks.md`.", ""]
     attention = ([r for r in results if r["status"] == "failed"]
                  + [r for r in results if r["status"] == "skipped"]
                  + [r for r in results if r["status"] == "manual"])
@@ -258,10 +272,13 @@ def main(argv):
         return 1
     tools = select_tools(all_tools, args.only, adapter=args.adapter)
     sudo = sudo_prefix() if args.platform == "linux" else ""
+    source_ok = probe_apt(default_run, sudo) if args.platform == "linux" and not args.dry_run else None
+    if source_ok is False:
+        print("The package source is unreachable (apt-get update failed). Tools that come from apt will fail; the report says so.\n", flush=True)
     results = run_tools(tools, default_run, default_check, dry_run=args.dry_run, platform=args.platform,
                         doctor=args.doctor, sudo=sudo)
     report = os.path.join(setup_dir, "setup-report.md")
-    write_report(results, report, platform_mod.node(), dry_run=args.dry_run, doctor=args.doctor)
+    write_report(results, report, platform_mod.node(), dry_run=args.dry_run, doctor=args.doctor, source_ok=source_ok)
     failed = sum(1 for r in results if r["status"] == "failed")
     print("\nDone. %d failed. Report: %s" % (failed, report))
     if not launches:

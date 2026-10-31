@@ -22,7 +22,7 @@ Setup installs for 15 to 30 minutes. A black window shows what it is doing. When
 
 Your browser may open and ask you to sign in to Claude. Sign in, then go back to the black window.
 
-Claude will ask you a few questions. What you do. What work you want help with. Whether the folders it shows you look right. How you want it to sound when it writes for you. And whether there is anything it should never do without asking you first. Answer in plain words. If you are not sure, say so and it will pick something sensible.
+Claude will ask you a few questions. What you do. Whether the two or three kinds of work it names are the right ones. Whether the folders it shows you look right. How you want it to sound when it writes for you. And whether there is anything it should never do without asking you first. Answer in plain words. If you are not sure, say so and it will pick something sensible.
 
 That is it. Claude builds the folders and tells you three things to try.
 

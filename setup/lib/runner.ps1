@@ -37,6 +37,19 @@ function Add-PythonScriptsPath {
     Update-SessionPath
 }
 
+# Puts one install folder on the user PATH for good, so new windows find the program. Skips an
+# empty or missing folder and a folder already there, so a re-run changes nothing.
+function Add-UserPath([string]$Dir) {
+    if ([string]::IsNullOrWhiteSpace($Dir) -or -not (Test-Path -LiteralPath $Dir -PathType Container)) { return }
+    $Dir = $Dir.TrimEnd('\')
+    $user = [Environment]::GetEnvironmentVariable('Path', 'User')
+    $have = @(([string]$user) -split ';' | Where-Object { $_ })
+    if (@($have | Where-Object { $_.TrimEnd('\') -ieq $Dir }).Count -eq 0) {
+        [Environment]::SetEnvironmentVariable('Path', (@($have) + $Dir) -join ';', 'User')
+    }
+    Update-SessionPath
+}
+
 function Test-Command([string]$Name) {
     return [bool](Get-Command $Name -ErrorAction SilentlyContinue)
 }

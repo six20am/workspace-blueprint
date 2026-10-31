@@ -62,6 +62,10 @@ class SummaryTests(unittest.TestCase):
         self.assertEqual(out.splitlines(), ["Present: 2", "Installed now: 0", "Failed: 0, nothing to fix"])
         self.assertNotIn("Sign in yourself", out)
 
+    def test_summary_dry_run_lists_planned(self):
+        out = doctor.summarize(CLEAN + "\n## Would install\n\n- Ghostscript (needed by OCRmyPDF) (programs)\n").splitlines()
+        self.assertEqual(out[2:], ["Failed: 0, nothing to fix", "Would install: 1 (Ghostscript (needed by OCRmyPDF))"])
+
 
 class CommandTests(unittest.TestCase):
     def test_command_for_platform(self):

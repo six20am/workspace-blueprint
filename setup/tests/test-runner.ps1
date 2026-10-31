@@ -78,6 +78,15 @@ Assert-True (@($env:Path -split ';' | Where-Object { $_ -eq '' }).Count -eq 0) '
 $segs = @($env:Path -split ';')
 Assert-Equal $segs.Count (@($segs | Select-Object -Unique).Count) 'PATH has no duplicate segments after Update-SessionPath'
 
+# Add-UserPath never writes for an empty or missing folder, or for one already on the user PATH
+$userBefore = [Environment]::GetEnvironmentVariable('Path', 'User')
+Add-UserPath ''
+Add-UserPath $null
+Add-UserPath (Join-Path $env:TEMP ('no-such-folder-' + [guid]::NewGuid()))
+$already = @(([string]$userBefore) -split ';' | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Container) } | Select-Object -First 1)
+if ($already.Count -gt 0) { Add-UserPath $already[0]; Add-UserPath ($already[0].TrimEnd('\') + '\') }
+Assert-Equal ([Environment]::GetEnvironmentVariable('Path', 'User')) $userBefore 'Add-UserPath leaves the user PATH alone for empty, missing and present folders'
+
 # noisy executor output never pollutes the results
 $noisy = { param($cmd, $r) Write-Output 'NOISE'; 'more noise' }
 $nres = @(Invoke-ToolRun -Tools @((New-RunTool 'a' @() @('x')), (New-RunTool 'b' @() @('y'))) -Root $root -Executor $noisy -Checker { param($e, $r) $false } 6>$null)

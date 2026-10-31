@@ -85,6 +85,9 @@ def summarize(report_text):
         lines += ["  - %s: %s" % f for f in failed]
     else:
         lines.append("Failed: 0, nothing to fix")
+    planned = [_strip_area(i) for i in sec.get("Would install", [])]
+    if planned:   # a dry run only: what a real run would install
+        lines.append("Would install: %d (%s)" % (len(planned), ", ".join(planned)))
     if logins:
         lines += ["", "Sign in yourself:"] + ["  - %s: %s" % l for l in logins]
     return "\n".join(lines)

@@ -12,4 +12,4 @@
 | Installer | `setup.cmd` on Windows, `setup.command` on a Mac. Run the `doctor` skill to check or repair it later. |
 | Updates | `update.cmd` on Windows, `update.command` on a Mac, or the `update` skill. |
 | Cost view | `npx ccusage@latest` shows what the chats have used. |
-| Shell output trimming | RTK. `rtk init -g` writes a hook into `~/.claude/settings.json` so long output is trimmed; `rtk uninstall` removes it. |
+| Shell output trimming | RTK. `rtk init -g --auto-patch` writes a hook into `~/.claude/settings.json` so long output is trimmed, saves the previous settings as `settings.json.bak`, and appends an `@RTK.md` line to `~/.claude/CLAUDE.md`. `rtk init -g --uninstall` reverses all of it. |

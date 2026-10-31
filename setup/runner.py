@@ -105,7 +105,7 @@ def run_tools(tools, run, check, dry_run=False, platform="mac", doctor=False, su
     for t in tools:
         r = {"id": t["id"], "name": t["name"], "area": t.get("area", ""), "status": "", "detail": "", "login": t.get("login")}
         # a need that is not in this run (dropped by the adapter filter) is ignored, not counted as missing
-        missing = [n for n in t.get("needs", []) if n in done and done[n] not in OK]
+        missing = [n for n in t.get("needs", []) if done.get(n) not in OK + (None,)]
         check_expr = t.get(check_col)
         installs = [with_sudo(c, sudo) for c in (t.get(install_col) or [])]
         if check(check_expr):

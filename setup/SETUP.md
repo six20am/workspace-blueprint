@@ -78,6 +78,7 @@ Do this without asking more questions. Tell them you are building and that it ta
 | meetings, clients, calls | `meeting-prep`, `summarize`, `weekly-brief` |
 | waiting to hear back, chasing quotes, people who owe me something | `waiting-on`, `writer`, `weekly-brief` |
 | insurance, licenses, registration, things that expire or renew | `renewals`, `paperwork`, `weekly-brief` |
+| my kids, family stories, a journal or letters to leave them, a time capsule | `legacy-journal`, `voice-memo`, `backup` |
 | taxes, the accountant, tax season, deductions | `tax-time`, `money-log`, `paperwork` |
 | reviews, ratings, what customers say about us online | `review-replies`, `voice-extractor`, `writer` |
 | decisions, why did we do it that way, keep track of what we agreed | `decision-log`, `weekly-brief` |

@@ -64,6 +64,8 @@ def build():
             "# Waiting on\n\n2026-10-19 | Harbor Plumbing | quote for the back bathroom | emailed\n"
             "2026-10-30 | Pat | the photos from Saturday | texted\n"
             "## Came back\n2026-10-10 | Harbor Plumbing | first visit date | emailed | came back 2026-10-12\n")
+    ws.file("legacy/letters/2026-11-20 - for Ava - first day of school.md", d(30), "sealed")
+    ws.file("legacy/letters/2040-06-01 - for Ava - on your 18th birthday.md", d(30), "sealed")
     ws.file("CONTEXT.md", d(30), "# Router\n\n| Task | Load |\n|---|---|\n| Weekly notes go in `notes/weekly` | here |\n")
     ws.file("tools/x/run.py", d(0))
     ws.file("_reference/a.md", d(0))
@@ -130,6 +132,9 @@ class WeeklyBriefTests(unittest.TestCase):
         os.remove(os.path.join(self.ws.root, "renewals.md"))
         self.assertEqual(brief.collect(self.ws.root, TODAY, 7)["renewals"], [])
 
+    def test_letters_by_file_name_within_30_days(self):
+        self.assertEqual(self.data["letters"], ["in 20 days: for Ava, first day of school (2026-11-20)"])
+
     def test_backup_line(self):
         self.assertEqual(self.data["backup"], ["Last backup 3 days ago (2026-10-28), to D:\\backup\\ws."])
         os.remove(os.path.join(self.ws.root, "setup", "backup-log.md"))
@@ -156,7 +161,7 @@ class WeeklyBriefTests(unittest.TestCase):
         text = brief.render(self.data)
         self.assertTrue(text.startswith("# Week of 2026-10-25 to 2026-10-31\n"))
         heads = [l for l in text.splitlines() if l.startswith("## ")]
-        self.assertEqual(heads, ["## Came in", "## Went out", "## Dates coming up", "## Renewals coming up (30 days)",
+        self.assertEqual(heads, ["## Came in", "## Went out", "## Dates coming up", "## Renewals coming up (30 days)", "## Letters to give (30 days)",
                                  "## Waiting on, overdue", "## Reading pile, saved this week", "## Decided this week", "## Gaps logged",
                                  "## Jobs that keep coming back (last 90 days)", "## Sign-ins needed", "## Backup"])
         self.assertIn("- clients/acme/notes.md", text)
@@ -166,8 +171,8 @@ class WeeklyBriefTests(unittest.TestCase):
         self.assertIn("- 2026-10-28 | no Tuesday evening class", text)
         self.assertIn("- Last backup 3 days ago", text)
         self.assertIn("- 2026-10-27 | https://example.com/articles/pricing", text)
-        empty = dict(self.data, came_in=[], went_out=[], dates_due=[], renewals=[], waiting=[], reading=[], decisions=[], gaps=[], sign_ins=[], backup=[])
-        self.assertEqual(brief.render(empty).count("Nothing."), 11)
+        empty = dict(self.data, came_in=[], went_out=[], dates_due=[], renewals=[], letters=[], waiting=[], reading=[], decisions=[], gaps=[], sign_ins=[], backup=[])
+        self.assertEqual(brief.render(empty).count("Nothing."), 12)
 
     def test_output_path_from_router_notes_line(self):
         out = brief.output_path(self.ws.root, TODAY, None)

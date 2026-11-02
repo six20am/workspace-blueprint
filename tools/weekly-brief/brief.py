@@ -5,9 +5,10 @@
     python tools/weekly-brief/brief.py --days 14 --out x.md
     python tools/weekly-brief/brief.py --today 2026-10-31   # end the week on that date
 
-Eleven sections: files that came in (changed in the window), files that went out (the ones inside
+Twelve sections: files that came in (changed in the window), files that went out (the ones inside
 a delivery or sent folder), dates coming up in the next 14 days (from paperwork/dates.md), renewals
-due within 30 days or past (renewals.md, read with tools/renewals/renewals.py), things
+due within 30 days or past (renewals.md, read with tools/renewals/renewals.py), letters for the kids
+whose open date is within 30 days (legacy/letters, file names only, read with tools/legacy-journal/legacy.py), things
 waited on past their time (waiting-on.md, read with tools/waiting-on/waiting.py), links saved
 this week and not yet read (reading-pile.md, above its "## Read" heading), decisions
 logged this week (decisions.md), gaps logged (setup/gap-log.md), jobs that keep coming back
@@ -128,6 +129,16 @@ def _renewals(root, today):
     return out
 
 
+def _letters(root, today):
+    """Sealed letters whose open date is past or within 30 days, by file name only. Empty without the folder or the tool."""
+    tool = _sibling_tool("legacy-journal", "legacy")
+    if tool is None:
+        return []
+    b = tool.sort_letters(tool.letters(os.path.join(root, "legacy", "letters")), today)
+    out = [tool.line_for(it) + ", give it, then move it to letters/given" for it in b["due"]]
+    return out + [tool.line_for(it) for it in b["soon"]]
+
+
 REPEAT_DAYS = 90
 REPEAT_MIN = 3
 STOP = {"a", "an", "the", "and", "or", "of", "to", "for", "in", "on", "at", "by", "with", "from", "into", "up",
@@ -213,6 +224,7 @@ def collect(root, today, days):
         "went_out": went_out,
         "dates_due": _dated_lines(os.path.join(root, "paperwork", "dates.md"), today, today + datetime.timedelta(days=DUE_DAYS)),
         "renewals": _renewals(root, today),
+        "letters": _letters(root, today),
         "waiting": _waiting_on(root, today),
         "reading": _dated_lines(os.path.join(root, "reading-pile.md"), start, today, stop="## read"),
         "decisions": _dated_lines(os.path.join(root, "decisions.md"), start, today),
@@ -242,6 +254,7 @@ def render(data):
     lines += _section("Went out", data["went_out"], CAP)
     lines += _section("Dates coming up", data["dates_due"])
     lines += _section("Renewals coming up (30 days)", data.get("renewals", []))
+    lines += _section("Letters to give (30 days)", data.get("letters", []))
     lines += _section("Waiting on, overdue", data.get("waiting", []))
     lines += _section("Reading pile, saved this week", data.get("reading", []))
     lines += _section("Decided this week", data.get("decisions", []))

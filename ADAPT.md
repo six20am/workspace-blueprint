@@ -22,6 +22,7 @@ If any of the three is missing, stop and tell the person which one, in one line.
 6. Follow `setup/SETUP.md` from step 0, using the table below: read the report, ask the questions one at a time, build, fix, run the test task, and close. The build writes `MAP.md` and `ROUTER.md`.
 7. Prove the rule from step 5 in a fresh conversation: if you do not read `MAP.md` and `ROUTER.md` there without being told, the rule did not save. Fix it and prove it again.
 8. Run `python3 tools/doctor/doctor.py` and tell the person the result in three lines.
+9. Tell the person, in two lines at most, how they can see your computer and the files in your folder on this platform: where to watch your screen, how to take over and hand back, and where your files show up. Name only buttons your platform actually shows you or documents. If they can't watch your screen, say so, and offer to list the folder in the chat instead.
 
 ## Platform table
 

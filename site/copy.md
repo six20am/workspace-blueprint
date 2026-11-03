@@ -7,7 +7,7 @@ cta: Copy the prompt
 persona: none
 swipe: swipe_empty: web-page
 set_aside: none
-revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft; their fixes applied the same day (second commit); the vendor adapter replaced by the neutral ADAPT.md path (third commit); motion-video added as coming and the FAQ send-out answer cut to sourced wording (fourth commit); round-two editor and one-read fixes (sixth commit); page repositioned to AI services first, Claude Code second, on Michael's word; why section added 2026-10-31 (Michael: reasons to use it, as a marketing page), how-it-works step 3 and the meta line follow the revised setup questions; direct-response rewrite 2026-10-31 on Michael's word, from a Dan Kennedy review
+revised: 2026-10-31, Task 4.7: can-do paragraph and status line rewritten for thirty-eight skills, none coming; skill lines and group headlines live in site/skills.json; copy-editor and one-read passes run by the controller after this draft; their fixes applied the same day (second commit); the vendor adapter replaced by the neutral ADAPT.md path (third commit); motion-video added as coming and the FAQ send-out answer cut to sourced wording (fourth commit); round-two editor and one-read fixes (sixth commit); page repositioned to AI services first, Claude Code second, on Michael's word; why section added 2026-10-31 (Michael: reasons to use it, as a marketing page), how-it-works step 3 and the meta line follow the revised setup questions; direct-response rewrite 2026-10-31 on Michael's word, from a Dan Kennedy review; watch section added 2026-11-02 on Michael's word (how to see the AI's computer), from docs.x.ai/grok-bot computer-and-apps and files-and-results, learn.chatgpt.com/docs/dots/computers-and-apps, and claude.com/resources/articles/claude-duet, all read 2026-11-02
 ```
 
 <!-- hero -->
@@ -76,6 +76,16 @@ You explain your business. You paste in a file. You get a decent answer. The nex
 If your AI can only chat, this won't work. Use Claude Code instead. It's further down this page.
 
 [Copy the prompt]
+
+<!-- watch -->
+## See what your AI is doing
+
+Your AI works on its own computer in the cloud, not on yours. Here's where to look.
+
+- **Grok Bot.** Click the computer preview on the right side of the chat to watch it click and type. When it needs you for a sign-in, click Open computer, do that one step, and hand it back. Its files are in the Library tab: click the Bot's name at the top of the chat. Your phone can watch and take over too.
+- **ChatGPT Dots.** Open your dot's profile and look under Computers. Opening it only lets you watch. Select Take over to use its mouse and keyboard, then Return control when you're done.
+- **Claude Duet.** It can't show you its screen yet. Its task list shows what it has done and what it's doing, one page per task, and you can steer it from there.
+- **Any of them.** Ask: "Show me the folder you built and what's in it." It lists your folders and files in the chat.
 
 <!-- can-do -->
 ## The job you keep putting off may be on this list

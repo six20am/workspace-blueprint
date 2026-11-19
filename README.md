@@ -51,6 +51,8 @@ six20am/workspace-blueprint/
 
 An agent that has files that persist, a shell and a way to keep one standing rule can set the workspace up for itself. Point it at `ADAPT.md`: it downloads the repo zip into a folder of its own, writes `setup/adapter.json`, runs `bash setup/setup.sh --no-launch`, saves one rule to read `MAP.md` and `ROUTER.md` before every task, and follows `setup/SETUP.md`. This path has not yet been run on a real third-party agent.
 
+An agent on a hosted cloud computer that is rebuilt every few hours runs `bash setup/cloud-programs.sh` after each rebuild to put the programs back. What works there and what stays on a desktop is `docs/cloud-machine.md`.
+
 ## How it will work
 
 1. Unzip the folder somewhere you will keep it. `build.py` builds the zip from this repo. On every push, `.github/workflows/publish.yml` publishes the zip as the latest release; the one-page site under `site/` deploys the same way.

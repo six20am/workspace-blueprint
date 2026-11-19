@@ -122,14 +122,17 @@ const main = async () => {
     const inputProps = stageFiles(props, path.dirname(propsPath), publicDir, { n: 0 });
     if (flags.aspect) inputProps.aspect = flags.aspect;
 
-    await ensureBrowser();
+    // A computer whose network blocks Remotion's own browser download can point it at another
+    // Chromium with REMOTION_BROWSER_EXECUTABLE (setup/cloud-programs.sh sets one up).
+    const browserExecutable = process.env.REMOTION_BROWSER_EXECUTABLE || null;
+    if (!browserExecutable) await ensureBrowser();
     console.log(`Bundling templates...`);
     const serveUrl = await bundle({ entryPoint: ENTRY, publicDir, rootDir: ROOT });
-    const composition = await selectComposition({ serveUrl, id, inputProps });
+    const composition = await selectComposition({ serveUrl, id, inputProps, browserExecutable });
 
     if (STILL.test(out)) {
       const frame = Number.isInteger(inputProps.frame) ? inputProps.frame : composition.durationInFrames - 1;
-      await renderStill({ composition, serveUrl, inputProps, output: out, frame, scale });
+      await renderStill({ composition, serveUrl, inputProps, output: out, frame, scale, browserExecutable });
     } else {
       const ext = path.extname(out).toLowerCase();
       const codec = ext === ".webm" ? "vp8" : ext === ".gif" ? "gif" : ext === ".mov" ? "prores" : "h264";
@@ -143,6 +146,7 @@ const main = async () => {
         outputLocation: out,
         scale,
         frameRange,
+        browserExecutable,
         onProgress: ({ progress }) => {
           const pct = Math.floor(progress * 10) * 10;
           if (pct !== last) {

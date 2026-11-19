@@ -155,6 +155,67 @@ class BuildTest(unittest.TestCase):
                 build.build(repo, os.path.join(d, "x.zip"), names=[], adapter="other", top="T")
             self.assertFalse(os.path.exists(os.path.join(d, "x.zip")))
 
+    def test_duet_adapter_json_shape(self):
+        meta = json.loads(build.adapter_json("duet"))
+        self.assertEqual(meta, {"adapter": "duet", "skills_dir": "skills", "map": "MAP.md",
+                                "router": "ROUTER.md", "notes": "NOTES.md"})
+
+    def duet_repo(self, d):
+        repo = os.path.join(d, "repo")
+        make_repo(repo, {
+            "skills/a/SKILL.md": '---\nname: a\ndescription: "Does A. Use when A."\n---\n# a\nRun `python tools/x/x.py`.\n',
+            "skills/b/SKILL.md": '---\nname: b\ndescription: "Does B. Use when B."\n---\n# b\nNo tools.\n',
+            "skills/c/SKILL.md": '---\nname: c\ndescription: "Does C. Use when C."\n---\n# c\n',
+            "tools/x/x.py": "# uses tools/y/y.py and tools/doctor/doctor.py\n",
+            "tools/y/y.py": "# y\n",
+            "tools/doctor/doctor.py": "# doctor\n",
+            "setup/cloud-programs.sh": "#!/usr/bin/env bash\necho ok\n",
+            "adapters/duet/platform.md": "# duet platform\n",
+            "adapters/duet/START-HERE.md": "# start on duet\n",
+            "setup/targets.json": json.dumps({"skills": [
+                {"name": "a", "target": "both"},
+                {"name": "b", "target": "both", "duet_note": "B note here."},
+                {"name": "c", "target": "pc"}]}),
+        })
+        return repo
+
+    def test_duet_build_packs_one_zip_per_duet_skill(self):
+        with tempfile.TemporaryDirectory() as d:
+            repo = self.duet_repo(d)
+            out = os.path.join(d, "duet.zip")
+            build.build(repo, out, names=[], adapter="duet", top="T")
+            with zipfile.ZipFile(out) as z:
+                names = z.namelist()
+                self.assertIn("T/skill-uploads/a.zip", names)
+                self.assertIn("T/skill-uploads/b.zip", names)
+                self.assertNotIn("T/skill-uploads/c.zip", names, "a pc-only skill is not packed for Duet")
+                self.assertIn("T/START-HERE.md", names)
+                self.assertNotIn("T/CLAUDE.md", names, "the Claude Code map does not ship to Duet")
+                self.assertEqual(z.read("T/setup/platform.md").decode(), "# duet platform\n")
+                self.assertEqual(json.loads(z.read("T/setup/adapter.json"))["adapter"], "duet")
+                import io
+                a = zipfile.ZipFile(io.BytesIO(z.read("T/skill-uploads/a.zip")))
+                b = zipfile.ZipFile(io.BytesIO(z.read("T/skill-uploads/b.zip")))
+            an = a.namelist()
+            self.assertIn("a/tools/x/x.py", an)
+            self.assertIn("a/tools/y/y.py", an, "a tool a packed tool names travels too")
+            self.assertNotIn("a/tools/doctor/doctor.py", an, "the doctor stays with the workspace")
+            self.assertIn("a/setup/cloud-programs.sh", an)
+            skill = a.read("a/SKILL.md").decode()
+            self.assertTrue(skill.startswith("---\nname: a\n"), "the front matter stays first")
+            self.assertIn("On Claude Duet", skill)
+            self.assertIn("WORKSPACE_ROOT", skill)
+            bn = b.namelist()
+            self.assertNotIn("b/setup/cloud-programs.sh", bn, "a skill with no tools needs no installer")
+            self.assertIn("B note here.", b.read("b/SKILL.md").decode())
+
+    def test_duet_pack_refuses_on_leak(self):
+        with tempfile.TemporaryDirectory() as d:
+            repo = self.duet_repo(d)
+            write(repo, "tools/y/y.py", "# call Zed\n")
+            with self.assertRaises(build.LeakError):
+                build.build(repo, os.path.join(d, "duet.zip"), names=["zed"], adapter="duet", top="T")
+
     def test_index_lists_every_skill_one_line_each(self):
         with tempfile.TemporaryDirectory() as d:
             repo = os.path.join(d, "repo")

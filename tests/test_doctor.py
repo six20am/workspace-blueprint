@@ -81,6 +81,20 @@ class CommandTests(unittest.TestCase):
         self.assertEqual(doctor.installer_command(root, "other", True, False),
                          [sys.executable, runner, "--doctor", "--no-launch", "--adapter", "other", "--dry-run"])
 
+    def test_duet_runs_the_cloud_script(self):
+        root = os.path.join("x", "ws")
+        script = os.path.join(root, "setup", "cloud-programs.sh")
+        self.assertEqual(doctor.installer_command(root, "duet", False, False), ["bash", script])
+        self.assertEqual(doctor.installer_command(root, "duet", True, False), ["bash", script, "--check"])
+
+    def test_cloud_summary_counts(self):
+        text, failed = doctor.cloud_summary("ok      jq\ndone    sox\nFAILED  whisper model (blocked)\nmissing gimp-console\n")
+        self.assertEqual(failed, 1)
+        self.assertIn("Present: 1", text)
+        self.assertIn("Installed now: 1 (sox)", text)
+        self.assertIn("whisper model (blocked)", text)
+        self.assertIn("Would install: 1 (gimp-console)", text)
+
     def test_read_adapter_default(self):
         with tempfile.TemporaryDirectory() as d:
             self.assertEqual(doctor.read_adapter(d), "claude-code")

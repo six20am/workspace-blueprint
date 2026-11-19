@@ -23,7 +23,8 @@ import sys
 import sysconfig
 import tempfile
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# WORKSPACE_ROOT points a copy of this script that lives elsewhere (inside a saved skill) at the workspace
+ROOT = os.environ.get("WORKSPACE_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DOCTOR = "python tools/doctor/doctor.py (python3 on Mac and Linux)"
 TIMEOUT = 600
 IMAGES = (".jpg", ".jpeg", ".png", ".tif", ".tiff", ".heic")

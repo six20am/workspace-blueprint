@@ -8,10 +8,12 @@ Thin wrapper over microsoft/markitdown. Run `python tools/markitdown/convert.py 
 import argparse
 import datetime as dt
 import hashlib
+import os
 import sys
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[2]
+# WORKSPACE_ROOT points a copy of this script that lives elsewhere (inside a saved skill) at the workspace
+REPO = Path(os.environ.get("WORKSPACE_ROOT") or Path(__file__).resolve().parents[2]).resolve()
 
 SUPPORTED = {
     ".pdf", ".docx", ".pptx", ".xlsx", ".xls", ".html", ".htm",

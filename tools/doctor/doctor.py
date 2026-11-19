@@ -18,7 +18,7 @@ import sys
 import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-ADAPTERS = ("claude-code", "other")
+ADAPTERS = ("claude-code", "other", "duet")
 DEFAULT_ADAPTER = "claude-code"
 
 
@@ -41,6 +41,9 @@ def installer_command(root, adapter, dry_run, is_windows):
         cmd = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
                os.path.join(root, "setup", "setup.ps1"), "-Yes", "-NoLaunch"]
         return cmd + (["-DryRun"] if dry_run else [])
+    if adapter == "duet":
+        # Duet's cloud computer: one script that skips what is there and installs the rest
+        return ["bash", os.path.join(root, "setup", "cloud-programs.sh")] + (["--check"] if dry_run else [])
     cmd = [sys.executable, os.path.join(root, "setup", "runner.py"), "--doctor", "--no-launch", "--adapter", adapter]
     return cmd + (["--dry-run"] if dry_run else [])
 
@@ -97,6 +100,35 @@ def failed_count(report_text):
     return sum(1 for item in _sections(report_text).get("Needs attention", []) if re.search(r"^\*\*.+?\*\* \(failed\):", item))
 
 
+def cloud_summary(output):
+    """Counts the ok, done and FAILED lines setup/cloud-programs.sh prints, and lists each failure."""
+    lines = output.splitlines()
+    ok = [l for l in lines if l.startswith("ok ")]
+    done = [l.split(None, 1)[1] for l in lines if l.startswith("done ")]
+    failed = [l.split(None, 1)[1] for l in lines if l.startswith("FAILED ")]
+    out = ["Present: %d" % len(ok), "Installed now: %d" % len(done) + (" (%s)" % ", ".join(done) if done else "")]
+    out.append("Failed: %d" % len(failed) if failed else "Failed: 0, nothing to fix")
+    out += ["  - %s" % f for f in failed]
+    missing = [l.split(None, 1)[1] for l in lines if l.startswith("missing ")]
+    if missing:   # a --check run only: what a real run would install
+        out.append("Would install: %d (%s)" % (len(missing), ", ".join(missing)))
+    return "\n".join(out), len(failed)
+
+
+def run_cloud(cmd):
+    """The duet adapter: run setup/cloud-programs.sh, echo it, then the same three-line summary."""
+    try:
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
+    except OSError as e:
+        print("The installer did not start: %s" % e)
+        return 2
+    print(proc.stdout, end="")
+    text, failed = cloud_summary(proc.stdout)
+    print("")
+    print(text)
+    return 2 if failed or proc.returncode else 0
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(description="Checks every workspace tool and re-installs only what is missing.")
     p.add_argument("--dry-run", action="store_true", help="check only, install nothing")
@@ -104,6 +136,8 @@ def main(argv=None):
     report = os.path.join(ROOT, "setup", "setup-report.md")
     cmd = installer_command(ROOT, read_adapter(ROOT), args.dry_run, os.name == "nt")
     started = time.time()
+    if read_adapter(ROOT) == "duet" and os.name != "nt":
+        return run_cloud(cmd)
     try:
         rc = subprocess.call(cmd, cwd=ROOT)
     except OSError as e:

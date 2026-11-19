@@ -62,6 +62,7 @@ REPORT = os.path.join(ROOT, "setup", "update-report.md")
 ADAPTERS = {
     "claude-code": {"adapter": "claude-code", "skills_dir": ".claude/skills", "map": "CLAUDE.md", "router": "CONTEXT.md", "notes": "CONTEXT.md"},
     "other": {"adapter": "other", "skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"},
+    "duet": {"adapter": "duet", "skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"},
 }
 DEFAULT_ADAPTER = "claude-code"
 # Core paths the template owns, copied to the same place. Everything else belongs to the owner.
@@ -78,10 +79,12 @@ CORE_OWNED = (
     "setup/setup.ps1",
     "setup/setup.sh",
     "setup/runner.py",
+    "setup/cloud-programs.sh",
+    "setup/targets.json",
     "setup/tools-reference",
 )
 # Adapters with a folder under adapters/ that overlays the core. The neutral path has none.
-ADAPTER_FOLDERS = ("claude-code",)
+ADAPTER_FOLDERS = ("claude-code", "duet")
 # Files in an adapter folder that never land at the top of the workspace: maintainer notes, and
 # platform.md, which lands at setup/platform.md instead.
 ADAPTER_KEEP_OUT = ("publish.md", "platform.md")
@@ -494,7 +497,7 @@ def main():
 
     if args.no_install:
         rc = None
-    elif adapter["adapter"] == "other":
+    elif adapter["adapter"] in ("other", "duet"):
         rc = run_doctor()
     else:
         rc = run_installer()

@@ -19,7 +19,8 @@ import shutil
 import sys
 import zipfile
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+# WORKSPACE_ROOT points a copy of this script that lives elsewhere (inside a saved skill) at the workspace
+ROOT = os.environ.get("WORKSPACE_ROOT") or os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 SKIP_TOP = {"setup", "tools", "_reference", "skills", "taxes"}
 SKIP_ANY = {".git", "node_modules", "__pycache__"}
 SENT = {"delivery", "delivered", "sent", "out", "3-delivery", "04-delivery", "6-comms", "s6-comms", "invoices-sent", "sent-invoices"}

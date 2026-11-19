@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Builds the one output: the zip people download (Claude Code). Any other agent takes the raw repo
-and follows ADAPT.md, so it needs no build; "other" is listed in ADAPTERS only for the fields
-tools/update/update.py writes. Writes skills/INDEX.md first, then scans every text file and refuses
-on any leak. Standard library only.
+"""Builds the outputs: the zip people download for Claude Code, and the Claude Duet zip with one
+claude.ai skill zip per skill inside it. Any other agent takes the raw repo and follows ADAPT.md, so it
+needs no build; "other" is listed in ADAPTERS only for the fields tools/update/update.py writes.
+Writes skills/INDEX.md first, then scans every text file and refuses on any leak. Standard library only.
 
-    python build.py                                    # the zip in ~/Downloads
+    python build.py                                    # the Claude Code zip in ~/Downloads
     python build.py --adapter claude-code --out <path.zip> [--names <file>]
+    python build.py --adapter duet --out <path.zip>    # the Duet workspace, with skill-uploads/ inside
 """
 import argparse
 import datetime
@@ -21,8 +22,10 @@ ADAPTERS = {
     "claude-code": {"skills_dir": ".claude/skills", "map": "CLAUDE.md", "router": "CONTEXT.md", "notes": "CONTEXT.md"},
     # the neutral path (ADAPT.md): the raw repo, no build output; update.py writes these fields
     "other": {"skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"},
+    # Claude Duet: a workspace folder in the project files, plus one claude.ai skill zip per skill
+    "duet": {"skills_dir": "skills", "map": "MAP.md", "router": "ROUTER.md", "notes": "NOTES.md"},
 }
-BUILT = ("claude-code",)   # the adapters build() makes an output for
+BUILT = ("claude-code", "duet")   # the adapters build() makes an output for
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", ".pytest_cache", ".superpowers", ".impeccable",
              ".agents", ".remotion"}  # .agents: skills a setup run installs (remotion-dev/skills has no license); .remotion: render staging
 # folders skipped by repo-relative path: render output left in a tool folder
@@ -248,6 +251,123 @@ def write_report(path, adapter, target, rels):
     return report
 
 
+TOOL_REF = re.compile(r"tools/([a-z0-9][a-z0-9-]*)/")
+# tools a packed skill never carries: they look after a desktop install, or need a blocked download
+NOT_PACKED = {"doctor", "update", "whisper"}
+DUET_NOTE_TOOLS = """> **On Claude Duet.** This copy was packed for Claude Duet. The scripts it names under `tools/` are \
+in this skill's own folder, not in the workspace. Run them as \
+`WORKSPACE_ROOT=<workspace> /opt/wb-venv/bin/python <this skill's folder>/tools/...`, the Python the cloud script sets up with the libraries the scripts need, where the workspace is the folder \
+the standing rule names, or `/mnt/project-files/workspace` when there is none. Files the scripts write \
+go in the workspace, which lasts, never in the skill's folder. If a program is missing, run \
+`bash <this skill's folder>/setup/cloud-programs.sh` first, and run it wherever this skill says to run \
+the doctor. If there is no `voice.md`, write in the person's saved writing style.
+"""
+DUET_NOTE_PLAIN = """> **On Claude Duet.** This copy was packed for Claude Duet. Folders it names are in the workspace, \
+the folder the standing rule names, or `/mnt/project-files/workspace` when there is none. If there is \
+no `voice.md`, write in the person's saved writing style.
+"""
+
+
+def targets(repo):
+    with open(os.path.join(repo, "setup", "targets.json"), encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def duet_skills(repo):
+    """The skill names setup/targets.json marks for both platforms, in file order."""
+    return [s["name"] for s in targets(repo)["skills"] if s.get("target") in ("both", "duet")]
+
+
+def tool_deps(repo, skill):
+    """Tool folders a skill's text names, and the tool folders those tools name in turn."""
+    def refs(folder):
+        found = set()
+        for rel, p in walk(folder):
+            if rel.endswith(TEXT):
+                with open(p, encoding="utf-8", errors="replace") as fh:
+                    found |= set(TOOL_REF.findall(fh.read()))
+        return found
+    todo = refs(os.path.join(repo, "skills", skill))
+    seen = set()
+    while todo:
+        t = todo.pop()
+        if t in seen or t in NOT_PACKED or not os.path.isdir(os.path.join(repo, "tools", t)):
+            continue
+        seen.add(t)
+        todo |= refs(os.path.join(repo, "tools", t))
+    return sorted(seen)
+
+
+def with_note(skill_md, note):
+    """SKILL.md text with the Duet note placed right after the front matter."""
+    if skill_md.startswith("---"):
+        end = skill_md.find("\n---", 3)
+        if end != -1:
+            cut = skill_md.index("\n", end + 1) + 1 if "\n" in skill_md[end + 1:] else len(skill_md)
+            return skill_md[:cut] + "\n" + note + "\n" + skill_md[cut:].lstrip("\n")
+    return note + "\n" + skill_md
+
+
+def skill_entries(repo, skill):
+    """(arc, path or None, text or None) for one packed skill: its folder, the tools it needs, and the
+    cloud script when it carries tools. SKILL.md is rewritten with the Duet note."""
+    out = []
+    deps = tool_deps(repo, skill)
+    note = DUET_NOTE_TOOLS if deps else DUET_NOTE_PLAIN
+    extra = next((s.get("duet_note") for s in targets(repo)["skills"] if s["name"] == skill), None)
+    if extra:
+        note += ">\n> " + extra + "\n"
+    for rel, p in walk(os.path.join(repo, "skills", skill)):
+        if rel == "SKILL.md":
+            with open(p, encoding="utf-8") as fh:
+                out.append((skill + "/SKILL.md", None, with_note(fh.read(), note)))
+        else:
+            out.append((skill + "/" + rel, p, None))
+    for t in deps:
+        for rel, p in walk(os.path.join(repo, "tools", t)):
+            out.append(("%s/tools/%s/%s" % (skill, t, rel), p, None))
+    if deps:
+        out.append((skill + "/setup/cloud-programs.sh", os.path.join(repo, "setup", "cloud-programs.sh"), None))
+    return out
+
+
+def write_skill_zip(out, items):
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+        for arc, p, text in items:
+            if text is None:
+                zi = zipfile.ZipInfo.from_file(p, arc)
+                data = read_shipped(arc, p)
+            else:
+                zi = zipfile.ZipInfo(arc, datetime.datetime.now().timetuple()[:6])
+                data = text.encode("utf-8")
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.create_system = 3
+            zi.external_attr = ((0o755 if arc.endswith(EXEC) else 0o644) << 16)
+            z.writestr(zi, data)
+
+
+def skill_zips(repo, names):
+    """{name: [(arc, path, text)]} for every Duet skill, after the same leak scan as the workspace."""
+    leaks, packs = [], {}
+    for skill in duet_skills(repo):
+        items = skill_entries(repo, skill)
+        for arc, p, text in items:
+            if not arc.endswith(TEXT) or (p and os.path.relpath(p, repo).replace("\\", "/").startswith(VENDOR)):
+                continue
+            if text is None:
+                with open(p, encoding="utf-8", errors="replace") as fh:
+                    text_ = fh.read()
+            else:
+                text_ = text
+            probs = scan_text(text_, names)
+            if probs:
+                leaks.append("%s: %s" % (arc, ", ".join(probs)))
+        packs[skill] = items
+    if leaks:
+        raise LeakError("refusing to pack skills:\n  " + "\n  ".join(leaks))
+    return packs
+
+
 def build(repo, out, names, adapter="claude-code", top=TOP):
     """Writes the zip for one adapter under a single top folder. Returns the build report."""
     included = collect(repo, adapter, names)
@@ -266,7 +386,20 @@ def build(repo, out, names, adapter="claude-code", top=TOP):
             zi.create_system = 3
             zi.external_attr = 0o644 << 16
             z.writestr(zi, text)
-    rels = [arc for arc, _ in included] + [arc for arc, _ in gen]
+        packed = []
+        if adapter == "duet":
+            import io
+            for skill, items in skill_zips(repo, names).items():
+                buf = io.BytesIO()
+                write_skill_zip(buf, items)
+                arc = "skill-uploads/%s.zip" % skill
+                zi = zipfile.ZipInfo(top + "/" + arc, datetime.datetime.now().timetuple()[:6])
+                zi.compress_type = zipfile.ZIP_STORED
+                zi.create_system = 3
+                zi.external_attr = 0o644 << 16
+                z.writestr(zi, buf.getvalue())
+                packed.append(arc)
+    rels = [arc for arc, _ in included] + [arc for arc, _ in gen] + packed
     return write_report(os.path.splitext(out)[0] + "-build-report.md", adapter, out, rels)
 
 
@@ -274,10 +407,12 @@ def main():
     repo = os.path.dirname(os.path.abspath(__file__))
     ap = argparse.ArgumentParser()
     ap.add_argument("--adapter", choices=list(BUILT), default="claude-code",
-                    help="the only built output; any other agent follows ADAPT.md from the raw repo")
-    ap.add_argument("--out", default=os.path.join(os.path.expanduser("~"), "Downloads", TOP + ".zip"), help="the Claude Code zip")
+                    help="claude-code or duet; any other agent follows ADAPT.md from the raw repo")
+    ap.add_argument("--out", default=None, help="the zip to write (default: ~/Downloads, named for the adapter)")
     ap.add_argument("--names", help="file with one extra forbidden string per line")
     a = ap.parse_args()
+    if not a.out:
+        a.out = os.path.join(os.path.expanduser("~"), "Downloads", TOP + (" for Duet" if a.adapter == "duet" else "") + ".zip")
     names = default_names(repo)
     if a.names:
         with open(a.names, encoding="utf-8") as fh:

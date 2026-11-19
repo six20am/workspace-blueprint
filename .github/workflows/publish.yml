@@ -1,6 +1,7 @@
 name: publish
 
-# On every push to main: run the tests, build the zip, publish it as the "latest" release,
+# On every push to main: run the tests, build the two zips (Claude Code, and Claude Duet with its
+# packed skills), publish them as the "latest" release,
 # build the one-page site and deploy it to Cloudflare Pages. Any other agent takes the raw repo
 # and follows ADAPT.md, so there is nothing else to build. The site reads the skill files, so a new skill shows up on
 # the page the moment it lands.
@@ -34,8 +35,10 @@ jobs:
       - name: Tests
         run: python -m unittest discover -s tests -t . -q
 
-      - name: Build the zip
-        run: python build.py --adapter claude-code --out "dist/Six20AM-Workspace-Blueprint.zip"
+      - name: Build the zips
+        run: |
+          python build.py --adapter claude-code --out "dist/Six20AM-Workspace-Blueprint.zip"
+          python build.py --adapter duet --out "dist/Six20AM-Workspace-Blueprint-Duet.zip"
 
       - name: Publish the zip as the latest release
         env:
@@ -43,10 +46,10 @@ jobs:
         run: |
           set -e
           if gh release view latest >/dev/null 2>&1; then
-            gh release upload latest "dist/Six20AM-Workspace-Blueprint.zip" --clobber
+            gh release upload latest "dist/Six20AM-Workspace-Blueprint.zip" "dist/Six20AM-Workspace-Blueprint-Duet.zip" --clobber
             gh release edit latest --notes "Built from ${GITHUB_SHA::12} on $(date -u +%Y-%m-%d). This tag moves with main."
           else
-            gh release create latest "dist/Six20AM-Workspace-Blueprint.zip" --title "Latest build" \
+            gh release create latest "dist/Six20AM-Workspace-Blueprint.zip" "dist/Six20AM-Workspace-Blueprint-Duet.zip" --title "Latest build" \
               --notes "Built from ${GITHUB_SHA::12} on $(date -u +%Y-%m-%d). This tag moves with main." --latest
           fi
           git tag -f latest "$GITHUB_SHA"

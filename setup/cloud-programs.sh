@@ -3,7 +3,8 @@
 # Those computers are rebuilt every few hours and lose what was installed, while the files
 # in the agent's own folder stay. Run this before a task that needs the programs.
 #
-#   bash setup/cloud-programs.sh
+#   bash setup/cloud-programs.sh           # install what is missing
+#   bash setup/cloud-programs.sh --check   # say what is missing, install nothing
 #
 # Safe to run any time: it skips anything already there, so a second run takes seconds.
 # Installs only. Nothing here signs in, takes a key or a cookie, or puts anything live.
@@ -21,6 +22,21 @@ say() { echo "$*" | tee -a "$LOG"; }
 SUDO=""; [ "$(id -u)" -ne 0 ] && SUDO="sudo"
 export PATH="$HOME/.local/bin:$PATH"
 UV=$(command -v uv || echo "$HOME/.local/bin/uv")
+
+# --check: one line per program, ok or missing, and nothing installed
+if [ "$1" = "--check" ]; then
+  for c in tesseract qpdf exiftool sox gs mkvmerge HandBrakeCLI ffmpeg convert pandoc pdftotext jq gimp-console inkscape \
+           markitdown trafilatura yt-dlp gallery-dl ocrmypdf agent-reach scrapling notebooklm wrangler defuddle repomix; do
+    if command -v "$c" >/dev/null 2>&1 || [ -x "$VENV/bin/$c" ]; then echo "ok      $c"; else echo "missing $c"; fi
+  done
+  [ -x "$HOME/tools/whisper/src/build/bin/whisper-cli" ] && echo "ok      whisper-cli" || echo "missing whisper-cli"
+  [ -f "$HOME/tools/whisper/models/ggml-base.en.bin" ] && echo "ok      whisper model" || echo "missing whisper model"
+  [ -f /opt/wb-chromium/node_modules/@sparticuz/chromium/package.json ] && echo "ok      chromium package" || echo "missing chromium package"
+  [ -d /opt/wb-motion/node_modules/remotion ] && echo "ok      remotion" || echo "missing remotion"
+  [ -f "$HOME/tools/video-shotcraft/SKILL.md" ] && echo "ok      video-shotcraft" || echo "missing video-shotcraft"
+  [ -f "$HOME/tools/awesome-ai-motion/index.json" ] && echo "ok      awesome-ai-motion" || echo "missing awesome-ai-motion"
+  exit 0
+fi
 
 # 1. System programs (apt), plus GIMP and Inkscape for image and vector work.
 #    Pairs are command:package.

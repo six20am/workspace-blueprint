@@ -21,7 +21,8 @@ import money_dedup as DD  # noqa: E402
 import money_enrich as EN  # noqa: E402
 import money_dashboard as DB  # noqa: E402
 
-ROOT = os.path.dirname(os.path.dirname(HERE))  # tools/money-log/ is two levels below the workspace
+# WORKSPACE_ROOT points a copy of this script that lives elsewhere (inside a saved skill) at the workspace
+ROOT = os.environ.get("WORKSPACE_ROOT") or os.path.dirname(os.path.dirname(HERE))  # tools/money-log/ is two levels below the workspace
 RULES_EXAMPLE = os.path.join(HERE, "rules.example.csv")
 
 

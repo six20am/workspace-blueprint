@@ -51,7 +51,9 @@ six20am/workspace-blueprint/
 
 An agent that has files that persist, a shell and a way to keep one standing rule can set the workspace up for itself. Point it at `ADAPT.md`: it downloads the repo zip into a folder of its own, writes `setup/adapter.json`, runs `bash setup/setup.sh --no-launch`, saves one rule to read `MAP.md` and `ROUTER.md` before every task, and follows `setup/SETUP.md`. This path has not yet been run on a real third-party agent.
 
-An agent on a hosted cloud computer that is rebuilt every few hours runs `bash setup/cloud-programs.sh` after each rebuild to put the programs back. What works there and what stays on a desktop is `docs/cloud-machine.md`.
+## Claude Duet
+
+The same repo builds a second zip for Claude Duet: `python build.py --adapter duet`. It unzips into the chat's project folder, and `START-HERE.md` inside walks the agent through setup. `setup/cloud-programs.sh` puts the programs back each time the cloud computer is rebuilt. `skill-uploads/` holds one claude.ai skill zip per skill that runs there, with its scripts packed inside. `setup/targets.json` marks every program, skill and setup file as `pc`, `duet` or `both`, with the reason. The test run behind those marks is `docs/cloud-machine.md`.
 
 ## How it will work
 

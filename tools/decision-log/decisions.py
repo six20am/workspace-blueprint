@@ -13,7 +13,8 @@ import os
 import re
 import sys
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+# WORKSPACE_ROOT points a copy of this script that lives elsewhere (inside a saved skill) at the workspace
+ROOT = os.environ.get("WORKSPACE_ROOT") or os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 LINE = re.compile(r"^(?:[-*]\s+)?(\d{4}-\d{2}-\d{2})\s*\|(.*)$")
 
 

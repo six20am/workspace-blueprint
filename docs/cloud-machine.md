@@ -2,6 +2,14 @@
 
 Some AI apps give the agent its own cloud computer with a shell and a folder that lasts, but the computer itself is rebuilt every few hours. This page says what works there and what stays on a desktop install. It was tested on 2026-11-19 on one such computer, a hosted Claude session with an allowlisted network.
 
+## Two targets from one repo
+
+- `python build.py --adapter claude-code` builds the desktop zip, as before.
+- `python build.py --adapter duet` builds the Claude Duet zip. It carries `adapters/duet/` (its own map, platform notes and start page), `setup/cloud-programs.sh`, and `skill-uploads/` with one zip per skill that `setup/targets.json` marks `both` or `duet`.
+- A packed skill carries the `tools/` folders it names, and the ones those tools name, minus the doctor, the updater and whisper. Its scripts read `WORKSPACE_ROOT` so their files land in the workspace and not in the skill's folder. A note at the top of its `SKILL.md` says how to run them on Duet.
+- `setup/targets.json` is the one list of what runs where. `pc` means a desktop install only, `duet` means Duet only, `both` means both.
+- `tools/doctor/doctor.py` on a Duet workspace runs `setup/cloud-programs.sh` (`--check` for a dry run), and `tools/update/update.py` knows the duet adapter.
+
 ## Bottom line
 
 - Run `bash setup/cloud-programs.sh` after each rebuild. It puts the programs back, skips what is already there and signs in to nothing. A full run took about five minutes, a second run three seconds.

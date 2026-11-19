@@ -1,0 +1,758 @@
+{
+ "_about": "Where each piece of the Blueprint runs. both means Claude Code on a computer and Claude Duet. pc means a desktop install only. duet means Claude Duet only. The duet field says how it does on Duet's cloud computer. The build reads this file to pick the skills it packs for Duet.",
+ "targets": {
+  "both": "Claude Code on a computer and Claude Duet",
+  "pc": "A desktop install with Claude Code only",
+  "duet": "Claude Duet only"
+ },
+ "duet_status": {
+  "now": "Already on Duet's cloud computer",
+  "script": "Works after setup/cloud-programs.sh",
+  "blocked": "Installs, but Duet's network blocks the sites it needs",
+  "skill": "Save it as a claude.ai skill",
+  "connector": "Duet uses a connector or connection for this",
+  "pc": "Not on Duet",
+  "fits": "Save the packed skill as is",
+  "bundle": "Save the packed skill; its scripts travel inside it",
+  "covered": "Duet already does this another way"
+ },
+ "setup": [
+  {
+   "name": "setup.cmd, setup.command, setup/setup.ps1, setup/setup.sh",
+   "target": "pc",
+   "why": "The desktop installer. It installs Claude Code and the programs, then opens Claude."
+  },
+  {
+   "name": "update.cmd, update.command",
+   "target": "pc",
+   "why": "Double-click updaters for a desktop install."
+  },
+  {
+   "name": "CLAUDE.md, AGENTS.md, GEMINI.md",
+   "target": "pc",
+   "why": "Map files Claude Code, Codex and Gemini read on their own."
+  },
+  {
+   "name": "setup/cloud-programs.sh",
+   "target": "duet",
+   "why": "Puts the programs back after each rebuild of the cloud computer."
+  },
+  {
+   "name": "Chromium from npm",
+   "target": "duet",
+   "why": "Duet's network blocks the usual browser downloads, so setup/cloud-programs.sh gets one from npm. Remotion renders with it."
+  },
+  {
+   "name": "skill-uploads/",
+   "target": "duet",
+   "why": "One zip per skill to save in claude.ai, with its scripts packed inside."
+  },
+  {
+   "name": "setup/SETUP.md, setup/filing-styles.md, tools/, _reference/",
+   "target": "both",
+   "why": "The setup conversation, the six filing styles, the scripts and the reference notes."
+  }
+ ],
+ "tools": [
+  {
+   "id": "git",
+   "name": "git",
+   "target": "both",
+   "duet": "now",
+   "why": "On this computer. GitHub is reachable."
+  },
+  {
+   "id": "uv",
+   "name": "uv",
+   "target": "both",
+   "duet": "now",
+   "why": "On this computer."
+  },
+  {
+   "id": "python",
+   "name": "Python",
+   "target": "both",
+   "duet": "now",
+   "why": "On this computer. All 211 of the Blueprint's own tool tests pass here."
+  },
+  {
+   "id": "node",
+   "name": "Node.js",
+   "target": "both",
+   "duet": "now",
+   "why": "On this computer."
+  },
+  {
+   "id": "ffmpeg",
+   "name": "ffmpeg",
+   "target": "both",
+   "duet": "now",
+   "why": "On this computer. Made and joined a test video."
+  },
+  {
+   "id": "yt-dlp",
+   "name": "yt-dlp",
+   "target": "pc",
+   "duet": "blocked",
+   "why": "Installs, but YouTube and most video sites are blocked from here. Use it on the PC.",
+   "duet_use_instead": "Duet's own web search and browser"
+  },
+  {
+   "id": "playwright",
+   "name": "Playwright browser",
+   "target": "both",
+   "duet": "script",
+   "why": "Its own browser download is blocked. The cloud script gets Chromium from npm instead, which works."
+  },
+  {
+   "id": "claude",
+   "name": "Claude Code",
+   "target": "pc",
+   "duet": "pc",
+   "why": "The desktop app. Duet is already Claude, so nothing to add.",
+   "duet_use_instead": "nothing, Duet is already Claude"
+  },
+  {
+   "id": "plugin-superpowers",
+   "name": "Superpowers plugin",
+   "target": "pc",
+   "duet": "pc",
+   "why": "A Claude Code plugin. Claude Code only."
+  },
+  {
+   "id": "plugin-frontend-design",
+   "name": "Frontend design plugin",
+   "target": "both",
+   "duet": "skill",
+   "why": "One skill. It can be saved as a claude.ai skill. Duet already has artifact design skills."
+  },
+  {
+   "id": "plugin-document-skills",
+   "name": "Document skills plugin",
+   "target": "both",
+   "duet": "now",
+   "why": "Word, PDF, PowerPoint and Excel skills are already saved in your claude.ai skills."
+  },
+  {
+   "id": "notebooklm",
+   "name": "NotebookLM",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Installs, but needs a Google browser sign-in that doesn't last here, and there is no NotebookLM connector.",
+   "duet_use_instead": "deep research and Google Drive"
+  },
+  {
+   "id": "scrapling",
+   "name": "Scrapling",
+   "target": "pc",
+   "duet": "blocked",
+   "why": "Installs, but can't reach websites from here. The cloud browser does this job.",
+   "duet_use_instead": "the cloud browser"
+  },
+  {
+   "id": "markitdown",
+   "name": "MarkItDown",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested. Turned a Word file into text."
+  },
+  {
+   "id": "gallery-dl",
+   "name": "gallery-dl",
+   "target": "pc",
+   "duet": "blocked",
+   "why": "Installs, but image sites are blocked from here.",
+   "duet_use_instead": "the cloud browser"
+  },
+  {
+   "id": "agent-reach",
+   "name": "Agent Reach",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Installs, but needs social media logins and can't reach those sites from here.",
+   "duet_use_instead": "Duet's own web search and browser"
+  },
+  {
+   "id": "whisper",
+   "name": "whisper.cpp",
+   "target": "pc",
+   "duet": "blocked",
+   "why": "Builds, but its speech model download is blocked. Use ElevenLabs transcribe, which you have connected.",
+   "duet_use_instead": "a transcription connector such as ElevenLabs"
+  },
+  {
+   "id": "whisper-model",
+   "name": "whisper English model",
+   "target": "pc",
+   "duet": "blocked",
+   "why": "Hugging Face is blocked from here. No safe second source.",
+   "duet_use_instead": "a transcription connector such as ElevenLabs"
+  },
+  {
+   "id": "imagemagick",
+   "name": "ImageMagick",
+   "target": "both",
+   "duet": "now",
+   "why": "On this computer. Tested."
+  },
+  {
+   "id": "exiftool",
+   "name": "ExifTool",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested. Wrote and read photo details."
+  },
+  {
+   "id": "sox",
+   "name": "SoX",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested. Made and measured an audio file."
+  },
+  {
+   "id": "handbrake",
+   "name": "HandBrake",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested. Shrank a test video."
+  },
+  {
+   "id": "mkvtoolnix",
+   "name": "MKVToolNix",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested. Turned a test video into MKV."
+  },
+  {
+   "id": "libreoffice",
+   "name": "LibreOffice",
+   "target": "both",
+   "duet": "now",
+   "why": "On this computer. Turned Word into PDF."
+  },
+  {
+   "id": "pandoc",
+   "name": "Pandoc",
+   "target": "both",
+   "duet": "now",
+   "why": "On this computer. Tested."
+  },
+  {
+   "id": "tesseract",
+   "name": "Tesseract",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested. Read the words in an image."
+  },
+  {
+   "id": "poppler",
+   "name": "Poppler",
+   "target": "both",
+   "duet": "now",
+   "why": "On this computer. Tested."
+  },
+  {
+   "id": "qpdf",
+   "name": "qpdf",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested. Joined two PDFs."
+  },
+  {
+   "id": "jq",
+   "name": "jq",
+   "target": "both",
+   "duet": "now",
+   "why": "On this computer."
+  },
+  {
+   "id": "ghostscript",
+   "name": "Ghostscript",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested. Turned a PDF into an image."
+  },
+  {
+   "id": "ocrmypdf",
+   "name": "OCRmyPDF",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested. Made a scanned PDF searchable."
+  },
+  {
+   "id": "rtk",
+   "name": "rtk",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Trims command output for Claude Code on a PC. Its download site is blocked here too."
+  },
+  {
+   "id": "rtk-hook",
+   "name": "rtk hook",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Changes Claude Code settings. Claude Code only."
+  },
+  {
+   "id": "wrangler",
+   "name": "Wrangler",
+   "target": "pc",
+   "duet": "connector",
+   "why": "Installs, but deploying needs a Cloudflare login. Your Cloudflare connector covers the rest. Deploys stay on the PC.",
+   "duet_use_instead": "a Cloudflare connector for reading and small changes"
+  },
+  {
+   "id": "defuddle",
+   "name": "Defuddle",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested on a saved page. Can't fetch pages from here, so give it a page the cloud browser saved."
+  },
+  {
+   "id": "trafilatura",
+   "name": "Trafilatura",
+   "target": "both",
+   "duet": "script",
+   "why": "Same as Defuddle. Works on saved pages."
+  },
+  {
+   "id": "ccusage",
+   "name": "ccusage",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Reads Claude Code usage logs on a PC."
+  },
+  {
+   "id": "repomix",
+   "name": "Repomix",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested. Packed a code folder into one file."
+  },
+  {
+   "id": "codeburn",
+   "name": "CodeBurn",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Reads Claude Code spend logs on a PC."
+  },
+  {
+   "id": "remotion",
+   "name": "Remotion",
+   "target": "both",
+   "duet": "script",
+   "why": "Tested. Rendered a video and a still with the npm Chromium."
+  },
+  {
+   "id": "remotion-skills",
+   "name": "Remotion skills",
+   "target": "both",
+   "duet": "skill",
+   "why": "Remotion's own skills. Can be saved as claude.ai skills."
+  },
+  {
+   "id": "video-shotcraft",
+   "name": "video-shotcraft",
+   "target": "both",
+   "duet": "script",
+   "why": "Cloned and ready."
+  },
+  {
+   "id": "awesome-ai-motion",
+   "name": "awesome-ai-motion",
+   "target": "both",
+   "duet": "script",
+   "why": "Cloned and ready."
+  },
+  {
+   "id": "mcp-scrapling",
+   "name": "Scrapling MCP",
+   "target": "pc",
+   "duet": "pc",
+   "why": "A local MCP server. Hosting it online wouldn't help, since it needs a real browser. The cloud browser covers it.",
+   "duet_use_instead": "the cloud browser"
+  },
+  {
+   "id": "mcp-chrome-devtools",
+   "name": "Chrome DevTools MCP",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Drives Chrome on your PC. Here Claude in Chrome and the cloud browser cover it.",
+   "duet_use_instead": "Claude in Chrome or the cloud browser"
+  },
+  {
+   "id": "mcp-image-search",
+   "name": "Image search MCP",
+   "target": "pc",
+   "duet": "connector",
+   "why": "Could be hosted on Cloudflare as a connector, but needs Pexels and Pixabay keys. Your Unsplash connector already finds stock photos.",
+   "duet_use_instead": "a stock photo connector such as Unsplash"
+  },
+  {
+   "id": "chrome-extension",
+   "name": "Claude in Chrome",
+   "target": "both",
+   "duet": "connector",
+   "why": "Already links to Duet. Works with your own signed-in Chrome."
+  },
+  {
+   "id": "gimp",
+   "name": "GIMP",
+   "target": "duet",
+   "duet": "script",
+   "why": "Tested. Resized an image headless."
+  },
+  {
+   "id": "inkscape",
+   "name": "Inkscape",
+   "target": "duet",
+   "duet": "script",
+   "why": "Tested. Turned an SVG into a PNG."
+  }
+ ],
+ "skills": [
+  {
+   "name": "copy-formulas",
+   "target": "both",
+   "duet": "fits",
+   "why": "Eight copy shapes with examples. No tools."
+  },
+  {
+   "name": "design-inspiration",
+   "target": "both",
+   "duet": "fits",
+   "why": "Where to look before designing. No tools."
+  },
+  {
+   "name": "review-replies",
+   "target": "both",
+   "duet": "fits",
+   "why": "Drafts review replies. No tools."
+  },
+  {
+   "name": "social-copywriter",
+   "target": "both",
+   "duet": "fits",
+   "why": "Per-platform post rules. Your copywriter skill still writes final copy."
+  },
+  {
+   "name": "meeting-prep",
+   "target": "both",
+   "duet": "fits",
+   "why": "One-page brief before a call. Uses Calendar and Gmail here."
+  },
+  {
+   "name": "resume-and-letter",
+   "target": "both",
+   "duet": "fits",
+   "why": "Tailored resume or formal letter. Word file through the docx skill."
+  },
+  {
+   "name": "make-a-pipeline",
+   "target": "both",
+   "duet": "fits",
+   "why": "Turns a repeat job into stages. Plain files."
+  },
+  {
+   "name": "tool-vetting",
+   "target": "both",
+   "duet": "fits",
+   "why": "Vets a tool or repo. Its NotebookLM step gets skipped."
+  },
+  {
+   "name": "workspace-diff",
+   "target": "both",
+   "duet": "fits",
+   "why": "Compares an outside source against your workspace repo."
+  },
+  {
+   "name": "gap-finder",
+   "target": "both",
+   "duet": "fits",
+   "why": "Notices a missing skill and offers to build one."
+  },
+  {
+   "name": "reading-pile",
+   "target": "both",
+   "duet": "fits",
+   "why": "Saved links into a short digest. Fits the morning brief."
+  },
+  {
+   "name": "money-log",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Bank CSV to a monthly summary. Its script passed tests here."
+  },
+  {
+   "name": "renewals",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Dates that come back each year. Script passed tests here."
+  },
+  {
+   "name": "waiting-on",
+   "target": "both",
+   "duet": "bundle",
+   "why": "What others owe you. Script passed tests here."
+  },
+  {
+   "name": "decision-log",
+   "target": "both",
+   "duet": "bundle",
+   "why": "One line per decision. Script passed tests here."
+  },
+  {
+   "name": "paperwork",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Files scans and pulls dates. Needs the OCR programs from the cloud script.",
+   "duet_note": "Files sent in chat or saved from Drive go in the workspace first, then this skill reads them there."
+  },
+  {
+   "name": "photo-organizer",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Sorts photos by date. Needs ExifTool from the cloud script.",
+   "duet_note": "Photos have to be in the workspace first. Pass that folder as `--root`."
+  },
+  {
+   "name": "tax-time",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Gathers papers for the accountant. Script passed tests here."
+  },
+  {
+   "name": "outbound-check",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Scans a draft for secrets before it goes out. Script passed tests here."
+  },
+  {
+   "name": "media-tools",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Video, audio and image edits. ffmpeg and ImageMagick are here."
+  },
+  {
+   "name": "document-builder",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Notes to Word, PDF or slides. Pandoc and LibreOffice are here."
+  },
+  {
+   "name": "markitdown",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Office and PDF files to text. Tested here."
+  },
+  {
+   "name": "motion-video",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Motion graphics with Remotion. Rendered here with the npm Chromium.",
+   "duet_note": "Remotion's working copy here is `/opt/wb-motion`, put there by the cloud script. Before a render run `source /tmp/wb-browser.env`, then use `node /opt/wb-motion/render.mjs` in place of `node tools/motion/render.mjs`. Keep the props file and the finished video in the workspace."
+  },
+  {
+   "name": "video-shots",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Shot recipes for promos. Libraries cloned here.",
+   "duet_note": "Remotion's working copy here is `/opt/wb-motion`. Build shots in `/opt/wb-motion/src/compositions/`, and copy any shot worth keeping into the workspace, since that copy is lost when the computer is rebuilt. Before a render run `source /tmp/wb-browser.env`."
+  },
+  {
+   "name": "legacy-journal",
+   "target": "both",
+   "duet": "bundle",
+   "why": "Kids journal and sealed letters. Video and voice entries need ElevenLabs instead of whisper.",
+   "duet_note": "Speech to text does not run here. For a video or voice entry, get the transcript from a transcription connector such as ElevenLabs, then file it the way this skill says."
+  },
+  {
+   "name": "deep-research",
+   "target": "pc",
+   "duet": "covered",
+   "why": "You already have a deep-research skill with the same name.",
+   "duet_use_instead": "the deep-research skill already saved in claude.ai"
+  },
+  {
+   "name": "chrome-tools",
+   "target": "pc",
+   "duet": "covered",
+   "why": "Claude in Chrome is built in.",
+   "duet_use_instead": "Claude in Chrome"
+  },
+  {
+   "name": "web-read",
+   "target": "pc",
+   "duet": "covered",
+   "why": "Built-in web search and fetch.",
+   "duet_use_instead": "Duet's own web search and fetch"
+  },
+  {
+   "name": "writer",
+   "target": "pc",
+   "duet": "covered",
+   "why": "my-writing-style and six20-voice.",
+   "duet_use_instead": "the person's saved writing style"
+  },
+  {
+   "name": "voice-extractor",
+   "target": "pc",
+   "duet": "covered",
+   "why": "learn-how-i-write.",
+   "duet_use_instead": "the learn-how-i-write skill"
+  },
+  {
+   "name": "summarize",
+   "target": "pc",
+   "duet": "covered",
+   "why": "Built in.",
+   "duet_use_instead": "Duet itself"
+  },
+  {
+   "name": "explain-this",
+   "target": "pc",
+   "duet": "covered",
+   "why": "Built in, plus the pdf skill.",
+   "duet_use_instead": "Duet itself with the pdf skill"
+  },
+  {
+   "name": "trip-plan",
+   "target": "pc",
+   "duet": "covered",
+   "why": "Built in from Gmail, plus Expedia.",
+   "duet_use_instead": "Duet itself with Gmail"
+  },
+  {
+   "name": "last30days",
+   "target": "pc",
+   "duet": "covered",
+   "why": "Deep research covers it. It also wants five paid API keys.",
+   "duet_use_instead": "deep research"
+  },
+  {
+   "name": "image-search",
+   "target": "pc",
+   "duet": "covered",
+   "why": "Unsplash connector. It also wants API keys.",
+   "duet_use_instead": "a stock photo connector such as Unsplash"
+  },
+  {
+   "name": "loc-dl",
+   "target": "pc",
+   "duet": "covered",
+   "why": "Data-Gov connector. loc.gov is blocked from this shell.",
+   "duet_use_instead": "a Data-Gov connector"
+  },
+  {
+   "name": "voice-memo",
+   "target": "pc",
+   "duet": "covered",
+   "why": "ElevenLabs transcribe. The whisper model is blocked here.",
+   "duet_use_instead": "a transcription connector such as ElevenLabs"
+  },
+  {
+   "name": "video-watcher",
+   "target": "pc",
+   "duet": "covered",
+   "why": "ElevenLabs and Vimeo transcripts.",
+   "duet_use_instead": "transcription and Vimeo connectors"
+  },
+  {
+   "name": "weekly-brief",
+   "target": "pc",
+   "duet": "covered",
+   "why": "Your morning brief and check-ins.",
+   "duet_use_instead": "Duet's morning brief and check-ins"
+  },
+  {
+   "name": "agent-reach",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Needs social logins and sites blocked from here."
+  },
+  {
+   "name": "agent-web-fetch",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Sits on top of agent-reach."
+  },
+  {
+   "name": "channel-mine",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Needs yt-dlp. YouTube is blocked from here."
+  },
+  {
+   "name": "client-asset-harvester",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Crawls a live site. Sites are blocked from this shell."
+  },
+  {
+   "name": "gallery-dl",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Image sites are blocked from here."
+  },
+  {
+   "name": "notebooklm-research",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Needs a Google sign-in that won't last here."
+  },
+  {
+   "name": "scrapling",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Sites are blocked from this shell. The cloud browser does this."
+  },
+  {
+   "name": "x-read",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Its X reader service is blocked from here."
+  },
+  {
+   "name": "local-events",
+   "target": "pc",
+   "duet": "pc",
+   "why": "City calendar sites are blocked from this shell."
+  },
+  {
+   "name": "site-builder",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Builds here, but deploying needs a Cloudflare login."
+  },
+  {
+   "name": "doctor",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Checks a PC install. The cloud script does this job here."
+  },
+  {
+   "name": "update",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Updates a PC install."
+  },
+  {
+   "name": "workspace-audit",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Checks a PC workspace's map and router."
+  },
+  {
+   "name": "backup",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Copies a PC folder to a drive."
+  },
+  {
+   "name": "undo",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Save history of a PC folder."
+  }
+ ]
+}

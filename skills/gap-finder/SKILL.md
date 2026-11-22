@@ -36,7 +36,7 @@ Before you say that line, read `setup/gap-log.md`. If the same kind of task appe
 
 ### Find
 
-1. Run the `tool-vetting` skill on whatever the person names, or on the top result of a web search for the job.
+1. Run the `tool-vetting` skill on whatever the person names. If they name nothing, run its Find mode (step 0), which searches skills.sh for the job and vets the best two or three.
 2. Nothing installs unless the verdict is **ADOPT**. Say the verdict and why in two lines.
 3. On ADOPT, say what it is and what it installs, and wait for the person's yes. Then add an entry to `setup/tools.local.json` (yours; the template never touches it), install it with the installer's `-Only`/`--only` flag, and write a wrapper skill as in Build step 2.
 4. Log it: `... | found`.

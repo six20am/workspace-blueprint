@@ -457,7 +457,7 @@
    "name": "tool-vetting",
    "target": "both",
    "duet": "fits",
-   "why": "Vets a tool or repo. Its NotebookLM step gets skipped."
+   "why": "Vets a tool or repo, or finds one on skills.sh by job. Its NotebookLM step gets skipped."
   },
   {
    "name": "workspace-diff",

@@ -239,7 +239,7 @@ PURPOSE = {
     "mcp-image-search": "Lets Claude search free stock photos",
     "chrome-extension": "Claude works inside your own Chrome, signed in as you",
 }
-SHORT = {"rtk-hook": "rtk hook", "remotion-skills": "Remotion skills"}
+SHORT = {"rtk-hook": "rtk hook", "remotion-skills": "Remotion skills", "cloudflare-skills": "Cloudflare skills"}
 
 
 def tool_name(t):

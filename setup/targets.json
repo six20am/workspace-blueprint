@@ -351,6 +351,13 @@
    "why": "Remotion's own skills. Can be saved as claude.ai skills."
   },
   {
+   "id": "cloudflare-skills",
+   "name": "Cloudflare skills",
+   "target": "pc",
+   "duet": "pc",
+   "why": "Cloudflare's own skills for Workers, Wrangler, the cf CLI, Turnstile, email and security review. Not yet tried on the cloud computer."
+  },
+  {
    "id": "video-shotcraft",
    "name": "video-shotcraft",
    "target": "both",

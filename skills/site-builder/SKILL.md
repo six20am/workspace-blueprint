@@ -5,7 +5,7 @@ description: "Builds a small website with Astro 7 and Tailwind and puts it live 
 
 # site-builder
 
-Needs Node 22 or newer and the `wrangler` command (both installed at setup; run the `doctor` skill if either is missing). Everything else installs inside the site's own folder.
+Needs Node 22 or newer and the `wrangler` command (both installed at setup; run the `doctor` skill if either is missing). Everything else installs inside the site's own folder. Cloudflare's own skills are installed at setup too: `wrangler` for any Wrangler command, `frameworks-on-cloudflare` for Astro on Workers, `workers-best-practices` before a Worker ships, `turnstile-spin` for a form that needs bot checks, `web-perf` for a slow page, and `cloudflare` to pick a product or read a Cloudflare error page.
 
 Cloudflare's newer home for sites is Workers, and Astro's Cloudflare adapter no longer supports Cloudflare Pages. Build for Workers. A static site needs no adapter at all.
 

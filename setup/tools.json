@@ -819,6 +819,29 @@
   ]
  },
  {
+  "id": "cloudflare-skills",
+  "name": "Cloudflare skills (official, installed at setup)",
+  "area": "programs",
+  "needs": [
+   "node"
+  ],
+  "check": "(Test-Path '.agents\\skills\\workers-best-practices') -or (Test-Path '.claude\\skills\\workers-best-practices') -or (Test-Path 'skills\\workers-best-practices') -or (Test-Path \"$HOME\\.agents\\skills\\workers-best-practices\")",
+  "install": [
+   "npx --yes skills add cloudflare/skills -y",
+   "npx --yes skills add cloudflare/security-audit-skill -y"
+  ],
+  "check_mac": "test -d .agents/skills/workers-best-practices || test -d .claude/skills/workers-best-practices || test -d skills/workers-best-practices || test -d \"$HOME/.agents/skills/workers-best-practices\"",
+  "install_mac": [
+   "npx --yes skills add cloudflare/skills -y",
+   "npx --yes skills add cloudflare/security-audit-skill -y"
+  ],
+  "check_linux": "test -d .agents/skills/workers-best-practices || test -d .claude/skills/workers-best-practices || test -d skills/workers-best-practices || test -d \"$HOME/.agents/skills/workers-best-practices\"",
+  "install_linux": [
+   "npx --yes skills add cloudflare/skills -y",
+   "npx --yes skills add cloudflare/security-audit-skill -y"
+  ]
+ },
+ {
   "id": "video-shotcraft",
   "name": "video-shotcraft (152 cinematic shot recipes with working code)",
   "area": "programs",
